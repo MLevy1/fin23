@@ -1,0 +1,39 @@
+{% extends "master.html" %}
+{% load humanize %}
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payee List</title>
+</head>
+<body>
+    <h1>Payee List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Payee name</th>
+                <th></th>
+                <th>Total transactions</th>
+                <th>Most recent transaction date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payee in payees %}
+            <tr>
+                <td><a href="{% url 'tlist' 'all' 'all' payee.id %}"> {{ payee.payee }}</a></td>
+                <td><a href="{% url 'upay' payee.id %}">Update</a></td>
+                <td>{{ payee.total_transactions|floatformat:2|intcomma }}</td>
+                <td>{{ payee.most_recent_transaction }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
+{% endblock %}

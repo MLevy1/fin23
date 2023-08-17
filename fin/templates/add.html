@@ -1,0 +1,15 @@
+{% extends 'master.html' %}
+{% block title %}
+Add
+{% endblock %}
+
+{% block content %}
+<h2>Add</h2>
+<form method='post' action=''>
+	{% csrf_token %}
+	<ul>
+	{{ form.as_ul }}
+	</ul>
+	<button type='submit' name='save'>Add</button>
+</form>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "master.html" %}
+
+{% block title %}
+    Issues
+{% endblock %}
+
+
+{% block content %}
+
+    <h1>Open Issues</h1>
+    <p>Add new issue: <a href="/aissue/">Add Issue</a></p>
+
+    <table border='1'>
+        <thead>
+            <th>
+                Issue #
+            </th>
+            <th>
+                Open Date
+            </th>
+            <th>
+                Issue Name
+            </th>
+            <th>
+                Issue Description
+            </th>
+            <th>
+                Priority
+            </th>
+        </thead>
+        {% for x in issues %}
+	{% if x.issueopen == True %}
+            <tr>
+                <td>{{ x.id  }}</td> 
+                <td>{{ x.opendate|date:"Y-m-d" }}</td>
+                <td><a href="{% url 'uissue' x.id %}">{{ x.issuename }}</a></td>
+                <td>{{ x.issuedesc }}</td>
+                <td>{{ x.priority }}</td>
+
+            </tr>
+	{% endif %}
+        {% endfor %}
+    
+    </table>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'master.html' %}
+{% block title %}
+Budget Entry
+{% endblock %}
+
+{% block content %}
+<h1>Budget Entry</h1>
+<hr>
+<form method='post' action=''>
+	{% csrf_token %}
+	<ul>
+	{{ form.as_ul }}
+	<button type='submit' name='save'>Calc</button>
+	</ul>
+</form>
+
+{% endblock %}

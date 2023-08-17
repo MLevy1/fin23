@@ -1,0 +1,28 @@
+{% extends "master.html" %}
+
+{% block title %}
+    List of All Categories
+{% endblock %}
+
+
+{% block content %}
+
+<div class="mycard">
+
+    <h1>Category List</h1>
+  
+    <ul>
+
+        {% for x in categories %}
+
+		<li><a href="{% url 'tlist' "all" x.id "all" %}">{{ x.category }}</a> 
+		<a href="{% url 'ucat' x.id %}">Update</a>
+		</li>
+
+        {% endfor %}
+    
+    </ul>
+
+</div>
+
+{% endblock %}

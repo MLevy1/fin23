@@ -1,0 +1,19 @@
+{% extends 'master.html' %}
+{% block title %}
+Move Inputs
+{% endblock %}
+
+{% block content %}
+<h1>Move Inputs</h1>
+
+<hr>
+
+<form method='post' action='/move/'>
+	{% csrf_token %}
+	<ul>
+	{{ form.as_ul }}
+	<button type='submit' name='save'>Calc</button>
+	</ul>
+</form>
+
+{% endblock %}

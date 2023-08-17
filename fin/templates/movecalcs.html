@@ -1,0 +1,61 @@
+{% extends 'master.html' %}
+{% load humanize %}
+{% block title %}
+Move Calc Results
+{% endblock %}
+
+{% block content %}
+
+<h1>
+	Move Calc Results
+</h1>
+	<a href="/move/">Move</a>
+<table>
+<tr>
+	<td>
+	Purchase Price:
+	</td><td>
+	{{ result.pprice|floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Downpayment:
+	</td><td>
+	{{ result.dpa|floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Principal & Interest:
+	</td><td>
+	{{ result.mtg|floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Property Tax:
+	</td><td>
+	{{ result.mpt|floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Insurance:
+	</td><td>
+	{{ result.mins|floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Monthly Payment:
+	</td><td>
+	{{ result.tmpmt|floatformat:2|intcomma}}
+	</td>
+</tr>
+</table>
+{% endblock %}
+
+<!-- 
+  result = {"tmpmt": tmpmt, "mpt": mpt, "mins": mins, "mtg": mtg, "dpa":dpa }
+-->

@@ -1,0 +1,50 @@
+{% extends "master.html" %}
+
+{% block title %}
+    List of All Transactions
+{% endblock %}
+
+
+{% block content %}
+
+    <h1>Transactions List</h1>
+  
+    <table border='1'>
+        <thead>
+            <th>
+                tid
+            </th>
+            <th>
+                date
+            </th>
+            <th>
+                amount
+            </th>
+            <th>
+                account
+            </th>
+            <th>
+                payee
+            </th>
+            <th>
+                category
+            </th>
+            <th>
+                match
+            </th>
+        </thead>
+        {% for x in transactions %}
+            <tr>
+                <td>{{ x.tid }}</td> 
+                <td>{{ x.tdate }}</td>
+                <td>{{ x.amount }}</td>
+                <td>{{ x.account }}</td>
+                <td>{{ x.payee }}</td>
+                <td>{{ x.category }}</td>
+                <td>{{ x.match }}</td>
+            </tr>
+        {% endfor %}
+    
+    </table>
+
+{% endblock %}

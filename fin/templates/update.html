@@ -1,0 +1,17 @@
+{% extends 'master.html' %}
+{% block title %}
+Update
+{% endblock %}
+
+{% block content %}
+
+<h1>Update</h1>
+
+<form action="" method=POST>
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <br/>
+    <input type="submit" value="Update" class="btn btn-secondary">
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "master.html" %}
+
+{% block title %}
+    Account List
+{% endblock %}
+
+
+{% block content %}
+
+	<a href="/act/all">All Accounts</a>
+	<a href="/act/act">Active Accounts</a>
+
+    <div class="mycard">
+
+        <h1>Account List</h1>
+    
+        <ul>
+
+            {% for x in accounts %}
+
+		<li>
+			<a href="{% url 'tlist' x.id "all" "all" %}"> {{ x.account }}</a> <a href="{% url 'uact' x.id %}">Update</a>
+		</li>
+
+            {% endfor %}
+        
+        </ul>
+
+    </div>
+
+{% endblock %}

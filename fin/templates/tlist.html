@@ -1,0 +1,63 @@
+{% extends 'master.html' %}
+{% block title %}
+Transaction List
+{% endblock %}
+
+{% block content %}
+{% if trans_list %}
+<h1>Transactions List</h1>
+
+	<a href="/act/act/">Accounts</a>
+	<a href="/cat/">Categories</a>
+	<a href="/pay/act/">Payees</a>
+
+	<table border='1'>
+	
+        	<thead>
+            		<th>
+                		Date
+			</th><th>
+                		Amount
+            		</th><th>
+                		Account
+			</th><th>
+				Payee
+			</th><th>
+				Category
+			</th><th>
+				Match
+			</th><th>
+				Old Payee
+			</th><th>
+				Sum
+			</th>
+		</thead>
+
+{% for t in trans_list %}
+
+	<tr>
+		<td>
+			<a href="{% url 'utran' t.id %}">{{ t.tdate }}</a>
+		</td><td>
+			{{ t.amount|floatformat:"2g"}} 
+		</td><td>
+			{{t.account}}
+		</td><td>
+			{{t.payee}}
+		</td><td>
+			{{t.category}}
+		</td><td>
+			{{t.match}}
+		</td><td>
+			{{t.oldPayee}}
+		</td><td>
+			{{  t.cumsum|floatformat:"2g" }}
+		</td>
+	</tr>
+
+{% endfor %}
+    </table>
+{% else %}
+    <p>No transactions yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'master.html' %}
+{% block title %}
+Add New Issue
+{% endblock %}
+
+{% block content %}
+
+<h1>Add New Issue</h1>
+<p>List of all Issues: <a href="/issues/">Issues</a></p>
+
+<form method='post' action=''>
+	{% csrf_token %}
+	<ul>
+	{{ form.as_ul }}
+	</ul>
+	<button type='submit' name='save'>Add</button>
+</form>
+{% endblock %}

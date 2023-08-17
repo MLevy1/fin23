@@ -1,0 +1,50 @@
+{% extends "master.html" %}
+{% load humanize %}
+{% block title %}
+    List of All Payees
+{% endblock %}
+
+
+{% block content %}
+
+<a href="/pay/all">All Payees</a>
+<a href="/pay/act">Active Payees</a>
+<a href="/merge">Merge Payees</a>
+
+
+    <h1>Payees List</h1>
+  
+	<table border='1' style='border-collapse:collapse'>
+		<thead>
+			<th>Payee name</th>
+			<th>Actions</th>
+			<th># of Trans</th>
+			<th>Total Amount</th>
+			<th>Most recent</th>
+		</thead>	
+		<tbody>
+			{% for p in payees %}
+			<tr>
+				<td>
+					<a href="{% url 'tlist' 'all' 'all' p.id %}"> {{ p.payee }}</a>
+				</td>
+				<td>
+					<a href="{% url 'upay' p.id %}">Update</a>
+					<!-- ><a href="{% url 'delete_payee' p.pk %}">Delete</a> -->
+					<a href="{% url 'make_inactive' p.pk %}">Inactive</a>
+</td>
+				<td>
+					{{ p.trans_count }}
+				</td>
+				<td>
+					{{ p.total_transactions|floatformat:2|intcomma }}
+				</td>
+				<td>
+					{{ p.most_recent_transaction }}
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+{% endblock %}
