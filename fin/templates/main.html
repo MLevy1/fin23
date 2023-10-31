@@ -7,45 +7,79 @@
 
 {% block content %}
 
-<div class="mycard">
-
-  <h1>PFIN 23</h1>
-
-  <h3>Accounts</h3>
-
-  <p>List of all accounts: <a href="/act/act/">Accounts</a></p>
-
-  <p>Add new account: <a href="aact/">Add Account</a></p>
-
-  <h3>Categories</h3>
+<div class="container text-center">
+	
+	<h1 class="display-1" style="background-color: #151B54">PFIN 23</h1>
+	
+	<h3 class="display-4" style="background-color: #151B54">Accounts</h3>
+	
+	<div class="list-group">
   
-  <p>List of all categories: <a href="cat/">Categories</a></p>
-
-  <p>Add new category: <a href="acat/">Add Category</a></p>
-
-  <h3>Payees</h3>
+	       <a class="list-group-item list-group-item-action list-group-item-primary" href="/act/act/">Accounts</a>
   
-  <p>List of all payees: <a href="pay/act/">Payees</a></p>
-
-  <p>Add new payee: <a href="apay/">Add Payee</a></p>
-
-  <h3>Transactions</h3>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="aact/">Add Account</a>
   
-  <p>List of all Transactions: <a href="trans/">Transactions</a></p>
+       </div>
+	
+	<h3 class="display-4" style="background-color: #151B54">Categories</h3>
+  	
+       <div class="list-group">
+ 
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="cat/">Categories</a>
 
-  <p>Add new transaction: <a href="atran/">Add Transaction</a></p>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="acat/">Add Category</a>
 
-  <h3>Issues</h3>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="/pcupdateall/">Payee - Category Update</a>
+
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="/pau/">Payee - Account Update</a>
+
+       </div>
+
+  <h3 class="display-4" style="background-color: #151B54">Payees</h3>
+
+  <div class="list-group">
+
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="pay/act/payee/">Payees</a>
+
+
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="home/">Search</a>
+
+
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="apay/">Add Payee</a>
+
+</div>
+
+  <h3 class="display-4" style="background-color: #151B54">Transactions</h3>
+
+  <div class="list-group">
+
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="archive">Transactions</a>
   
-  <p>List of all Issues: <a href="issues/">Issues</a></p>
-
-  <p>Add new issue: <a href="aissue/">Add Issue</a></p>
-
-  <h3>Projections</h3>
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="atran/">Add Transaction</a>
   
-  <p>Moving: <a href="move/">Move</a></p>
+</div>
+  
+  <h3 class="display-4" style="background-color: #151B54">Issues</h3>
+  
+  <div class="list-group">
+  
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="issues/">Issues</a>
+   
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="aissue/">Add Issue</a>
+  
+</div>
+  
+  <h3 class="display-4" style="background-color: #151B54">Projections</h3>
+  
+  <div class="list-group">
 
-  <p>Budget: <a href="budget/">Budget</a></p>
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="budgetitem/">Budget Items</a>
+  
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="move/">Move</a>
+
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="budget/">Budget</a>
+  
+  </div>
 
 </div>
 

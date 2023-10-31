@@ -1,63 +1,68 @@
 {% extends 'master.html' %}
+{% load humanize %}
 {% block title %}
-Transaction List
+
+Transactions
+
 {% endblock %}
 
 {% block content %}
-{% if trans_list %}
-<h1>Transactions List</h1>
 
-	<a href="/act/act/">Accounts</a>
-	<a href="/cat/">Categories</a>
-	<a href="/pay/act/">Payees</a>
+{% if page_obj %}
 
-	<table border='1'>
-	
-        	<thead>
-            		<th>
-                		Date
-			</th><th>
-                		Amount
-            		</th><th>
-                		Account
-			</th><th>
-				Payee
-			</th><th>
-				Category
-			</th><th>
-				Match
-			</th><th>
-				Old Payee
-			</th><th>
-				Sum
-			</th>
+	<h1>Transactions</h1>
+
+	<table class="table table-dark">
+		
+		<thead>
+			<th scope="col">Date</th>
+			<th scope="col">Account</th>
+			<th scope="col">Payee</th>
+			<th scope="col">Category</th>
+			<th scope="col">Match</th>
+			<th scope="col">Account</th>
+			<th scope="col">Sum</th>
 		</thead>
 
-{% for t in trans_list %}
+		{% for t in page_obj %}
 
-	<tr>
-		<td>
-			<a href="{% url 'utran' t.id %}">{{ t.tdate }}</a>
-		</td><td>
-			{{ t.amount|floatformat:"2g"}} 
-		</td><td>
-			{{t.account}}
-		</td><td>
-			{{t.payee}}
-		</td><td>
-			{{t.category}}
-		</td><td>
-			{{t.match}}
-		</td><td>
-			{{t.oldPayee}}
-		</td><td>
-			{{  t.cumsum|floatformat:"2g" }}
-		</td>
-	</tr>
+		<tr>
+			<td><a href="{% url 'utran' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a></td>
+			<td><a href="{% url 'tlist'  t.account.id 'all' 'all' %}"> {{ t.account }}</a></td>
+			<td><a href="{% url 'tlist' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a></td>
+			<td><a href="{% url 'tlist' 'all' t.category.id 'all' %}"> {{ t.category }}</a></td>
+			<td>{{t.match}}</td>
+			<td>{{ t.amount|floatformat:"2g"}}</td>
+			<td>{{t.cumsum|floatformat:"2g" }}</td>
+			<td><a href="{% url 'delete_trans' t.id %}">delete</a></td>
+		</tr>
 
-{% endfor %}
-    </table>
-{% else %}
-    <p>No transactions yet.</p>
-{% endif %}
+		{% endfor %}
+
+	</table>
+
+	{% else %}
+
+	<p>No transactions yet.</p>
+
+	{% endif %}
+
+	<div class="pagination">
+		<span class="step-links">
+			{% if page_obj.has_previous %}
+				<a href="?page=1">&laquo; first</a>
+				<a href="?page={{ page_obj.previous_page_number }}">previous</a>
+			{% endif %}
+
+			<span class="current">
+				Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+			</span>
+
+			{% if page_obj.has_next %}
+				<a href="?page={{ page_obj.next_page_number }}">next</a>
+				<a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+			{% endif %}
+		</span>
+	</div>
+
 {% endblock %}

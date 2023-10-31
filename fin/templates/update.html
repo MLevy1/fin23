@@ -12,6 +12,10 @@ Update
 
     {{ form.as_p }}
 
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+
     <br/>
+
     <input type="submit" value="Update" class="btn btn-secondary">
+
 {% endblock %}

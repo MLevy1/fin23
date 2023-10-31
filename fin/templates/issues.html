@@ -1,46 +1,45 @@
 {% extends "master.html" %}
 
 {% block title %}
-    Issues
+
+Issues
+
 {% endblock %}
 
 
 {% block content %}
 
-    <h1>Open Issues</h1>
-    <p>Add new issue: <a href="/aissue/">Add Issue</a></p>
+<h1 class="display-4" style="background-color: #151B54">Open Issues</h1>
 
-    <table border='1'>
-        <thead>
-            <th>
-                Issue #
-            </th>
-            <th>
-                Open Date
-            </th>
-            <th>
-                Issue Name
-            </th>
-            <th>
-                Issue Description
-            </th>
-            <th>
-                Priority
-            </th>
-        </thead>
-        {% for x in issues %}
+	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'aissue' %}">Add New Issue</a>
+
+	{% for x in object_list %}
+	
 	{% if x.issueopen == True %}
-            <tr>
-                <td>{{ x.id  }}</td> 
-                <td>{{ x.opendate|date:"Y-m-d" }}</td>
-                <td><a href="{% url 'uissue' x.id %}">{{ x.issuename }}</a></td>
-                <td>{{ x.issuedesc }}</td>
-                <td>{{ x.priority }}</td>
+	<div class="d-flex justify-content-center align-items-center my-4">
 
-            </tr>
+			<div class="col-8">
+
+				<div class="card" style="background-color: #151B54">
+				
+					<h5 class="card-title"><a class="link-warning" href="{% url 'uissue' x.id %}">{{ x.issuename }} [#{{ x.id }}] </a></h5>
+
+					<h6 class="card-subtitle mb-2 text-body-secondary">
+					
+						{{ x.opendate|date:"Y-m-d" }}
+
+					</h6>
+
+					<p class="card-text">{{ x.issuedesc }}</p>
+					
+					<p class="card-text">Priority: {{ x.priority }}</p>
+				</div>
+			</div>
+		</div>
+				
+	
 	{% endif %}
-        {% endfor %}
-    
-    </table>
+	
+	{% endfor %}
 
 {% endblock %}

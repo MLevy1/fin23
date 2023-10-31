@@ -1,0 +1,15 @@
+{% extends 'master.html' %}
+
+{% block title %}
+Query Update
+{% endblock %}
+
+{% block content %}
+    <h1>Query Update</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+    </form>
+{% endblock %}

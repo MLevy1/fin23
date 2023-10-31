@@ -7,6 +7,19 @@ class PayeeMergeForm(forms.Form):
     source_payee = forms.ModelChoiceField(queryset=Payee.objects.filter(active=True))
     target_payee = forms.ModelChoiceField(queryset=Payee.objects.all())
 
+class PayeeCategoryUpdate(forms.Form):
+	source_payee = forms.ModelChoiceField(queryset=Payee.objects.filter(active=True))
+	target_category = forms.ModelChoiceField(queryset=Category.objects.all())
+	
+class PayeeCategoryUpdateAll(forms.Form):
+	source_payee = forms.ModelChoiceField(queryset=Payee.objects.all())
+	target_category = forms.ModelChoiceField(queryset=Category.objects.all())
+
+
+class PayeeAccountUpdate(forms.Form):
+	source_payee = forms.ModelChoiceField(queryset=Payee.objects.all())
+	target_account = forms.ModelChoiceField(queryset=Account.objects.all())
+
 class AddAccount(ModelForm):
 	class Meta:
 		model = Account
@@ -30,7 +43,28 @@ class AddTransaction(ModelForm):
 			'tdate': forms.DateInput(attrs={'format': 'yyyy-mm-dd','type':'date'}),
 		}
 		fields = "__all__"
+		
+	def __init__(self, *args, **kwargs):
+			super(AddTransaction, self).__init__(*args, **kwargs)			
 
+			# Filter active accounts and payees
+			self.fields['account'].queryset = Account.objects.filter(active=True)
+			self.fields['payee'].queryset = Payee.objects.filter(active=True)
+
+class AddTransactionAll(ModelForm):
+	class Meta:
+		model = Trans
+		widgets = {
+			'tdate': forms.DateInput(attrs={'format': 'yyyy-mm-dd','type':'date'}),
+		}
+		fields = "__all__"
+		
+	def __init__(self, *args, **kwargs):
+			super(AddTransactionAll, self).__init__(*args, **kwargs)			
+
+			# Filter active accounts and payees
+			self.fields['account'].queryset = Account.objects.all()
+			self.fields['payee'].queryset = Payee.objects.all()
 
 class AddIssue(ModelForm):
 	class Meta:
@@ -40,6 +74,7 @@ class AddIssue(ModelForm):
 		}
 		fields = "__all__"
 		
+	
 class Moving(forms.Form):
 	irate = forms.DecimalField(label="Interest Rate (APR)", decimal_places=3)
 	term = forms.DecimalField(label="Mortgage Term (years)", decimal_places=0)
@@ -47,7 +82,7 @@ class Moving(forms.Form):
 	annins = forms.DecimalField(label="Homeowners insurance (Annual)", decimal_places=2)
 	purchprice = forms.DecimalField(label="Purchase Price", decimal_places=0)
 	dppct = forms.DecimalField(label="Downpayment (pct)", decimal_places=0)
-	
+
 class Budget(forms.Form):
 	a_gross_pay = forms.DecimalField(label="Annual Gross Salary", decimal_places=2)
 	a_gross_bonus = forms.DecimalField(label="Annual Gross Bonus", decimal_places=2)
@@ -63,6 +98,8 @@ class Budget(forms.Form):
 	w_train = forms.DecimalField(label="NJ Transit (Weekly)", decimal_places=2)
 	rate_r401k = forms.DecimalField(label="Roth 401k Contribution Pct", decimal_places=2)
 	bw_arag = forms.DecimalField(label="Legal", decimal_places=2)
+	a_daycare_payback = forms.DecimalField(label="Daycare Payback", decimal_places=2)
+	w_school = forms.DecimalField(label="School", decimal_places=2)
 	m_internet = forms.DecimalField(label="Internet", decimal_places=2)
 	m_phone = forms.DecimalField(label="Phone", decimal_places=2)
 	m_electric = forms.DecimalField(label="Electric", decimal_places=2)

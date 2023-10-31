@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import mimetypes
+import django
+
+from django.utils.encoding import smart_str
+django.utils.encoding.smart_text = smart_str
 
 mimetypes.add_type("text/css", ".css", True)
 mimetypes.add_type("text/javascript", ".js", True)
@@ -31,7 +35,7 @@ SECRET_KEY = 'django-insecure-3=e4t@hqv)j1=w5_h+_3il34(z6+6%rs0g@ko_c1&w51%&7-im
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['98.24.34.198', 'localhost', '127.0.0.1' ]
+ALLOWED_HOSTS = ['192.168.1.164', 'localhost', '127.0.0.1', '71.187.156.9']
 
 
 # Application definition
@@ -45,12 +49,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'members',
-    'fin',
-    'django_pandas',
-    'slick_reporting', 
+    'fin', 
+    'simple_history',
+    'django_select2',
+    'tagging',
+    'bootstrap5',
+    'slick_reporting',
     'crispy_forms', 
     'crispy_bootstrap4',
-    'simple_history',
+    'django_pandas',
 ]
 
 MIDDLEWARE = [
@@ -145,6 +152,8 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
+
+FORCE_LOWERCASE_TAGS = True
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"

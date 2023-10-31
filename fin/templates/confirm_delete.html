@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<title>Confirm Deletion</title>
+
+		{% load bootstrap5 %}
+		{% bootstrap_css %}
+		{% bootstrap_javascript %}
+
+	</head>
+
+	<body class="bg-dark text-white">
+		<h1>Confirm Deletion</h1>
+		
+			<p>Are you sure you want to delete?</p>
+			
+			<form method="post">
+        			
+				{% csrf_token %}
+
+				<button type="submit">Confirm</button>
+				
+				<a href="{% url 'main' %}">Cancel</a>
+				
+			</form>
+				
+		</body>
+</html>

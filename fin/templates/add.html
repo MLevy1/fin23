@@ -4,12 +4,25 @@ Add
 {% endblock %}
 
 {% block content %}
+
 <h2>Add</h2>
-<form method='post' action=''>
-	{% csrf_token %}
-	<ul>
-	{{ form.as_ul }}
-	</ul>
-	<button type='submit' name='save'>Add</button>
-</form>
+
+</div>
+
+<div class='contanier text-left'>
+
+       <form method='post' class='dflex align-items-left' action=''>
+              
+              {% csrf_token %}
+
+              <table class="text-left">
+
+                     {{ form.as_table }}
+
+              </table>
+
+              <button type='submit' name='save'>Add</button>
+
+       </form>
+</div>
 {% endblock %}
