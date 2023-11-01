@@ -1,5 +1,6 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
+from django_pandas.managers import DataFrameManager
 from django.urls import reverse
 from tagging.fields import TagField
 
@@ -88,7 +89,9 @@ class Trans(models.Model):
 	note = models.CharField(max_length=255, null=True, blank=True)
 	history = HistoricalRecords()
 	tag = TagField()
-           
+
+	objects = DataFrameManager()
+
 	def __str__(self):
 
 		t = str(self.tdate) + " " + str(self.payee) + ": " + str(self.amount) +  "[ " + str(self.tid) + " ]"

@@ -336,8 +336,38 @@ class transactionMonthArchiveView(MonthArchiveView):
 	template_name = "trans_monthly.html"
 
 def ptran(request):
-	transactions = Trans.objects.all().order_by('tdate')
-	df = read_frame(transactions)
+	
+	qs = Trans.objects.all().values()
+	df = read_frame(qs)
+
+	format_dict = {
+		'amount': '{:,.2f}'
+	}
+
+
+	# Convert the 'tdate' column to a datetime series
+	df['tdate'] = pd.to_datetime(df['tdate'])
+
+	# Create a new 'month' column from the 'tdate' column
+	df['month'] = df['tdate'].dt.to_period('M')
+
+	# Pivot the DataFrame to group data by 'month' and 'category_id', and calculate the sum of 'amount'
+	pivot_table = pd.pivot_table(df, values='amount', index='month', columns='category_id', aggfunc='sum', fill_value=0)
+
+	# Reset the index to have 'month' as a regular column
+	pivot_table = pivot_table.reset_index()
+
+	# Convert the pivot table to an HTML table
+	pivot_data = pivot_table.to_html(index=False, escape=False)
+	
+	print(pivot_table.sum(axis=None, skipna=True, numeric_only=True))
+
+	context = {
+
+		'pivot' : pivot_data,
+	}
+
+	return render(request, "ptran.html", context)
 	
 
 ### ADD TRANSACTION ###

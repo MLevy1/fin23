@@ -35,6 +35,7 @@ urlpatterns = [
 	path('<int:year>/', TransYearArchiveView.as_view(), name="trans_year_archive"),
 	path("atran/<dpay>/", views.atran, name="atran"),
 	path("atran/", views.atran, name="atran"),
+       path('pd/', views.ptran, name="ptran"),
 
 	path("utran/<int:t_id>/", views.utran, name="utran"),
        path("utran_act/<int:t_id>/", views.utran_act, name="utran_act"),
