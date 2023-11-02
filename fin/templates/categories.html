@@ -58,7 +58,37 @@ Categories
 
 					</h6>
 
-					<p class="card-text">total: ${{ x.budget_total|floatformat:2|intcomma }}</p>
+					<p class="card-text">buget: ${{ x.budget_total|floatformat:2|intcomma }}</p>
+
+					<p class="card-text">avg actual: {{ x.ann_total|floatformat:2|intcomma  }}</p>
+
+					<div class="btn-group">
+
+						<a href="{% url 'tlist' 'all' x.pk 'all' %}" class="btn btn-link">trans</a>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+	
+	{% endif %}
+	{% if x.pk and not x.active %}
+
+		<div class="d-flex justify-content-center align-items-center my-4">
+                     
+			<div class="col-8">
+
+				<div class="card" style="background-color: #151B54">
+
+					<h5 class="card-title">{{ x.category }}</h5>
+
+					<h6 class="card-subtitle mb-2 text-body-secondary">
+						<a href="{% url 'ucat' x.pk %}">edit</a>
+
+					</h6>
 
 					<p class="card-text">avg actual: {{ x.ann_total|floatformat:2|intcomma  }}</p>
 
@@ -74,10 +104,7 @@ Categories
 
 		</div>
 
-	
-
 	{% endif %}
-
 	{% if not x.pk %}
 
 	       <div class="d-flex justify-content-center align-items-center my-4">

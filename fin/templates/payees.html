@@ -139,6 +139,7 @@ Payees List
        
                      {% if page_obj.has_next %}
                             <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{q}}">&rsaquo;</a></li>
+
                             <li class"page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{q}}">&raquo;</a></li>
        
                      {% else %}
@@ -247,6 +248,8 @@ Payees List
 						<a href="{% url 'tlist' 'all' 'all' p.id %}" class="link-success btn btn-link">View Trans</a>
 
 						<a href="{% url 'atran' p.pk %}" class="link-success btn btn-link">Add Trans</a>
+
+						<a href="{% url 'payee_category_update_all' p.pk %}" class="link-success btn btn-link">Change Category</a>
 
 					</div>
 

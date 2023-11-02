@@ -1,3 +1,7 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+import mpld3
 from django.http import HttpResponse
 from django.template import loader
 from datetime import timezone as tz
@@ -10,6 +14,9 @@ from django.views.generic import ArchiveIndexView, TemplateView, ListView, Month
 import numpy_financial as npf
 import pandas as pd
 from django_pandas.io import read_frame 
+
+pd.options.display.float_format = '{:,}'.format
+
 from datetime import datetime, timedelta
 from django.forms import modelformset_factory
 from django.urls import reverse_lazy
@@ -142,7 +149,8 @@ def merge_payees(request, dpay=None):
 
 ### UPDATE PAYEES CATEGORY ###
 
-def payee_category_update_all(request):
+def payee_category_update_all(request, dpay=None):
+
 	if request.method == 'POST':
 		form = PayeeCategoryUpdateAll(request.POST)
 
@@ -151,10 +159,11 @@ def payee_category_update_all(request):
 			target_category = form.cleaned_data['target_category']
 			Trans.objects.filter(payee=source_payee).update(category=target_category)
 
-			return redirect('/qupdate/') # Redirect placholder
+			return redirect('/pay/act/payee/') # Redirect placholder
   
 	else:
-		form = PayeeCategoryUpdateAll()
+		form = PayeeCategoryUpdateAll(initial={'source_payee': dpay})
+
 
 	return render(request, 'qupdate.html', {'form': form  })
 
@@ -334,41 +343,6 @@ class transactionMonthArchiveView(MonthArchiveView):
 	queryset = Trans.objects.all().annotate(cumsum=Window(Sum('amount'), order_by=(F('tdate').asc(), F('tid').asc())))
 	date_field = "tdate"
 	template_name = "trans_monthly.html"
-
-def ptran(request):
-	
-	qs = Trans.objects.all().values()
-	df = read_frame(qs)
-
-	format_dict = {
-		'amount': '{:,.2f}'
-	}
-
-
-	# Convert the 'tdate' column to a datetime series
-	df['tdate'] = pd.to_datetime(df['tdate'])
-
-	# Create a new 'month' column from the 'tdate' column
-	df['month'] = df['tdate'].dt.to_period('M')
-
-	# Pivot the DataFrame to group data by 'month' and 'category_id', and calculate the sum of 'amount'
-	pivot_table = pd.pivot_table(df, values='amount', index='month', columns='category_id', aggfunc='sum', fill_value=0)
-
-	# Reset the index to have 'month' as a regular column
-	pivot_table = pivot_table.reset_index()
-
-	# Convert the pivot table to an HTML table
-	pivot_data = pivot_table.to_html(index=False, escape=False)
-	
-	print(pivot_table.sum(axis=None, skipna=True, numeric_only=True))
-
-	context = {
-
-		'pivot' : pivot_data,
-	}
-
-	return render(request, "ptran.html", context)
-	
 
 ### ADD TRANSACTION ###
 
@@ -1207,3 +1181,94 @@ def budget(response):
     form = Budget(initial={"a_gross_pay": 212000, "a_gross_bonus": 75000, "a_al_taxable": 0, "a_al_fwh": 0, "a_al_swh": 0, "bw_medical": -327.18, "bw_dental": -21.12, "bw_daycare": -96.15, "rate_sstax": -0.062, "rate_medicare": -0.0145, "rate_401k": -0.07, "w_train": -91.50, "rate_r401k": -0.02, "bw_arag": -5.76, "m_internet": -50, "m_phone": -200,  "m_electric": -150, "m_natgas": -50, "a_carins": -2000, "m_homeins": -333, "m_apple": -35, "m_cabin_mtg": -1033.26, "a_cabin_ptax": -694, "a_cabin_ins": -2046.71, "m_cabin_electric": -140, "m_cabin_cable": -300, "a_cabin_hoa": -300, "w_school": -653.20, "m_car": 0, "m_mtg": -4435.46, "a_ptax": -19420.32, "a_daycare_payback": 2500})
 
   return render(response, "budget.html", {"form":form})
+
+
+'''
+
+===================
+
+####   PANDAS  ####
+
+===================
+
+'''
+
+def ptran(request):
+	
+	qs = Trans.objects.all().values()
+	df = read_frame(qs)
+
+	# Convert the 'tdate' column to a datetime series
+	df['tdate'] = pd.to_datetime(df['tdate'])
+
+	# Create a new 'month' column from the 'tdate' column
+	df['year'] = df['tdate'].dt.to_period('Y')
+
+	# Pivot the DataFrame to group data by 'month' and 'category_id', and calculate the sum of 'amount'
+	pt = pd.pivot_table(df, values='amount', index='year', columns='category_id', aggfunc='sum', fill_value=0).astype(float)
+
+	pt.loc[:,'Total H'] = pt.sum(axis=1).round(0).astype(float)
+	pt.loc['Total']= pt.sum().round(0).astype(float)
+
+	# Reset the index to have 'month' as a regular column
+	pt = pt.reset_index()
+
+	pt = pt.iloc[:, :].reset_index(drop=True)
+
+	# Convert the pivot table to an HTML table
+	pivot_data = pt.to_html(index=False, escape=False, formatters={'numbers': '{:,2f}'.format})
+	
+	context = {
+
+		'pivot' : pivot_data,
+
+	}
+
+	return render(request, "ptran.html", context)
+
+def testg(request):
+	
+	qs = Trans.objects.all().values()
+	
+	df = read_frame(qs)
+
+	# Convert the 'tdate' column to a datetime series
+	df['tdate'] = pd.to_datetime(df['tdate'])
+
+	# Create a new 'year' column from the 'tdate' column
+	df['year'] = df['tdate'].dt.to_period('Y')
+	
+	# Convert the 'year' column to a string
+	df['year'] = df['year'].astype(str)
+	df['year'] = df['year'].str[2:]
+
+	# Pivot the DataFrame to group data by 'year' and 'category_id', and calculate the sum of 'amount'
+	pt = pd.pivot_table(df, values='amount', index='year', columns='category_id', aggfunc='sum', fill_value=0).astype(float)
+
+	# Reset the index to have 'month' as a regular column
+	pt = pt.reset_index()
+	
+	#pt = pt.drop(columns=["waxhaw house", "middletown house purchase", "sunset beach condo", "concord house", "ga rental property", "tn rental property", "investments", "income"])
+	
+	pt = pt[['year', 'income']]
+
+	fig, ax = plt.subplots()
+	
+	# Plot the data
+	for column in pt.columns[1:]:
+		ax.bar(pt['year'], pt[column], label=f'Category {column}')
+
+	ax.set(xlabel='Year', ylabel='Total Amount',
+		title='Total Amount by Year and Category')
+	
+	ax.legend(loc='lower center')
+	
+	ax.grid()
+	
+	response = HttpResponse(content_type = 'image/png')
+	
+	canvas = FigureCanvasAgg(fig)
+	
+	canvas.print_png(response)
+	
+	return response

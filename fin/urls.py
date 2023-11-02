@@ -26,7 +26,7 @@ urlpatterns = [
 	path('payee/<int:pk>/delete/', PayeeDeleteView.as_view(), name='delete_payee'),
 	path('payee/<int:pk>/make_inactive/', views.make_inactive, name='make_inactive'),
 	path('qupdate/', views.payee_category_update, name="payee_category_update"),
-       path('pcupdateall/', views.payee_category_update_all, name="payee_category_update_all"),
+       path('pcupdateall/<dpay>/', views.payee_category_update_all, name="payee_category_update_all"),
 	path('pau/', views.payee_account_update, name="payee_account_update"),
 
 	path("tlist/<str:acc>/<str:cat>/<str:pay>/", views.tlist, name="tlist"),
@@ -56,4 +56,6 @@ urlpatterns = [
 
 	path("test/", testform.as_view(), name="test"),
 	path("mrep/", MonthlyCashFlow.as_view(), name ="mrep"),
+
+       path("g/", views.testg, name="g"),
 ]
