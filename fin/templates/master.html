@@ -54,7 +54,13 @@
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 									<li><a class="dropdown-item" href="/cat/">View</a></li>
 									<li><a class="dropdown-item" href="/acat/">Add New</a></li>
-									<li><a class="dropdown-item" href="/qupdate/">Payee - Category Update (Active)</a></li>													<li><a class="dropdown-item" href="/pcupdateall/">Payee - Category Update (All)</a></li>
+									<li><a class="dropdown-item" href="/qupdate/">Payee - Category Update (Active)</a></li>
+                                                               <li><a class="dropdown-item" href="/l1g/">View L1 Groups</a></li>
+                                                               <li><a class="dropdown-item" href="/al1g/">Add L1 Group</a></li>
+
+<li><a class="dropdown-item" href="{% url 'list-gc' %}">View Grouped Cats</a></li>
+                                                               <li><a class="dropdown-item" href="{% url 'add-gc' %}">Add Grouped Cat</a></li>
+
 								</ul>
 							</li>
 							<li class="nav-item dropdown">

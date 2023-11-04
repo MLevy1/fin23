@@ -1,18 +1,16 @@
-import matplotlib.pyplot as plt
-import numpy as np
+
 from matplotlib.backends.backend_agg import FigureCanvasAgg
-import mpld3
 from django.http import HttpResponse
 from django.template import loader
-from datetime import timezone as tz
-from .models import Category, Payee, Account, Issue, Trans, BudgetItem
-from .forms import AddPayee, Moving, Budget, AddTransaction, PayeeMergeForm, PayeeCategoryUpdate, PayeeAccountUpdate, AddTransactionAll, PayeeCategoryUpdateAll
+from .models import Category, Payee, Account, Issue, Trans, BudgetItem, L1Group, Location, Job, GroupedCat
+from .forms import PayeeGroupedCatUpdateAll, AddPayee, Moving, Budget, AddTransaction, PayeeMergeForm, PayeeCategoryUpdate, PayeeAccountUpdate, AddTransactionAll, PayeeCategoryUpdateAll
 from django.shortcuts import render, get_list_or_404, redirect
 from django.db.models import F, Sum, Window, Q, Avg, Max, Count
-from django.db.models.functions import ExtractYear
-from django.views.generic import ArchiveIndexView, TemplateView, ListView, MonthArchiveView, YearArchiveView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, ListView, MonthArchiveView, YearArchiveView, CreateView, UpdateView, DeleteView
+import numpy as np
 import numpy_financial as npf
 import pandas as pd
+import matplotlib.pyplot as plt
 from django_pandas.io import read_frame 
 
 pd.options.display.float_format = '{:,}'.format
@@ -71,9 +69,6 @@ def payees(request, a='act', o='payee'):
 
 ### SEARCH ###
 
-class HomePageView(TemplateView):
-	template_name = 'home.html'
-
 class SearchResultsView(ListView):
 	model = Payee
 	template_name = ('payees.html')
@@ -92,7 +87,12 @@ class SearchResultsView(ListView):
 
 		return page_obj       
 
-    
+### PAYEE DETAIL ###
+
+class PayeeDetailView(DetailView):
+	model = Payee
+	template_name = "detail.html"
+  
 ### ADD PAYEE ###
 
 class PayeeCreateView(CreateView):
@@ -106,7 +106,7 @@ class UpdatePayee(UpdateView):
 	model = Payee
 	fields = "__all__"
 	template_name = "update.html"
-	success_url = reverse_lazy('payees', kwargs={"a": "act"})
+	success_url = reverse_lazy('payees', kwargs={"a": "act", "o": "payee"})
 
 ### INACTIVATE PAYEE ###
 
@@ -183,6 +183,29 @@ def payee_category_update(request):
 		form = PayeeCategoryUpdate()
 
 	return render(request, 'qupdate.html', {'form': form  })
+
+### UPDATE PAYEES GROUP CATEGORY ###
+
+def payee_groupedcat_update_all(request, dpay=None):
+
+	if request.method == 'POST':
+		form = PayeeGroupedCatUpdateAll(request.POST)
+
+		if form.is_valid():
+			payee = form.cleaned_data['payee']
+			groupedcat = form.cleaned_data['groupedcat']
+			Trans.objects.filter(payee=payee).update(groupedcat=groupedcat)
+
+			return redirect("/pay/all/payee/") # Redirect placholder
+  
+	else:
+		form = PayeeGroupedCatUpdateAll(initial={'payee': dpay})
+
+
+	return render(request, 'qupdate.html', {'form': form  })
+
+
+
 
 ### UPDATE PAYEES ACCOUNT ###
 
@@ -313,6 +336,46 @@ class UpdateCategory(UpdateView):
 	template_name = "update.html"
 	success_url = reverse_lazy('categories')
 
+### VIEW L1GROUPS
+
+class L1GroupListView(ListView):
+	model = L1Group
+	template_name = "l1groups.html"
+
+### ADD L1 GROUP ###
+class L1GroupCreateView(CreateView):
+	model = L1Group
+	fields = "__all__"
+	template_name = "add.html"
+
+### UPDATE L1 GROUP ###
+
+class L1GroupUpdateView(UpdateView):
+	model = L1Group
+	fields = "__all__"
+	template_name = "update.html"
+	success_url = reverse_lazy('list-l1group')
+
+class GroupedCatListView(ListView):
+	model = GroupedCat
+	template_name = "groupedcats.html"
+
+class GroupedCatCreateView(CreateView):
+	model = GroupedCat
+	fields = "__all__"
+	template_name = "add.html"
+	
+class GroupedCatUpdateView(UpdateView):
+	model = GroupedCat
+	fields = "__all__"
+	template_name = "update.html"
+	success_url = reverse_lazy('list-gc')
+	
+class GroupedCatDeleteView(DeleteView):
+	model = GroupedCat
+	success_url = reverse_lazy('list-gc')
+	template_name = "confirm_delete.html"
+	
 #+++++++++++++++
 #  TRANSACTIONS
 #+++++++++++++++
@@ -374,34 +437,74 @@ def atran(request, dpay=None):
 
 ### VIEW TRANSACTIONS ###
 
-def tlist(request, acc='all', cat='all', pay='all'):
+def tlist(request, acc='all', cat='all', gcat='all', pay='all'):
   
   T = Trans.objects.annotate(cumsum=Window(Sum('amount'), order_by=(F('tdate').asc(), F('tid').asc()))).order_by('-tdate', '-tid')
 
-  if acc=="all" and cat=="all" and pay=="all":
+  #(AX CX GX PX) 01 0000 0000
+  if acc=="all" and cat=="all" and gcat=='all' and pay=="all":
     trans_list = T
   
-  elif acc!="all" and cat=="all" and pay=="all":
+  #(AY CX GX PX) 02 1000 1000
+  elif acc!="all" and cat=="all" and gcat=='all' and pay=="all":
     trans_list = get_list_or_404(T, account=acc)
   
-  elif acc=="all" and cat!="all" and pay=="all":
+  #(AX CY GX PX) 03 0100 0100
+  elif acc=="all" and cat!="all" and gcat=='all' and pay=="all":
     trans_list = get_list_or_404(T, category=cat)
-  
-  elif acc=="all" and cat=="all" and pay!="all":
+    
+  #(AX CX GY PX) 04 0010 0010
+  elif acc=="all" and cat=="all" and gcat!='all' and pay=="all":
+    trans_list = get_list_or_404(T, groupedcat=gcat)
+
+  #(AX CX GX PY) 05 0001 0001
+  elif acc=="all" and cat=="all" and gcat=='all' and pay!="all":
     trans_list = get_list_or_404(T, payee=pay)
   
-  elif acc=="all" and cat!="all" and pay!="all":
+  #(AY CY GX PX) 06 1100 1100
+  elif acc!="all" and cat!="all" and gcat=='all' and pay=="all":
+    trans_list = get_list_or_404(T, account=acc, category=cat)
+
+  #(AY CX GY PX) 07 1010 1010
+  elif acc!="all" and cat=="all" and gcat!='all' and pay=="all":
+    trans_list = get_list_or_404(T, account=acc, groupedcat=gcat)
+  
+  #(AY CX GX PY) 08 1001 1001
+  elif acc!="all" and cat=="all" and gcat=='all' and pay!="all":
+    trans_list = get_list_or_404(T, account=acc, payee=pay)
+
+  #(AX CY GY PX) 09 0110 0110
+  elif acc=="all" and cat!="all" and gcat!='all' and pay=="all":
+    trans_list = get_list_or_404(T, category=cat, groupedcat=gcat)
+  
+  #(AX CY GX PY) 10 0101 0101
+  elif acc=="all" and cat!="all" and gcat=='all' and pay!="all":
     trans_list = get_list_or_404(T, category=cat, payee=pay)
   
-  elif acc!="all" and cat!="all" and pay=="all":
-    trans_list = get_list_or_404(T, account=acc, category=cat)
+  #(AX CX GY PY) 11 0011 0011
+  elif acc=="all" and cat=="all" and gcat!='all' and pay!="all":
+    trans_list = get_list_or_404(T, groupedcat=gcat, payee=pay)
   
-  elif acc=="all" and cat!="all" and pay=="all":
-    trans_list = get_list_or_404(T, account=acc, payee=pay)
+  #1110 12
+  elif acc!="all" and cat!="all" and gcat!='all' and pay=="all":
+    trans_list = get_list_or_404(T, account=acc, category=cat, groupedcat=gcat)
   
-  elif acc!="all" and cat!="all" and pay!="all":
+  #1101 13
+  elif acc!="all" and cat!="all" and gcat=='all' and pay!="all":
     trans_list = get_list_or_404(T, account=acc, category=cat, payee=pay)
-  
+
+  #1011 14
+  elif acc!="all" and cat=="all" and gcat!='all' and pay!="all":
+    trans_list = get_list_or_404(T, account=acc, groupedcat=gcat, payee=pay)
+
+  #0111 15
+  elif acc=="all" and cat!="all" and gcat!='all' and pay!="all":
+    trans_list = get_list_or_404(T, category=cat, groupedcat=gcat, payee=pay)
+
+  #1111 16
+  elif acc!="all" and cat!="all" and gcat!='all' and pay!="all":
+    trans_list = get_list_or_404(T, account=acc, category=cat, groupedcat=gcat, payee=pay)
+
   context = { "trans_list": trans_list }
   
   template = loader.get_template('tlist.html')

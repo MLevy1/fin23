@@ -19,6 +19,7 @@ Transactions
 			<th scope="col">Account</th>
 			<th scope="col">Payee</th>
 			<th scope="col">Category</th>
+			<th scope="col">Grouped</th>		
 			<th scope="col">Match</th>
 			<th scope="col">Account</th>
 			<th scope="col">Sum</th>
@@ -27,13 +28,24 @@ Transactions
 		{% for t in page_obj %}
 
 		<tr>
-			<td><a href="{% url 'utran' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a></td>
-			<td><a href="{% url 'tlist'  t.account.id 'all' 'all' %}"> {{ t.account }}</a></td>
-			<td><a href="{% url 'tlist' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a></td>
-			<td><a href="{% url 'tlist' 'all' t.category.id 'all' %}"> {{ t.category }}</a></td>
-			<td>{{t.match}}</td>
-			<td>{{ t.amount|floatformat:"2g"}}</td>
-			<td>{{t.cumsum|floatformat:"2g" }}</td>
+			<td>
+                            {% if t.payee.active %}
+                                   <a href="{% url 'utran_act' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
+                            {% else %}
+                                   <a href="{% url 'utran' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
+                            {% endif %}
+			
+                     <td><a href="{% url 'tlist'  t.account.id 'all' 'all' 'all' %}"> {{ t.account }}</a></td>
+			<td><a href="{% url 'tlist' 'all' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a> <a href="{% url 'payee-detail' t.payee.id %}">edit</a></td>
+			<td><a href="{% url 'tlist' 'all' t.category.id 'all' 'all' %}"> {{ t.category }}</a></td>
+                     <td>
+                            {% if t.groupedcat %}
+                            <a href="{% url 'tlist' 'all' 'all' t.groupedcat.id 'all' %}">{{ t.groupedcat }}</a>
+                            {% endif %}
+                     </td>
+			<td>{{ t.match }}</td>
+			<td>{{ t.amount|floatformat:"2g" }}</td>
+			<td>{{ t.cumsum|floatformat:"2g" }}</td>
 			<td><a href="{% url 'delete_trans' t.id %}">delete</a></td>
 		</tr>
 

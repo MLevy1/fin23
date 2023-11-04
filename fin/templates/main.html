@@ -29,9 +29,19 @@
 
 		<a class="list-group-item list-group-item-action list-group-item-primary" href="acat/">Add Category</a>
 
-		<a class="list-group-item list-group-item-action list-group-item-primary" href="/pcupdateall/">Payee - Category Update</a>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'payee_category_update_all' 'None' %}">Payee - Category Update</a>
+
+              <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'payee-gc-update-all' 'None' %}">Payee - Group Category Update</a>
 
 		<a class="list-group-item list-group-item-action list-group-item-primary" href="/pau/">Payee - Account Update</a>
+
+              <a class="list-group-item list-group-item-action list-group-item-primary" href="/l1g/">L1 Groups</a>
+
+              <a class="list-group-item list-group-item-action list-group-item-primary" href="/al1g/">Add L1 Group</a>
+              
+              <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-gc' %}">Grouped Categories</a>
+
+              <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-gc' %}">Add Grouped Category</a>
 
        </div>
 

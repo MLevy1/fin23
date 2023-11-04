@@ -1,0 +1,36 @@
+{% extends "master.html" %}
+
+{% block title %}
+
+Grouped Cats
+
+{% endblock %}
+
+
+{% block content %}
+
+<h1 class="display-4" style="background-color: #151B54">Grouped Cats</h1>
+
+	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-gc' %}">Add Grouped Cat</a>
+
+	{% for x in object_list %}
+
+	<div class="d-flex justify-content-center align-items-center my-4">
+
+			<div class="col-8">
+
+				<div class="card" style="background-color: #151B54">
+				
+					<h5 class="card-title"><a class="link-warning" href="{% url 'update-gc' x.id %}">{{ x }} </a></h5>
+
+                                   <p><a href="{% url 'tlist' 'all' 'all' x.id 'all' %}">Trans</a></p>
+
+                                   <p><a href="{% url 'delete-gc' x.pk %}" class="link-danger btn btn-link">Delete</a></p>
+
+				</div>
+			</div>
+		</div>
+	
+	{% endfor %}
+
+{% endblock %}

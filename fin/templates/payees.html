@@ -213,7 +213,7 @@ Payees List
 
 		<div class="d-flex justify-content-center align-items-center my-4">
 
-			<div class="col-8">
+			<div class="col-10">
 
 				<div class="card" style="background-color: #151B54">
 
@@ -245,11 +245,13 @@ Payees List
 						
 						<div class="btn-group">
 
-						<a href="{% url 'tlist' 'all' 'all' p.id %}" class="link-success btn btn-link">View Trans</a>
+						<a href="{% url 'tlist' 'all' 'all' 'all' p.id %}" class="link-success btn btn-link">View Trans</a>
 
 						<a href="{% url 'atran' p.pk %}" class="link-success btn btn-link">Add Trans</a>
 
-						<a href="{% url 'payee_category_update_all' p.pk %}" class="link-success btn btn-link">Change Category</a>
+						<a href="{% url 'payee-gc-update-all' p.pk %}" class="link-success btn btn-link">Change Group</a>
+
+						<a href="{% url 'payee_category_update_all' p.pk %}" class="link-success btn btn-link">Change Cat</a>
 
 					</div>
 

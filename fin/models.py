@@ -25,10 +25,21 @@ class Payee(models.Model):
     class Meta:
         ordering = ["payee"]
 
+class L1Group(models.Model):
+    l1group = models.CharField(max_length=255, unique=True)
+    active = models.BooleanField(verbose_name='Active', default=True)
+
+    def get_absolute_url(self):
+        return reverse("list-l1group")
+    
+    def __str__(self):
+       
+       return self.l1group
+
 class Category(models.Model):
     category = models.CharField(max_length=255, unique=True)
     active = models.BooleanField(verbose_name='Active', default=True)
-    
+
     def get_absolute_url(self):
         return reverse("add_cat")
 
@@ -38,7 +49,6 @@ class Category(models.Model):
     class Meta:
         ordering = ["category"]
         verbose_name_plural = "Categories"
-
 
 class Account(models.Model):
     account = models.CharField(max_length=255, unique=True)
@@ -75,6 +85,19 @@ class Issue(models.Model):
 
         return str(t)
 
+class GroupedCat(models.Model):
+	l1group =  models.ForeignKey(L1Group, on_delete=models.CASCADE, blank=True, null=True)
+	category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
+	
+	def __str__(self):
+
+		t = str(self.l1group) + " > " + str(self.category)
+
+		return str(t)
+     
+	def get_absolute_url(self):
+		return reverse("list-gc")
+
 		
 class Trans(models.Model):
 	tid = models.IntegerField(null=True)
@@ -83,6 +106,7 @@ class Trans(models.Model):
 	account =  models.ForeignKey(Account, on_delete=models.CASCADE)
 	payee = models.ForeignKey(Payee, on_delete=models.CASCADE)
 	category = models.ForeignKey(Category, on_delete=models.CASCADE)
+	groupedcat = models.ForeignKey(GroupedCat, on_delete=models.CASCADE, null=True, blank=True)
 	match = models.CharField(max_length=255, null=True, blank=True)
 	oldCat = models.CharField(max_length=255, null=True, blank=True)
 	oldPayee = models.CharField(max_length=255, null=True, blank=True)
@@ -101,6 +125,23 @@ class Trans(models.Model):
 	class Meta:
 		ordering = ["tdate", "amount"]
 
+
+class Location(models.Model):
+       location_name = models.CharField(max_length=255, unique=True, blank=True, null=True)
+       address = models.CharField(max_length=255, unique=True, blank=True, null=True)
+       city = models.CharField(max_length=255, blank=True, null=True)
+       start_date = models.DateField(verbose_name='Date', blank=True, null=True)
+       end_date = models.DateField(verbose_name='Date', null=True, blank=True)
+
+
+class Job(models.Model):
+       employer = models.CharField(max_length=255, blank=True, null=True)
+       job_title = models.CharField(max_length=255, blank=True, null=True)
+       salary = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2, blank=True, null=True)
+       bonus = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2, blank=True, null=True)
+       state = models.CharField(max_length=2, blank=True, null=True)
+       start_date = models.DateField(verbose_name='Date', blank=True, null=True)
+       end_date = models.DateField(verbose_name='Date', blank=True, null=True)
 
 class BudgetItem(models.Model):
 
@@ -149,7 +190,6 @@ class BudgetItem(models.Model):
             return self.itemAmt * 96  # 2 days a week and 48 working weeks
         elif self.itemFreq == 'Vacationdays':
             return self.itemAmt * 33  # 4 weeks & 13 holidays
-
 
     def __str__(self):
 

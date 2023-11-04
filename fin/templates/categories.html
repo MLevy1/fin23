@@ -30,6 +30,19 @@ Categories
 
                             </div>
 
+                            <div class="navbar-nav">
+
+                                   <a class="nav-link active" href="/l1g/">View L1 Groups</a>
+
+                            </div>
+
+                            <div class="navbar-nav">
+
+                                   <a class="nav-link active" href="/al1g/">Add L1 Group</a>
+
+                            </div>
+
+
                      </div>
 		</div>
 
@@ -55,7 +68,6 @@ Categories
 
 					<h6 class="card-subtitle mb-2 text-body-secondary">
 						<a href="{% url 'ucat' x.pk %}">edit</a>
-
 					</h6>
 
 					<p class="card-text">buget: ${{ x.budget_total|floatformat:2|intcomma }}</p>
@@ -64,7 +76,7 @@ Categories
 
 					<div class="btn-group">
 
-						<a href="{% url 'tlist' 'all' x.pk 'all' %}" class="btn btn-link">trans</a>
+						<a href="{% url 'tlist' 'all' x.pk 'all' 'all' %}" class="btn btn-link">trans</a>
 
 					</div>
 
@@ -94,7 +106,7 @@ Categories
 
 					<div class="btn-group">
 
-						<a href="{% url 'tlist' 'all' x.pk 'all' %}" class="btn btn-link">trans</a>
+						<a href="{% url 'tlist' 'all' x.pk 'all' 'all' %}" class="btn btn-link">trans</a>
 
 					</div>
 

@@ -1,0 +1,33 @@
+{% extends "master.html" %}
+
+{% block title %}
+
+L1Groups
+
+{% endblock %}
+
+
+{% block content %}
+
+<h1 class="display-4" style="background-color: #151B54">L1Groups</h1>
+
+	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-l1group' %}">Add L1 Group</a>
+
+	{% for x in object_list %}
+
+	<div class="d-flex justify-content-center align-items-center my-4">
+
+			<div class="col-8">
+
+				<div class="card" style="background-color: #151B54">
+				
+					<h5 class="card-title"><a class="link-warning" href="{% url 'update-l1group' x.id %}">{{ x.l1group }} </a></h5>
+
+					<p class="card-text">Status: {{ x.active }}</p>
+				</div>
+			</div>
+		</div>
+	
+	{% endfor %}
+
+{% endblock %}
