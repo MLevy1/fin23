@@ -11,5 +11,8 @@ Query Update
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Update</button>
+
+	<input type="hidden" name="next" value="{{ request.GET.next }}">
+
     </form>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'master.html' %}
+{% extends 'masterp.html' %}
 {% load humanize %}
 {% block title %}
 
@@ -29,14 +29,14 @@ Transactions
 
 		<tr>
 			<td>
-                            {% if t.payee.active %}
+                            {% if t.payee.active and t.account.active %}
                                    <a href="{% url 'utran_act' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
                             {% else %}
                                    <a href="{% url 'utran' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
                             {% endif %}
 			
                      <td><a href="{% url 'tlist'  t.account.id 'all' 'all' 'all' %}"> {{ t.account }}</a></td>
-			<td><a href="{% url 'tlist' 'all' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a> <a href="{% url 'payee-detail' t.payee.id %}">edit</a></td>
+			<td><a href="{% url 'tlist' 'all' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a> <a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}">edit</a></td>
 			<td><a href="{% url 'tlist' 'all' t.category.id 'all' 'all' %}"> {{ t.category }}</a></td>
                      <td>
                             {% if t.groupedcat %}

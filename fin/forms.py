@@ -92,11 +92,7 @@ class AddTransactionAll(ModelForm):
 class AddIssue(ModelForm):
 	class Meta:
 		model = Issue
-		widgets = {
-			'closedate': forms.DateInput(attrs={'format': 'yyyy-mm-dd h:m:s','type':'date'})
-		}
 		fields = "__all__"
-		
 	
 class Moving(forms.Form):
 	irate = forms.DecimalField(label="Interest Rate (APR)", decimal_places=3)

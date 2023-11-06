@@ -36,6 +36,9 @@ class L1Group(models.Model):
        
        return self.l1group
 
+    class Meta:
+        ordering = ['l1group']
+
 class Category(models.Model):
     category = models.CharField(max_length=255, unique=True)
     active = models.BooleanField(verbose_name='Active', default=True)
@@ -97,8 +100,10 @@ class GroupedCat(models.Model):
      
 	def get_absolute_url(self):
 		return reverse("list-gc")
-
 		
+	class Meta:
+        	ordering = ["l1group__l1group", "category"]
+
 class Trans(models.Model):
 	tid = models.IntegerField(null=True)
 	tdate = models.DateField(verbose_name='Date')

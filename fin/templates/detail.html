@@ -6,6 +6,9 @@
 {% endblock %}
 
 {% block content %}
+{% for i in view.kwargs %}
+
+{% endfor %}
 
 <h1>{{ object.payee }}</h1>
 
@@ -25,7 +28,7 @@
 
        <li class="list-group-item"><a href="{% url 'atran' object.pk %}" class="link-success btn btn-link">Add Trans</a></li>
 
-       <li class="list-group-item"><a href="{% url 'payee-gc-update-all' object.pk %}" class="link-success btn btn-link">Change Group</a></li>
+       <li class="list-group-item"><a href="{% url 'payee-gc-update-all' object.pk %}?next={{ next }}" class="link-success btn btn-link">Change Group</a></li>
 
        <li class="list-group-item"><a href="{% url 'payee_category_update_all' object.pk %}" class="link-success btn btn-link">Change Cat</a></li>
 

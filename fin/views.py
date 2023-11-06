@@ -12,6 +12,7 @@ import numpy_financial as npf
 import pandas as pd
 import matplotlib.pyplot as plt
 from django_pandas.io import read_frame 
+from django.utils import timezone
 
 pd.options.display.float_format = '{:,}'.format
 
@@ -92,6 +93,13 @@ class SearchResultsView(ListView):
 class PayeeDetailView(DetailView):
 	model = Payee
 	template_name = "detail.html"
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		next = self.request.GET.get("next")
+		context["now"] = timezone.now()
+		context["next"] = next
+		return context
   
 ### ADD PAYEE ###
 
@@ -129,18 +137,18 @@ def merge_payees(request, dpay=None):
 
 	if request.method == 'POST':
 		form = PayeeMergeForm(request.POST)
-	
-	if form.is_valid():
-		source_payee = form.cleaned_data['source_payee']
-		target_payee = form.cleaned_data['target_payee']
+		
+		if form.is_valid():
+			source_payee = form.cleaned_data['source_payee']
+			target_payee = form.cleaned_data['target_payee']
 
-		# Update transactions with the target payee to use the source payee
-		Trans.objects.filter(payee=target_payee).update(payee=source_payee)
+			# Update transactions with the target payee to use the source payee
+			Trans.objects.filter(payee=target_payee).update(payee=source_payee)
 
-		# Delete the target payee
-		target_payee.delete()
+			# Delete the target payee
+			target_payee.delete()
 
-		return redirect('/pay/act/payee/') 
+			return redirect('/pay/act/payee/') 
 
 	else:
 		form = PayeeMergeForm(initial={'target_payee': dpay })
@@ -185,18 +193,21 @@ def payee_category_update(request):
 	return render(request, 'qupdate.html', {'form': form  })
 
 ### UPDATE PAYEES GROUP CATEGORY ###
+### tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/ ##
 
 def payee_groupedcat_update_all(request, dpay=None):
 
 	if request.method == 'POST':
 		form = PayeeGroupedCatUpdateAll(request.POST)
 
+		next = request.POST.get('next', '/')
+
 		if form.is_valid():
 			payee = form.cleaned_data['payee']
 			groupedcat = form.cleaned_data['groupedcat']
 			Trans.objects.filter(payee=payee).update(groupedcat=groupedcat)
 
-			return redirect("/pay/all/payee/") # Redirect placholder
+			return redirect(next)
   
 	else:
 		form = PayeeGroupedCatUpdateAll(initial={'payee': dpay})
@@ -439,83 +450,49 @@ def atran(request, dpay=None):
 
 def tlist(request, acc='all', cat='all', gcat='all', pay='all'):
   
-  T = Trans.objects.annotate(cumsum=Window(Sum('amount'), order_by=(F('tdate').asc(), F('tid').asc()))).order_by('-tdate', '-tid')
+	filters = {}
 
-  #(AX CX GX PX) 01 0000 0000
-  if acc=="all" and cat=="all" and gcat=='all' and pay=="all":
-    trans_list = T
-  
-  #(AY CX GX PX) 02 1000 1000
-  elif acc!="all" and cat=="all" and gcat=='all' and pay=="all":
-    trans_list = get_list_or_404(T, account=acc)
-  
-  #(AX CY GX PX) 03 0100 0100
-  elif acc=="all" and cat!="all" and gcat=='all' and pay=="all":
-    trans_list = get_list_or_404(T, category=cat)
-    
-  #(AX CX GY PX) 04 0010 0010
-  elif acc=="all" and cat=="all" and gcat!='all' and pay=="all":
-    trans_list = get_list_or_404(T, groupedcat=gcat)
+	if acc != 'all':
+		filters['account'] = acc
 
-  #(AX CX GX PY) 05 0001 0001
-  elif acc=="all" and cat=="all" and gcat=='all' and pay!="all":
-    trans_list = get_list_or_404(T, payee=pay)
-  
-  #(AY CY GX PX) 06 1100 1100
-  elif acc!="all" and cat!="all" and gcat=='all' and pay=="all":
-    trans_list = get_list_or_404(T, account=acc, category=cat)
+	if cat != 'all':
+		filters['category'] = cat
+	
+	if gcat != 'all':
+		filters['groupedcat'] = gcat
+	  
+	if pay != 'all':
+		filters['payee'] = pay
 
-  #(AY CX GY PX) 07 1010 1010
-  elif acc!="all" and cat=="all" and gcat!='all' and pay=="all":
-    trans_list = get_list_or_404(T, account=acc, groupedcat=gcat)
-  
-  #(AY CX GX PY) 08 1001 1001
-  elif acc!="all" and cat=="all" and gcat=='all' and pay!="all":
-    trans_list = get_list_or_404(T, account=acc, payee=pay)
+	# Start with a base QuerySet
+	trans_query = Trans.objects.filter(groupedcat__isnull=True)
 
-  #(AX CY GY PX) 09 0110 0110
-  elif acc=="all" and cat!="all" and gcat!='all' and pay=="all":
-    trans_list = get_list_or_404(T, category=cat, groupedcat=gcat)
-  
-  #(AX CY GX PY) 10 0101 0101
-  elif acc=="all" and cat!="all" and gcat=='all' and pay!="all":
-    trans_list = get_list_or_404(T, category=cat, payee=pay)
-  
-  #(AX CX GY PY) 11 0011 0011
-  elif acc=="all" and cat=="all" and gcat!='all' and pay!="all":
-    trans_list = get_list_or_404(T, groupedcat=gcat, payee=pay)
-  
-  #1110 12
-  elif acc!="all" and cat!="all" and gcat!='all' and pay=="all":
-    trans_list = get_list_or_404(T, account=acc, category=cat, groupedcat=gcat)
-  
-  #1101 13
-  elif acc!="all" and cat!="all" and gcat=='all' and pay!="all":
-    trans_list = get_list_or_404(T, account=acc, category=cat, payee=pay)
+	if filters:
+		trans_query = trans_query.filter(**filters)
 
-  #1011 14
-  elif acc!="all" and cat=="all" and gcat!='all' and pay!="all":
-    trans_list = get_list_or_404(T, account=acc, groupedcat=gcat, payee=pay)
+	trans_query = trans_query.annotate(
+		cumsum=Window(
+			Sum('amount'),
+			order_by=(F('tdate').asc(), F('tid').asc())
+		)
+	).order_by('payee__payee', '-tid')
 
-  #0111 15
-  elif acc=="all" and cat!="all" and gcat!='all' and pay!="all":
-    trans_list = get_list_or_404(T, category=cat, groupedcat=gcat, payee=pay)
+	#filter(groupedcat__isnull=True).
+	#order_by('-tdate', '-tid')
 
-  #1111 16
-  elif acc!="all" and cat!="all" and gcat!='all' and pay!="all":
-    trans_list = get_list_or_404(T, account=acc, category=cat, groupedcat=gcat, payee=pay)
+	trans_list = get_list_or_404(trans_query)
 
-  context = { "trans_list": trans_list }
-  
-  template = loader.get_template('tlist.html')
-  paginator = Paginator(trans_list, 50)
+	context = {"trans_list": trans_list}
 
-  page_number = request.GET.get("page")
-  page_obj = paginator.get_page(page_number)
+	template = loader.get_template('tlist.html')
+	paginator = Paginator(trans_list, 50)
 
-  context = {"page_obj": page_obj}
+	page_number = request.GET.get("page")
+	page_obj = paginator.get_page(page_number)
 
-  return HttpResponse(template.render(context, request))
+	context = {"page_obj": page_obj}
+
+	return HttpResponse(template.render(context, request))
 
 ### UPDATE TRANSACTION ###
 
@@ -863,6 +840,7 @@ def budget(response):
 
       else:
         ny_tw_line_7 = 50000
+
 
       ny_tw_line_8 = ny_tw_line_7/50000
       ny_tw_line_4 = -430
