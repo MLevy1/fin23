@@ -204,8 +204,9 @@ def payee_groupedcat_update_all(request, dpay=None):
 
 		if form.is_valid():
 			payee = form.cleaned_data['payee']
+			category = form.cleaned_data['category']
 			groupedcat = form.cleaned_data['groupedcat']
-			Trans.objects.filter(payee=payee).update(groupedcat=groupedcat)
+			Trans.objects.filter(payee=payee).filter(category=category).update(groupedcat=groupedcat)
 
 			return redirect(next)
   
@@ -284,7 +285,7 @@ class UpdateAccount(UpdateView):
 class CatListView(ListView):
 	model = Category
 	template_name = "categories.html"
-	context_object_name = 'categories'
+	context_object_name = 'page_obj'
 
 	def get_queryset(self):
 		categories = Category.objects.all()
@@ -329,8 +330,12 @@ class CatListView(ListView):
 			'surplus': surplus,
 		})
 
-		return data
-  
+		paginator = Paginator(data, 25)
+		page_number = self.request.GET.get("page")
+		page_obj = paginator.get_page(page_number)
+
+		return page_obj
+       
 
 ### ADD CATEGORY ###
 

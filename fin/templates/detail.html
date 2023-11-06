@@ -13,24 +13,24 @@
 <h1>{{ object.payee }}</h1>
 
 <h6 class="card-subtitle mb-2 text-body-secondary">
-       <a class="link-warning" href="{% url 'upay' object.id %}">edit</a>
+       <a class="link-warning" href="{% url 'update-payee' object.id %}">edit</a>
 </h6>
 
 <ul class = "list-group">
 
-       <li class="list-group-item"><a href="{% url 'delete_payee' object.pk %}" class="link-danger btn btn-link">Delete</a></li>
+       <li class="list-group-item"><a href="{% url 'delete-payee' object.pk %}" class="link-danger btn btn-link">Delete</a></li>
 
-       <li class="list-group-item"><a href="{% url 'make_inactive' object.pk %}" class="link-danger btn btn-link">Inact.</a></li>
+       <li class="list-group-item"><a href="{% url 'make-payee-inactive' object.pk %}" class="link-danger btn btn-link">Inact.</a></li>
 
        <li class="list-group-item"><a href="{% url 'merge' object.pk %}" class="link-danger btn btn-link">Merge</a></li>
 
        <li class="list-group-item"><a href="{% url 'tlist' 'all' 'all' 'all' object.id %}" class="link-success btn btn-link">View Trans</a></li>
 
-       <li class="list-group-item"><a href="{% url 'atran' object.pk %}" class="link-success btn btn-link">Add Trans</a></li>
+       <li class="list-group-item"><a href="{% url 'add-trans' object.pk %}" class="link-success btn btn-link">Add Trans</a></li>
 
        <li class="list-group-item"><a href="{% url 'payee-gc-update-all' object.pk %}?next={{ next }}" class="link-success btn btn-link">Change Group</a></li>
 
-       <li class="list-group-item"><a href="{% url 'payee_category_update_all' object.pk %}" class="link-success btn btn-link">Change Cat</a></li>
+       <li class="list-group-item"><a href="{% url 'payee-category-update-all' object.pk %}" class="link-success btn btn-link">Change Cat</a></li>
 
 </ul>
 {% endblock %}

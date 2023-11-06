@@ -1,4 +1,4 @@
-{% extends "master.html" %}
+{% extends "masterp.html" %}
 {% load humanize %}
 {% block title %}
 
@@ -6,7 +6,7 @@ Categories
 
 {% endblock %}
 
-{% block content %}
+{% block page_content %}
 
 <div class="container text-center">
 
@@ -67,7 +67,7 @@ Categories
 					<h5 class="card-title">{{ x.category }}</h5>
 
 					<h6 class="card-subtitle mb-2 text-body-secondary">
-						<a href="{% url 'ucat' x.pk %}">edit</a>
+						<a href="{% url 'update-category' x.pk %}">edit</a>
 					</h6>
 
 					<p class="card-text">buget: ${{ x.budget_total|floatformat:2|intcomma }}</p>
@@ -98,7 +98,7 @@ Categories
 					<h5 class="card-title">{{ x.category }}</h5>
 
 					<h6 class="card-subtitle mb-2 text-body-secondary">
-						<a href="{% url 'ucat' x.pk %}">edit</a>
+						<a href="{% url 'update-category' x.pk %}">edit</a>
 
 					</h6>
 

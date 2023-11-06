@@ -17,6 +17,7 @@ class PayeeCategoryUpdateAll(forms.Form):
 	
 class PayeeGroupedCatUpdateAll(forms.Form):
 	payee = forms.ModelChoiceField(queryset=Payee.objects.all())
+	category = forms.ModelChoiceField(queryset=Category.objects.all())
 	groupedcat = forms.ModelChoiceField(queryset=GroupedCat.objects.all())
 
 

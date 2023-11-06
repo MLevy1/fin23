@@ -14,11 +14,11 @@ class Payee(models.Model):
     history = HistoricalRecords()
 
     def get_absolute_url(self):
-        return reverse("add_payee")
+        return reverse("add-payee")
         
     def __str__(self):
 
-        t = str(self.payee)  +  "[ " + str(self.id) + " ]"
+        t = str(self.payee)
 
         return t
     
@@ -44,7 +44,7 @@ class Category(models.Model):
     active = models.BooleanField(verbose_name='Active', default=True)
 
     def get_absolute_url(self):
-        return reverse("add_cat")
+        return reverse("add-category")
 
     def __str__(self):
         return self.category
@@ -59,7 +59,7 @@ class Account(models.Model):
     history = HistoricalRecords()
 
     def get_absolute_url(self):
-        return reverse("add_account")
+        return reverse("add-account")
 
     def __str__(self):
         return self.account

@@ -12,7 +12,7 @@ Budget Items
 
 	<h1 class="display-4" style="background-color: #151B54">Budget Items</h1>
 
-	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'abudgetitem' %}">Add New Item</a>
+	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-budgetitem' %}">Add New Item</a>
 
 	<table class="table table-bordered table-sm table-dark" style="max-width: none; table-layout: fixed; word-wrap: break-word;">
 
@@ -30,8 +30,8 @@ Budget Items
 				{{ x.itemCat }}
 			</td>
 			<td>
-                            <a href="{% url 'ubudgetitem' x.pk %}">{{ x.itemFreq }} {{ x.itemName }}</a>
-                            <a href="{% url 'dbudgetitem' x.pk %}">del</a>
+                            <a href="{% url 'update-budgetitem' x.pk %}">{{ x.itemFreq }} {{ x.itemName }}</a>
+                            <a href="{% url 'delete-budgetitem' x.pk %}">del</a>
 			</td>
 			<td>
                 		${{ x.itemAmt |floatformat:0|intcomma}}

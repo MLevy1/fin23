@@ -32,9 +32,9 @@ Transaction Archive - Monthly
                      <tr>
                             <td>
                                    {% if t.payee.active %}
-                                          <a href="{% url 'utran_act' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
+                                          <a href="{% url 'update-trans-act' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
                                    {% else %}
-                                          <a href="{% url 'utran' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
+                                          <a href="{% url 'update-trans' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
                                    {% endif %}
                             </td>
                             <td><a href="{% url 'tlist'  t.account.id 'all' 'all' 'all' %}"> {{ t.account }}</a></td>
@@ -54,7 +54,7 @@ Transaction Archive - Monthly
 					{{ t.cumsum|floatformat:"2g" }}
 				</td>
 				<td>
-                                   <a href="{% url 'delete_trans' t.id %}">delete</a>
+                                   <a href="{% url 'delete-trans' t.id %}">delete</a>
                             </td>
 			</tr>
 		{% endfor %}

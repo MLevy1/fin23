@@ -1,213 +1,6 @@
 {% extends "master.html" %}
 {% load humanize %}
-{% block title %}
-
-Payees List
-
-{% endblock %}
-
-<div class="contanier text-center">
-
-	<nav class="navbar fixed navbar-dark" style="background-color: #151B54">
-
-		<div class="container-fluid">
-                     
-
-			<a class="navbar-brand" href="#">Payees</a>
-
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
-
-				<span class="navbar-toggler-icon"> </span>
-
-			</button>
-
-			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-
-				<div class="navbar-nav">
-                                   
-                                   <form class="d-flex justify-content-center" method="GET" action="{% url 'results' %}">
-                                          <input class="form-control-sm me-2" type="search" name="q" placeholder="Search">
-                                          <button class="btn btn-outline-success" type="submit">Search</button>
-                                   </form>
-					
-                                   <a class="nav-link active" href="/apay/">Add</a>
-
-					<a class="nav-link" href="/merge/">Merge</a>
-
-				<div class="nav-item dropdown">
-
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Active</a>
-
-					<ul class="dropdown-menu text-center" style="background-color: #191970">
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/act/payee/">A-Z</a></li>
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/act/-payee/">Z-A</a></li>
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/act/-trans_count/">Usage: Dsc </a></li>
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/act/trans_count/">Usage: Asc </a></li>
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/act/-most_recent_transaction/">Last: Dsc </a></li>
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/act/most_recent_transaction/">Last: Asc </a></li>
-
-					</ul>
-
-				</div>
-
-				<div class="nav-item dropdown">
-
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">All</a>
-
-					<ul class="dropdown-menu text-center" style="background-color: #191970">
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/all/payee/">A-Z</a></li>
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/all/-payee/">Z-A</a></li>
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/all/-trans_count/">Usage: Dsc </a></li>
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/all/trans_count/">Usage: Asc </a></li>
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/all/-most_recent_transaction/">Last: Dsc </a></li>
-
-						<li><a class="dropdown-item" style="color: #707019" href="/pay/all/most_recent_transaction/">Last: Asc </a></li>
-
-					</ul>
-
-				</div>
-
-			</div>
-
-		</div>
-
-	</nav>
-
-       </br>
-
-       <div class="container text-center d-flex justify-content-center">
-
-              <ul class="pagination">
-       
-              {% if request.GET.q %}
-       
-                     {% with q=request.GET.q %}
-       
-                     {% if page_obj.has_previous %}
-                     
-                            <li class"page-item"><a href="?page=1&q={{q}}" class="page-link">&laquo;</a></li>
-                            <li class"page-item"><a href="?page={{ page_obj.previous_page_number }}&q={{q}}" class="page-link">&lsaquo;</a></li>
-       
-                     {% else %}
-                     
-                            <span class="page-link">&laquo;</span>
-                            <span class="page-link">&lsaquo;</span>
-       
-                     {% endif %}
-       
-                     {% if page_obj.number|add:'-1' > 1 %}
-       
-                            <li class"page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}&q={{q}}">&hellip;</a></li>
-       
-                     {% endif %}
-              
-       
-                     {% for i in page_obj.paginator.page_range %}
-                     
-                            {% if page_obj.number == i %}
-       
-                                   <li class="active"><span class="page-link bg-primary text-white">{{ i }}</span></span></li>
-                            
-                            {% elif i > page_obj.number|add:'-2' and i < page_obj.number|add:'2' %}
-                            
-                                   <li><a class="page-link" href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
-                            
-                            {% endif %}
-       
-                     {% endfor %}
-       
-       
-                     {% if page_obj.paginator.num_pages > page_obj.number|add:'1' %}
-                            
-                            <li><a class="page-link" href="?page={{ page_obj.number|add:'2' }}&q={{q}}">&hellip;</a></li>
-                     
-                     {% endif %}
-       
-                     {% if page_obj.has_next %}
-                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{q}}">&rsaquo;</a></li>
-
-                            <li class"page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{q}}">&raquo;</a></li>
-       
-                     {% else %}
-       
-                            <span class="page-link">&raquo;</span> 
-       
-                     {% endif %}
-       
-                     {% endwith %}
-       
-              {% else %}
-       
-                     {% if page_obj.has_previous %}
-       
-                            <li class"page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&lsaquo;</a></li>
-       
-                     {% else %}
-       
-                            <span class="page-link">&lsaquo;</span>
-       
-                     {% endif %}
-                     
-                     {% if page_obj.number|add:'-1' > 1 %}
-       
-                            <li class"page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}">&hellip;</a></li>
-       
-                     {% endif %}
-                     
-                     {% for i in page_obj.paginator.page_range %}
-       
-                            {% if page_obj.number == i %}
-       
-                                   <li class="active"><span class="page-link bg-primary text-white">{{ i }}</span></span></li>
-                            
-                            {% elif i > page_obj.number|add:'-2' and i < page_obj.number|add:'2' %}
-                            
-                                   <li><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                            
-                            {% endif %}
-       
-                     {% endfor %}
-       
-                     {% if page_obj.paginator.num_pages > page_obj.number|add:'1' %}
-                            
-                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'2' }}">&hellip;</a></li>
-                     
-                     {% endif %}
-       
-                     {% if page_obj.has_next %}
-       
-                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&rsaquo;</a></li>
-                            <li class"page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
-       
-       
-                     {% else %}
-                     
-                            <li class="page-item disabled"><span class="page-link">&rsaquo;</span>
-                                   <li class="page-item disabled"><span class="page-link">&raquo;</span>
-                     
-                     {% endif %}
-       
-              {% endif %}
-       
-              </ul>
-       
-       </div>
-
-</div>
-
 {% block content %}
-{% endblock %}
 
 <div class="container text-center d-flex justify-content-center">
 
@@ -217,73 +10,74 @@ Payees List
 
               {% with q=request.GET.q %}
 
-              {% if page_obj.has_previous %}
-              
-                     <li class"page-item"><a href="?page=1&q={{q}}" class="page-link">&laquo;</a></li>
-                     <li class"page-item"><a href="?page={{ page_obj.previous_page_number }}&q={{q}}" class="page-link">&lsaquo;</a></li>
-
-              {% else %}
-              
-                     <span class="page-link">&laquo;</span>
-                     <span class="page-link">&lsaquo;</span>
-
-              {% endif %}
-
-              {% if page_obj.number|add:'-1' > 1 %}
-
-                     <li class"page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}&q={{q}}">&hellip;</a></li>
-
-              {% endif %}
-       
-
-              {% for i in page_obj.paginator.page_range %}
-              
-                     {% if page_obj.number == i %}
-
-                            <li class="active"><span class="page-link bg-primary text-white">{{ i }}</span></span></li>
+                     {% if page_obj.has_previous %}
                      
-                     {% elif i > page_obj.number|add:'-2' and i < page_obj.number|add:'2' %}
+                            <li class="page-item"><a href="?page=1&q={{q}}" class="page-link">&laquo;</a></li>
+                            <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}&q={{q}}" class="page-link">&lsaquo;</a></li>
+
+                     {% else %}
                      
-                            <li><a class="page-link" href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
+                            <span class="page-link">&laquo;</span>
+                            <span class="page-link">&lsaquo;</span>
+
+                     {% endif %}
+
+                     {% if page_obj.number|add:'-1' > 1 %}
+              
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}&q={{q}}">&hellip;</a></li>
+
+                     {% endif %}
+              
+
+                     {% for i in page_obj.paginator.page_range %}
+                     
+                            {% if page_obj.number == i %}
+
+                                   <li class="active"><span class="page-link bg-primary text-white">{{ i }}</span></span></li>
+                            
+                            {% elif i > page_obj.number|add:'-2' and i < page_obj.number|add:'2' %}
+                            
+                                   <li><a class="page-link" href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
+                            
+                            {% endif %}
+
+                     {% endfor %}
+
+
+                     {% if page_obj.paginator.num_pages > page_obj.number|add:'1' %}
+                            
+                            <li><a class="page-link" href="?page={{ page_obj.number|add:'2' }}&q={{q}}">&hellip;</a></li>
                      
                      {% endif %}
 
-              {% endfor %}
+                     {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{q}}">&rsaquo;</a></li>
 
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{q}}">&raquo;</a></li>
 
-              {% if page_obj.paginator.num_pages > page_obj.number|add:'1' %}
-                     
-                     <li><a class="page-link" href="?page={{ page_obj.number|add:'2' }}&q={{q}}">&hellip;</a></li>
-              
-              {% endif %}
+                     {% else %}
 
-              {% if page_obj.has_next %}
-                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{q}}">&rsaquo;</a></li>
-                     <li class"page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{q}}">&raquo;</a></li>
+                            <span class="page-link">&raquo;</span> 
 
-              {% else %}
-
-                     <span class="page-link">&raquo;</span> 
-
-              {% endif %}
+                     {% endif %}
 
               {% endwith %}
 
        {% else %}
 
               {% if page_obj.has_previous %}
-
-                     <li class"page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&lsaquo;</a></li>
+                     <li class="page-item"><a href="?page=1" class="page-link">&laquo;</a></li>
+                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&lsaquo;</a></li>
 
               {% else %}
-
+                     <span class="page-link">&laquo;</span>
                      <span class="page-link">&lsaquo;</span>
 
               {% endif %}
               
               {% if page_obj.number|add:'-1' > 1 %}
 
-                     <li class"page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}">&hellip;</a></li>
+                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}">&hellip;</a></li>
 
               {% endif %}
               
@@ -310,7 +104,129 @@ Payees List
               {% if page_obj.has_next %}
 
                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&rsaquo;</a></li>
-                     <li class"page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+
+
+              {% else %}
+              
+                     <li class="page-item disabled"><span class="page-link">&rsaquo;</span>
+                     <li class="page-item disabled"><span class="page-link">&raquo;</span>
+              
+              {% endif %}
+
+       {% endif %}
+
+       </ul>
+
+</div>
+
+
+
+{% block page_content %}
+{% endblock %}
+
+<div class="container text-center d-flex justify-content-center">
+
+       <ul class="pagination">
+
+       {% if request.GET.q %}
+
+              {% with q=request.GET.q %}
+
+                     {% if page_obj.has_previous %}
+                     
+                            <li class="page-item"><a href="?page=1&q={{q}}" class="page-link">&laquo;</a></li>
+                            <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}&q={{q}}" class="page-link">&lsaquo;</a></li>
+
+                     {% else %}
+                     
+                            <span class="page-link">&laquo;</span>
+                            <span class="page-link">&lsaquo;</span>
+
+                     {% endif %}
+
+                     {% if page_obj.number|add:'-1' > 1 %}
+
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}&q={{q}}">&hellip;</a></li>
+
+                     {% endif %}
+              
+
+                     {% for i in page_obj.paginator.page_range %}
+                     
+                            {% if page_obj.number == i %}
+
+                                   <li class="active"><span class="page-link bg-primary text-white">{{ i }}</span></span></li>
+                            
+                            {% elif i > page_obj.number|add:'-2' and i < page_obj.number|add:'2' %}
+                            
+                                   <li><a class="page-link" href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
+                            
+                            {% endif %}
+
+                     {% endfor %}
+
+
+                     {% if page_obj.paginator.num_pages > page_obj.number|add:'1' %}
+                            
+                            <li><a class="page-link" href="?page={{ page_obj.number|add:'2' }}&q={{q}}">&hellip;</a></li>
+                     
+                     {% endif %}
+
+                     {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{q}}">&rsaquo;</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{q}}">&raquo;</a></li>
+
+                     {% else %}
+
+                            <span class="page-link">&raquo;</span> 
+
+                     {% endif %}
+
+              {% endwith %}
+
+       {% else %}
+
+              {% if page_obj.has_previous %}
+
+                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&lsaquo;</a></li>
+
+              {% else %}
+
+                     <span class="page-link">&lsaquo;</span>
+
+              {% endif %}
+              
+              {% if page_obj.number|add:'-1' > 1 %}
+
+                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}">&hellip;</a></li>
+
+              {% endif %}
+              
+              {% for i in page_obj.paginator.page_range %}
+
+                     {% if page_obj.number == i %}
+
+                            <li class="active"><span class="page-link bg-primary text-white">{{ i }}</span></span></li>
+                     
+                     {% elif i > page_obj.number|add:'-2' and i < page_obj.number|add:'2' %}
+                     
+                            <li><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                     
+                     {% endif %}
+
+              {% endfor %}
+
+              {% if page_obj.paginator.num_pages > page_obj.number|add:'1' %}
+                     
+                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'2' }}">&hellip;</a></li>
+              
+              {% endif %}
+
+              {% if page_obj.has_next %}
+
+                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&rsaquo;</a></li>
+                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
 
 
               {% else %}
@@ -323,5 +239,5 @@ Payees List
        {% endif %}
 
        </ul>
-
 </div>
+{% endblock %}

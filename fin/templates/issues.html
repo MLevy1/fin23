@@ -11,7 +11,7 @@ Issues
 
 <h1 class="display-4" style="background-color: #151B54">Open Issues</h1>
 
-	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'aissue' %}">Add New Issue</a>
+	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-issue' %}">Add New Issue</a>
 
 	{% for x in object_list %}
 	
@@ -22,7 +22,7 @@ Issues
 
 				<div class="card" style="background-color: #151B54">
 				
-					<h5 class="card-title"><a class="link-warning" href="{% url 'uissue' x.id %}">{{ x.issuename }} [#{{ x.id }}] </a></h5>
+					<h5 class="card-title"><a class="link-warning" href="{% url 'update-issue' x.id %}">{{ x.issuename }} [#{{ x.id }}] </a></h5>
 
 					<h6 class="card-subtitle mb-2 text-body-secondary">
 					

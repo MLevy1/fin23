@@ -15,9 +15,9 @@
 	
 	<div class="list-group">
   
-	       <a class="list-group-item list-group-item-action list-group-item-primary" href="/act/act/">Accounts</a>
+	       <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-accounts' 'act' %}">Accounts</a>
   
-		<a class="list-group-item list-group-item-action list-group-item-primary" href="aact/">Add Account</a>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-account' %}">Add Account</a>
   
        </div>
 	
@@ -25,15 +25,15 @@
   	
        <div class="list-group">
  
-		<a class="list-group-item list-group-item-action list-group-item-primary" href="cat/">Categories</a>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-categories' %}">Categories</a>
 
-		<a class="list-group-item list-group-item-action list-group-item-primary" href="acat/">Add Category</a>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-category' %}">Add Category</a>
 
-		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'payee_category_update_all' 'None' %}">Payee - Category Update</a>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'payee-category-update-all' 'None' %}">Payee - Category Update</a>
 
               <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'payee-gc-update-all' 'None' %}">Payee - Group Category Update</a>
 
-		<a class="list-group-item list-group-item-action list-group-item-primary" href="/pau/">Payee - Account Update</a>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'payee-account-update' %}">Payee - Account Update</a>
 
               <a class="list-group-item list-group-item-action list-group-item-primary" href="/l1g/">L1 Groups</a>
 
