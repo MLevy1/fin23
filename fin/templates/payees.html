@@ -13,7 +13,7 @@ Payees List
 
 		<div class="container-fluid">
                      
-			<a class="navbar-brand" href="#">Payees</a>
+			<a class="navbar-brand" href="#">Payees {{ tcount }}</a>
 
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
 
@@ -112,9 +112,27 @@ Payees List
 
 					<p class="card-text">most recent: {{ p.most_recent_transaction }}</p>
 
+
+
+<ul class="list-group list-group-bg-success">
+
+    {% for t in p.trans_set.all %}
+
+        {% ifchanged t.category %}
+
+		{% if not t.groupedcat %}
+		
+         <li class="list-group-item"><a href="{% url 'payee-gc-update-all' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}&dcat={{ t.category.pk }}" class="link-success btn btn-link">{{ t.category }}</a></li>
+
+		{% endif %}
+
+        {% endifchanged %}
+
+    {% endfor %}
+
+</ul>
+
 					<div class="btn-group">
-
-
 
 						<a href="{% url 'delete-payee' p.pk %}" class="link-danger btn btn-link">Delete</a>
 
@@ -126,13 +144,13 @@ Payees List
 						
 						<div class="btn-group">
 
-						<a href="{% url 'tlist' 'all' 'all' 'all' p.id %}" class="link-success btn btn-link">View Trans</a>
+						<a href="{% url 'tlist' 'all' 'all' 'all' p.id '-tdate' 'n' %}" class="link-success btn btn-link">View Trans</a>
 
 						<a href="{% url 'add-trans' p.pk %}" class="link-success btn btn-link">Add Trans</a>
 
-						<a href="{% url 'payee-gc-update-all' p.pk %}" class="link-success btn btn-link"?next={{ request.path|urlencode }}>Change Group</a>
+						<a href="{% url 'payee-gc-update-all' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-success btn btn-link">Change Group</a>
 
-						<a href="{% url 'payee-category-update-all' p.pk %}" class="link-success btn btn-link"?next={{ request.path|urlencode }}>Change Cat</a>
+						<a href="{% url 'payee-category-update-all' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-success btn btn-link">Change Cat</a>
 
 					</div>
 

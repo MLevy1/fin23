@@ -13,7 +13,7 @@
 <h1>{{ object.payee }}</h1>
 
 <h6 class="card-subtitle mb-2 text-body-secondary">
-       <a class="link-warning" href="{% url 'update-payee' object.id %}">edit</a>
+       <a class="link-warning" href="{% url 'update-payee' object.pk %}?next={{ next }}">edit</a>
 </h6>
 
 <ul class = "list-group">
@@ -28,9 +28,9 @@
 
        <li class="list-group-item"><a href="{% url 'add-trans' object.pk %}" class="link-success btn btn-link">Add Trans</a></li>
 
-       <li class="list-group-item"><a href="{% url 'payee-gc-update-all' object.pk %}?next={{ next }}" class="link-success btn btn-link">Change Group</a></li>
+       <li class="list-group-item"><a href="{% url 'payee-gc-update-all' object.pk %}?next={{ next }}&dcat={{ dcat }}" class="link-success btn btn-link">Change Group</a></li>
 
-       <li class="list-group-item"><a href="{% url 'payee-category-update-all' object.pk %}" class="link-success btn btn-link">Change Cat</a></li>
+       <li class="list-group-item"><a href="{% url 'payee-category-update-all' object.pk %}?next={{ next }}&dcat={{ dcat }}" class="link-success btn btn-link">Change Cat</a></li>
 
 </ul>
 {% endblock %}

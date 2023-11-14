@@ -25,19 +25,6 @@ class Payee(models.Model):
     class Meta:
         ordering = ["payee"]
 
-class L1Group(models.Model):
-    l1group = models.CharField(max_length=255, unique=True)
-    active = models.BooleanField(verbose_name='Active', default=True)
-
-    def get_absolute_url(self):
-        return reverse("list-l1group")
-    
-    def __str__(self):
-       
-       return self.l1group
-
-    class Meta:
-        ordering = ['l1group']
 
 class Category(models.Model):
     category = models.CharField(max_length=255, unique=True)
@@ -52,6 +39,24 @@ class Category(models.Model):
     class Meta:
         ordering = ["category"]
         verbose_name_plural = "Categories"
+
+class L1Group(models.Model):
+    l1group = models.CharField(max_length=255, unique=True)
+
+    active = models.BooleanField(verbose_name='Active', default=True)
+
+    aligned_category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse("list-l1groups")
+    
+    def __str__(self):
+       
+       return self.l1group
+
+    class Meta:
+        ordering = ['l1group']
+
 
 class Account(models.Model):
     account = models.CharField(max_length=255, unique=True)
@@ -128,7 +133,8 @@ class Trans(models.Model):
 		return str(t)
 
 	class Meta:
-		ordering = ["tdate", "amount"]
+		#ordering = ["tdate", "amount"]
+		ordering = ["category"]
 
 
 class Location(models.Model):

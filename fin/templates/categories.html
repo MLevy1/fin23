@@ -78,6 +78,8 @@ Categories
 
 						<a href="{% url 'tlist' 'all' x.pk 'all' 'all' %}" class="btn btn-link">trans</a>
 
+						<a href="{% url 'category-gc-update-all' x.pk %}" class="btn btn-link">group cat</a>
+
 					</div>
 
 				</div>
@@ -100,13 +102,14 @@ Categories
 					<h6 class="card-subtitle mb-2 text-body-secondary">
 						<a href="{% url 'update-category' x.pk %}">edit</a>
 
-					</h6>
-
+					
 					<p class="card-text">avg actual: {{ x.ann_total|floatformat:2|intcomma  }}</p>
 
 					<div class="btn-group">
 
 						<a href="{% url 'tlist' 'all' x.pk 'all' 'all' %}" class="btn btn-link">trans</a>
+						
+						<a href="{% url 'category-gc-update-all' x.pk %}" class="btn btn-link">group cat</a>
 
 					</div>
 

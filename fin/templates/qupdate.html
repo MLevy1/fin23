@@ -5,7 +5,7 @@ Query Update
 {% endblock %}
 
 {% block content %}
-    <h1>Query Update</h1>
+    <h1>Query Update </h1>
 
     <form method="post">
         {% csrf_token %}
@@ -13,6 +13,7 @@ Query Update
         <button type="submit">Update</button>
 
 	<input type="hidden" name="next" value="{{ request.GET.next }}">
+
 
     </form>
 {% endblock %}

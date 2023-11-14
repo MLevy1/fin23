@@ -14,12 +14,39 @@ class PayeeCategoryUpdate(forms.Form):
 class PayeeCategoryUpdateAll(forms.Form):
 	source_payee = forms.ModelChoiceField(queryset=Payee.objects.all())
 	target_category = forms.ModelChoiceField(queryset=Category.objects.all())
-	
+
+'''
 class PayeeGroupedCatUpdateAll(forms.Form):
 	payee = forms.ModelChoiceField(queryset=Payee.objects.all())
 	category = forms.ModelChoiceField(queryset=Category.objects.all())
+	
 	groupedcat = forms.ModelChoiceField(queryset=GroupedCat.objects.all())
 
+'''
+
+#uses get parameters filter the list but cant be used becuase it would have to filter by l1s and not categories
+
+class PayeeGroupedCatUpdateAll(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Get the selected category from the form's initial data
+        category = self.initial.get('category')
+
+        # Update the groupedcat queryset based on the selected category
+        if category:
+            self.fields['groupedcat'].queryset = GroupedCat.objects.filter(l1group__aligned_category=category)
+
+    payee = forms.ModelChoiceField(queryset=Payee.objects.all())
+    category = forms.ModelChoiceField(queryset=Category.objects.all())
+    groupedcat = forms.ModelChoiceField(queryset=GroupedCat.objects.all())
+
+
+
+class CategoryGroupedCatUpdateAll(forms.Form):
+
+	category = forms.ModelChoiceField(queryset=Category.objects.all())
+	groupedcat = forms.ModelChoiceField(queryset=GroupedCat.objects.all())
 
 class PayeeAccountUpdate(forms.Form):
 	source_payee = forms.ModelChoiceField(queryset=Payee.objects.all())

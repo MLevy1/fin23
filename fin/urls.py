@@ -25,6 +25,7 @@ urlpatterns = [
        path("ugc/<pk>/", GroupedCatUpdateView.as_view(), name="update-gc"),
        path("dgc/<pk>/", GroupedCatDeleteView.as_view(), name="delete-gc"),
        path("pgcua/<dpay>/", views.payee_groupedcat_update_all, name="payee-gc-update-all"),
+       path("cgcua/<dcat>/", views.category_groupedcat_update_all, name="category-gc-update-all"),
 
 	path('pay/<str:a>/<str:o>/', views.payees, name='list-payees'),
 	path('apay/', PayeeCreateView.as_view(), name="add-payee"),
@@ -39,8 +40,11 @@ urlpatterns = [
        path('pcupdateall/<dpay>/', views.payee_category_update_all, name="payee-category-update-all"),
 	path('pau/', views.payee_account_update, name="payee-account-update"),
 
-	path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/", views.tlist, name="tlist"),
-	path('archive/', ArchiveIndexView.as_view(model=Trans, date_field="tdate", template_name="trans_years.html"), name='trans-years'),
+       path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:ord>/", views.tlist, name="tlist"),
+       path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:ord>/<str:gnull>", views.tlist, name="tlist"),
+       path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/", views.tlist, name="tlist"),
+	path("tlist/", views.tlist, name="tlist"),
+       path('archive/', ArchiveIndexView.as_view(model=Trans, date_field="tdate", template_name="trans_years.html"), name='trans-years'),
 	path('<int:year>/<int:month>/', transactionMonthArchiveView.as_view(month_format='%m'), name="trans-monthly"),
 	path('<int:year>/', TransYearArchiveView.as_view(), name="trans-months"),
 	path("atran/<dpay>/", views.atran, name="add-trans"),
