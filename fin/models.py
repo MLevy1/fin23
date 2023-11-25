@@ -72,27 +72,6 @@ class Account(models.Model):
     class Meta:
         ordering = ["account"]
 
-
-class Issue(models.Model):
-    HIGH = "H"
-    MEDIUM = "M"
-    LOW = "L"
-
-    PRIORITY_CHOICES = [(HIGH, "High"), (MEDIUM, "Medium"), (LOW, "Low")]
-
-    opendate = models.DateTimeField(verbose_name='Open Date', auto_now_add=True)
-    issuename = models.CharField(verbose_name='Issue Name', max_length=100)
-    issuedesc = models.TextField(verbose_name='Isssue Description')
-    priority = models.CharField(verbose_name='Priority Level', max_length=20, choices=PRIORITY_CHOICES, default=MEDIUM)
-    issueopen = models.BooleanField(verbose_name='Issue Open', default=True)
-    closedate = models.DateTimeField(verbose_name='Closed Date', blank=True, null=True)
-    
-    def __str__(self):
-
-        t = str(self.id) + " " + str(self.issuename)
-
-        return str(t)
-
 class GroupedCat(models.Model):
 	l1group =  models.ForeignKey(L1Group, on_delete=models.CASCADE, blank=True, null=True)
 	category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
@@ -208,3 +187,22 @@ class BudgetItem(models.Model):
 
         return str(t)
 
+class Issue(models.Model):
+    HIGH = "H"
+    MEDIUM = "M"
+    LOW = "L"
+
+    PRIORITY_CHOICES = [(HIGH, "High"), (MEDIUM, "Medium"), (LOW, "Low")]
+
+    opendate = models.DateTimeField(verbose_name='Open Date', auto_now_add=True)
+    issuename = models.CharField(verbose_name='Issue Name', max_length=100)
+    issuedesc = models.TextField(verbose_name='Isssue Description')
+    priority = models.CharField(verbose_name='Priority Level', max_length=20, choices=PRIORITY_CHOICES, default=MEDIUM)
+    issueopen = models.BooleanField(verbose_name='Issue Open', default=True)
+    closedate = models.DateTimeField(verbose_name='Closed Date', blank=True, null=True)
+    
+    def __str__(self):
+
+        t = str(self.id) + " " + str(self.issuename)
+
+        return str(t)

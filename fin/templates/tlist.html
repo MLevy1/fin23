@@ -72,13 +72,13 @@
               <tr>
                      <td>
                             {% if t.payee.active and t.account.active %}
-                                   <a href="{% url 'update-trans-act' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
+                                   <a href="{% url 'update-trans-act' t.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">{{ t.tdate }}</a>
                             {% else %}
-                                   <a href="{% url 'update-trans' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
+                                   <a href="{% url 'update-trans' t.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">{{ t.tdate }}</a>
                             {% endif %}
                      
                      <td><a href="{% url 'tlist'  t.account.id 'all' 'all' 'all' %}"> {{ t.account }}</a></td>
-                     <td><a href="{% url 'tlist' 'all' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a> <a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}&dcat={{ t.category.id }}">edit</a></td>
+                     <td><a href="{% url 'tlist' 'all' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a> <a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}&dcat={{ t.category.id }}">edit</a></td>
                      <td><a href="{% url 'tlist' 'all' t.category.id 'all' 'all' %}"> {{ t.category }}</a></td>
                      <td>
                             {% if t.groupedcat %}

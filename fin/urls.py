@@ -1,7 +1,39 @@
 from django.urls import path
+
 from . import views
+
 from django.views.generic.dates import ArchiveIndexView
-from .views import PayeeDetailView, L1GroupUpdateView, L1GroupListView, L1GroupCreateView, MonthlyCashFlow, BudgetItemDeleteView, BudgetItemUpdateView, BudgetItemCreateView, BudgetItemView, TransDeleteView, UpdateIssue, IssueCreateView, IssueListView, CatListView, UpdateCategory, UpdateAccount, SearchResultsView, testform, transactionMonthArchiveView, TransYearArchiveView, PayeeCreateView, AccountCreateView, CatCreateView, UpdatePayee, PayeeDeleteView, GroupedCatListView, GroupedCatCreateView, GroupedCatUpdateView, GroupedCatDeleteView
+
+from .views import (
+	PayeeDetailView, 
+	L1GroupUpdateView, 
+	L1GroupListView, 
+	L1GroupCreateView, 
+	MonthlyCashFlow, 
+	BudgetItemDeleteView,
+	BudgetItemUpdateView, 
+	BudgetItemCreateView, 
+	BudgetItemView, 
+	TransDeleteView,
+	CatListView, 
+	UpdateCategory, 
+	UpdateAccount, 
+	SearchResultsView, 
+	testform, 
+	transactionMonthArchiveView, 
+	TransYearArchiveView, 
+	PayeeCreateView, 
+	AccountCreateView, 
+	CatCreateView, 
+	UpdatePayee, 
+	PayeeDeleteView, 
+	GroupedCatListView, 
+	GroupedCatCreateView, 
+	GroupedCatUpdateView, 
+	GroupedCatDeleteView,
+	CatSearchView
+)
+
 from .models import Trans
 
 urlpatterns = [
@@ -15,6 +47,7 @@ urlpatterns = [
 	path('cat/', CatListView.as_view(), name='list-categories'),
 	path("acat/", CatCreateView.as_view(), name="add-category"),
 	path("ucat/<pk>/", UpdateCategory.as_view(), name="update-category"),
+	path("csearch/", CatSearchView.as_view(), name="results-category"),
 	
        path("l1g/", L1GroupListView.as_view(), name="list-l1groups"),       
        path("al1g/", L1GroupCreateView.as_view(), name="add-l1group"),
@@ -53,19 +86,11 @@ urlpatterns = [
 	path("utran/<int:t_id>/", views.utran, name="update-trans"),
        path("utran_act/<int:t_id>/", views.utran_act, name="update-trans-act"),
 	path('trans/<int:pk>/delete/', TransDeleteView.as_view(), name='delete-trans'),
-	
-	path("issues/", IssueListView.as_view(), name="view-issues"),
-	path("aissue/", IssueCreateView.as_view(), name="add-issue"),
-	path("uissue/<pk>/", UpdateIssue.as_view(), name="update-issue"),
 
 	path("budgetitem/", BudgetItemView.as_view(), name="list-budgetitems"),
 	path("abudgetitem/", BudgetItemCreateView.as_view(), name="add-budgetitem"),
 	path("ubudgetitem/<pk>/", BudgetItemUpdateView.as_view(), name="update-budgetitem"),
 	path('dbudgetitem/<pk>/', BudgetItemDeleteView.as_view(), name='delete-budgetitem'),
-
-	path("move/", views.move, name="move"),
-
-	path("budget/", views.budget, name="budget"),
 
 	path("test/", testform.as_view(), name="test"),
 	path("mrep/", MonthlyCashFlow.as_view(), name ="mrep"),

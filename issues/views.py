@@ -1,0 +1,37 @@
+from django.shortcuts import render
+
+from django.urls import reverse_lazy
+
+from .models import (
+	Issue, 
+)
+
+from django.views.generic import (
+	ListView, 
+	CreateView, 
+	UpdateView, 
+	DetailView,
+	DeleteView
+)
+
+### VIEW ISSUES
+
+class IssueListView(ListView):
+	model = Issue
+	template_name = "issues/issues.html"
+
+### ADD ISSUE ###
+
+class IssueCreateView(CreateView):
+	model = Issue
+	fields = "__all__"
+	template_name = "fin/add.html"
+	success_url = reverse_lazy('view-issues')
+
+### UPDATE ISSUE ###
+
+class UpdateIssue(UpdateView):
+	model = Issue
+	fields = "__all__"
+	template_name = "/fin/update.html"
+	success_url = reverse_lazy('view-issues')

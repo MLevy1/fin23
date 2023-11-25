@@ -59,6 +59,10 @@ INSTALLED_APPS = [
     'django_pandas',
     'matplotlib',
     'mpld3',
+    'projections',
+    'moving',
+    'issues',
+    'reports',
 ]
 
 MIDDLEWARE = [
@@ -76,10 +80,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'fin23.urls'
 
+LOGIN_URL = '/login/'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

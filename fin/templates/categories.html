@@ -26,6 +26,11 @@ Categories
 
                             <div class="navbar-nav">
 
+<form class="d-flex justify-content-center" method="GET" action="{% url 'results-category' %}">
+                                          <input class="form-control-sm me-2" type="search" name="q" placeholder="Search">
+                                          <button class="btn btn-outline-success" type="submit">Search</button>
+                                   </form>
+
                                    <a class="nav-link active" href="/acat/">Add</a>
 
                             </div>
