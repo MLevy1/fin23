@@ -20,6 +20,13 @@ from issues.views import (
 	IssueListView, 
 )
 
+from reports.views import (
+       testform,
+       MonthlyCashFlow,
+       ptran,
+       testg,
+)
+
 urlpatterns = [
 	path('', include('fin.urls')),
 	path('login/', login_view),
@@ -30,4 +37,8 @@ urlpatterns = [
 	path("issues/", IssueListView.as_view(), name="view-issues"),
 	path("aissue/", IssueCreateView.as_view(), name="add-issue"),
 	path("uissue/<pk>/", UpdateIssue.as_view(), name="update-issue"),
+       path('pd/', ptran, name="pd-trans"),
+       path("test/", testform.as_view(), name="test"),
+       path("mrep/", MonthlyCashFlow.as_view(), name ="mrep"),
+       path("g/", testg, name="g"),
 ]

@@ -78,7 +78,13 @@
                             {% endif %}
                      
                      <td><a href="{% url 'tlist'  t.account.id 'all' 'all' 'all' %}"> {{ t.account }}</a></td>
-                     <td><a href="{% url 'tlist' 'all' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a> <a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}&dcat={{ t.category.id }}">edit</a></td>
+                     <td>
+				<a href="{% url 'tlist' 'all' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a>
+				<br>
+				<a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}&dcat={{ t.category.id }}">edit</a>
+				<br>
+				<a href='https://www.google.com/search?q={{ t.payee }}' target='_blank'>info</a>
+			</td>
                      <td><a href="{% url 'tlist' 'all' t.category.id 'all' 'all' %}"> {{ t.category }}</a></td>
                      <td>
                             {% if t.groupedcat %}

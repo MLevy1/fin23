@@ -26,7 +26,7 @@ Categories
 
                             <div class="navbar-nav">
 
-<form class="d-flex justify-content-center" method="GET" action="{% url 'results-category' %}">
+                                   <form class="d-flex justify-content-center" method="GET" action="{% url 'results-category' %}">
                                           <input class="form-control-sm me-2" type="search" name="q" placeholder="Search">
                                           <button class="btn btn-outline-success" type="submit">Search</button>
                                    </form>
@@ -74,6 +74,8 @@ Categories
 					<h6 class="card-subtitle mb-2 text-body-secondary">
 						<a href="{% url 'update-category' x.pk %}">edit</a>
 					</h6>
+					
+					<p class="card-text"># of trans: {{ x.trans_count }}</p>
 
 					<p class="card-text">buget: ${{ x.budget_total|floatformat:2|intcomma }}</p>
 

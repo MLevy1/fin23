@@ -24,7 +24,7 @@ class IssueListView(ListView):
 
 class IssueCreateView(CreateView):
 	model = Issue
-	fields = "__all__"
+	fields = ["issuename", "issuedesc", "priority", "issueopen"]
 	template_name = "fin/add.html"
 	success_url = reverse_lazy('view-issues')
 
@@ -32,6 +32,6 @@ class IssueCreateView(CreateView):
 
 class UpdateIssue(UpdateView):
 	model = Issue
-	fields = "__all__"
-	template_name = "/fin/update.html"
+	fields = ["issuename", "issuedesc", "priority", "issueopen"]
+	template_name = "fin/update.html"
 	success_url = reverse_lazy('view-issues')

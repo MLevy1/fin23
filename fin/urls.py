@@ -9,7 +9,6 @@ from .views import (
 	L1GroupUpdateView, 
 	L1GroupListView, 
 	L1GroupCreateView, 
-	MonthlyCashFlow, 
 	BudgetItemDeleteView,
 	BudgetItemUpdateView, 
 	BudgetItemCreateView, 
@@ -19,7 +18,6 @@ from .views import (
 	UpdateCategory, 
 	UpdateAccount, 
 	SearchResultsView, 
-	testform, 
 	transactionMonthArchiveView, 
 	TransYearArchiveView, 
 	PayeeCreateView, 
@@ -74,15 +72,19 @@ urlpatterns = [
 	path('pau/', views.payee_account_update, name="payee-account-update"),
 
        path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:ord>/", views.tlist, name="tlist"),
+
        path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:ord>/<str:gnull>", views.tlist, name="tlist"),
+
        path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/", views.tlist, name="tlist"),
+
 	path("tlist/", views.tlist, name="tlist"),
+	
        path('archive/', ArchiveIndexView.as_view(model=Trans, date_field="tdate", template_name="trans_years.html"), name='trans-years'),
 	path('<int:year>/<int:month>/', transactionMonthArchiveView.as_view(month_format='%m'), name="trans-monthly"),
 	path('<int:year>/', TransYearArchiveView.as_view(), name="trans-months"),
 	path("atran/<dpay>/", views.atran, name="add-trans"),
 	path("atran/", views.atran, name="add-trans"),
-       path('pd/', views.ptran, name="pd-trans"),
+
 	path("utran/<int:t_id>/", views.utran, name="update-trans"),
        path("utran_act/<int:t_id>/", views.utran_act, name="update-trans-act"),
 	path('trans/<int:pk>/delete/', TransDeleteView.as_view(), name='delete-trans'),
@@ -92,8 +94,6 @@ urlpatterns = [
 	path("ubudgetitem/<pk>/", BudgetItemUpdateView.as_view(), name="update-budgetitem"),
 	path('dbudgetitem/<pk>/', BudgetItemDeleteView.as_view(), name='delete-budgetitem'),
 
-	path("test/", testform.as_view(), name="test"),
-	path("mrep/", MonthlyCashFlow.as_view(), name ="mrep"),
 
-       path("g/", views.testg, name="g"),
+
 ]

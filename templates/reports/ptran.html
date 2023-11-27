@@ -1,0 +1,32 @@
+{% extends "master.html" %}
+
+{% block title %}
+
+{% endblock %}
+
+
+
+{% block content %}
+<style>
+       table {
+              border: none
+       }
+
+       .dataframe tr {
+              font-size: 11pt; 
+              font-family: Arial;
+              border: 1px solid silver;
+          
+          }
+          
+
+
+</style>
+<h1>Monthly Cash Flows</h1>
+
+{{  pivot | safe }}
+
+<hr>
+
+
+{% endblock %}

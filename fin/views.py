@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 from django.http import HttpResponse
 
@@ -55,22 +54,13 @@ from django.views.generic import (
 	DeleteView
 )
 
-import numpy as np
-import numpy_financial as npf
-import pandas as pd
-import matplotlib.pyplot as plt
-from django_pandas.io import read_frame 
 from django.utils import timezone
 
-pd.options.display.float_format = '{:,}'.format
+from django.apps import apps
 
 from datetime import datetime, timedelta
 from django.forms import modelformset_factory
 from django.urls import reverse_lazy
-
-from slick_reporting.views import ReportView, Chart
-from slick_reporting.fields import SlickReportField
-from slick_reporting.fields import ComputationField
 
 from django.core.paginator import Paginator
 
@@ -81,6 +71,9 @@ def get_start_date():
 
 def main(request):
 	template = loader.get_template('main.html')
+	tables = [m._meta.db_table for c in apps.get_app_configs() for m in c.get_models()]
+	print(tables)
+	print('hi')
 	return HttpResponse(template.render())
 
 #++++++++++++
@@ -106,7 +99,6 @@ def payees(request, a='act', o='payee'):
 
 	nogcat = Trans.objects.filter(groupedcat__isnull=True)
 
-	#tcount = Trans.objects.filter(groupedcat__isnull=True).count()
 	tcount = nogcat.count()
 	template = 'payees.html'
 	paginator = Paginator(payees, 25)
@@ -406,6 +398,7 @@ class CatListView(ListView):
 		ann_budget = float(ann_budget)
 
 		for c in categories:
+			trans_count = Trans.objects.filter(category=c, tdate__gte=start_date).count() or 0
 			trans_total = Trans.objects.filter(category=c, tdate__gte=start_date).aggregate(Sum('amount'))['amount__sum'] or 0
 			ann_total = float(trans_total) * 365/1000
 			ann_total = float(ann_total)
@@ -421,6 +414,7 @@ class CatListView(ListView):
 				'pk': c.pk,
 				'active': c.active,
 				'category': c,
+				'trans_count': trans_count,
 				'trans_total': trans_total,
 				'ann_total': ann_total,
 				'budget_total': budget_total,
@@ -683,153 +677,3 @@ class BudgetItemDeleteView(DeleteView):
 	success_url = reverse_lazy('budgetitems')
 	template_name = "confirm_delete.html"
 
-'''
-++++++++++++++
-   REPORTING
-++++++++++++++
-'''
-
-class testform(ReportView):
-
-	report_model = Trans
-	date_field = "tdate"
-	group_by = "category"
-    
-	columns = [
-		"category",
-		SlickReportField.create(
-
-	     		method=Sum, field="amount", name="amount__sum", verbose_name=("Total Amount")
-			     
-		),
-	]
-
-	# Charts
-	charts_settings = [
-		Chart(
-			"Totals",
-			Chart.BAR,
-			data_source="amount__sum",
-			title_source="title",
-		),
-	]
-
-class SumValueComputationField(ComputationField):
-	calculation_method = Sum
-	calculation_field = "amount"
-	verbose_name = ("Total")
-	name = "amount_sum"
-
-
-class MonthlyCashFlow(ReportView):
-	report_model = Trans
-	date_field = "tdate"
-	group_by = "category"
-	columns = ["category"]
-
-
-	time_series_pattern = "monthly"
-	time_series_columns = [
-		SumValueComputationField,
-    	]
-
-	chart_settings = [
-		Chart(
-			("Monthly Cash Flow"),
-			Chart.AREA,
-			data_source=["amount_sum"],
-			title_source=["category"],
-			plot_total=True,
-		),
-	]
-
-
-'''
-
-===================
-
-####   PANDAS  ####
-
-===================
-
-'''
-
-def ptran(request):
-	
-	qs = Trans.objects.all().values()
-	df = read_frame(qs)
-
-	# Convert the 'tdate' column to a datetime series
-	df['tdate'] = pd.to_datetime(df['tdate'])
-
-	# Create a new 'month' column from the 'tdate' column
-	df['year'] = df['tdate'].dt.to_period('Y')
-
-	# Pivot the DataFrame to group data by 'month' and 'category_id', and calculate the sum of 'amount'
-	pt = pd.pivot_table(df, values='amount', index='year', columns='category_id', aggfunc='sum', fill_value=0).astype(float)
-
-	pt.loc[:,'Total H'] = pt.sum(axis=1).round(0).astype(float)
-	pt.loc['Total']= pt.sum().round(0).astype(float)
-
-	# Reset the index to have 'month' as a regular column
-	pt = pt.reset_index()
-
-	pt = pt.iloc[:, :].reset_index(drop=True)
-
-	# Convert the pivot table to an HTML table
-	pivot_data = pt.to_html(index=False, escape=False, formatters={'numbers': '{:,2f}'.format})
-	
-	context = {
-
-		'pivot' : pivot_data,
-
-	}
-
-	return render(request, "ptran.html", context)
-
-def testg(request):
-	
-	qs = Trans.objects.all().values()
-	
-	df = read_frame(qs)
-
-	# Convert the 'tdate' column to a datetime series
-	df['tdate'] = pd.to_datetime(df['tdate'])
-
-	# Create a new 'year' column from the 'tdate' column
-	df['year'] = df['tdate'].dt.to_period('Y')
-	
-	# Convert the 'year' column to a string
-	df['year'] = df['year'].astype(str)
-	df['year'] = df['year'].str[2:]
-
-	# Pivot the DataFrame to group data by 'year' and 'category_id', and calculate the sum of 'amount'
-	pt = pd.pivot_table(df, values='amount', index='year', columns='category_id', aggfunc='sum', fill_value=0).astype(float)
-
-	# Reset the index to have 'month' as a regular column
-	pt = pt.reset_index()
-	
-	#pt = pt.drop(columns=["waxhaw house", "middletown house purchase", "sunset beach condo", "concord house", "ga rental property", "tn rental property", "investments", "income"])
-	
-	pt = pt[['year', 'income']]
-
-	fig, ax = plt.subplots()
-	
-	# Plot the data
-	for column in pt.columns[1:]:
-		ax.bar(pt['year'], pt[column], label=f'Category {column}')
-
-	ax.set(xlabel='Year', ylabel='Total Amount',
-		title='Total Amount by Year and Category')
-	
-	ax.legend(loc='lower center')
-	
-	ax.grid()
-	
-	response = HttpResponse(content_type = 'image/png')
-	
-	canvas = FigureCanvasAgg(fig)
-	
-	canvas.print_png(response)
-	
-	return response
