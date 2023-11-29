@@ -113,50 +113,50 @@ Payees List
 
 
 
-<ul class="list-group list-group-bg-success">
+                                   <ul class="list-group list-group-bg-success">
 
-    {% for t in p.trans_set.all %}
+                                          {% for t in p.trans_set.all %}
 
-        {% ifchanged t.category %}
+                                                 {% ifchanged t.category %}
 
-		{% if not t.groupedcat %}
-		
-         <li class="list-group-item">
-		<a href="{% url 'payee-gc-update-all' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}&dcat={{ t.category.pk }}" class="link-success btn btn-link">{{ t.category }}</a>
-		<a href="{% url 'tlist' acc='all' cat=t.category.pk gcat='all' pay=p.pk ord='-tdate' gnull='n' %}">trans</a>
-		</li>
+                                                        {% if not t.groupedcat %}
+                                                        
+                                                 <li class="list-group-item">
+                                                        <a href="{% url 'payee-gc-update-all' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}&dcat={{ t.category.pk }}" class="link-success btn btn-link">{{ t.category }}</a>
+                                                        <a href="{% url 'tlist' acc='all' cat=t.category.pk gcat='all' pay=p.pk ord='-tdate' gnull='n' %}">trans</a>
+                                                 </li>
 
-		{% endif %}
+                                                        {% endif %}
 
-        {% endifchanged %}
+                                                 {% endifchanged %}
 
-    {% endfor %}
+                                          {% endfor %}
 
-</ul>
+                                   </ul>
 
 					<div class="btn-group">
 
-						<a href="{% url 'delete-payee' p.pk %}" class="link-danger btn btn-link">Delete</a>
+                                          <a href="{% url 'delete-payee' p.pk %}" class="link-danger btn btn-link">Delete</a>
 
-						<a href="{% url 'make-payee-inactive' p.pk %}" class="link-danger btn btn-link">Inact.</a>
+                                          <a href="{% url 'make-payee-inactive' p.pk %}" class="link-danger btn btn-link">Inact.</a>
+                                          
+                                          <a href="{% url 'merge' p.pk %}" class="link-danger btn btn-link">Merge</a>
 						
-						<a href="{% url 'merge' p.pk %}" class="link-danger btn btn-link">Merge</a>
+                                   </div>
 						
-						</div>
-						
-						<div class="btn-group">
+                                   <div class="btn-group">
 
-						<a href="{% url 'tlist' 'all' 'all' 'all' p.id '-tdate' 'n' %}" class="link-success btn btn-link">View Trans</a>
+                                          <a href="{% url 'tlist' 'all' 'all' 'all' p.id '-tdate' 'n' %}" class="link-success btn btn-link">View Trans</a>
 
-						<a href="{% url 'add-trans' p.pk %}" class="link-success btn btn-link">Add Trans</a>
+                                          <a href="{% url 'add-trans' p.pk %}" class="link-success btn btn-link">Add Trans</a>
 
-						<a href="{% url 'payee-gc-update-all' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-success btn btn-link">Change Group</a>
+                                          <a href="{% url 'payee-gc-update-all' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-success btn btn-link">Change Group</a>
 
-						<a href="{% url 'payee-category-update-all' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-success btn btn-link">Change Cat</a>
+                                          <a href="{% url 'payee-category-update-all' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-success btn btn-link">Change Cat</a>
 
-					</div>
+                                   </div>
 
-				</div>
+                            </div>
 
 			</div>
 

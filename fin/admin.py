@@ -13,9 +13,18 @@ from .models import (
 	GroupedCat
 )
 
+class PayeeAdmin(admin.ModelAdmin):
+       list_display=[
+              'id',
+              'payee',
+              'slug',
+              'active'
+       ]
+       search_fields = ['payee']
+
 admin.site.register(Account)
 admin.site.register(Category)
-admin.site.register(Payee)
+admin.site.register(Payee, PayeeAdmin)
 admin.site.register(Trans)
 admin.site.register(BudgetItem)
 admin.site.register(L1Group)

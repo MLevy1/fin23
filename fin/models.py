@@ -1,14 +1,18 @@
 from django.db import models
+from django.db.models.signals import pre_save, post_save
 from simple_history.models import HistoricalRecords
 from django_pandas.managers import DataFrameManager
 from django.urls import reverse
 from tagging.fields import TagField
+
+from .utils import slugify_instance_payee
 
 # Create your models here.
 
 class Payee(models.Model):
     payee = models.CharField(max_length=255, unique=True)
     active = models.BooleanField(verbose_name='Active', default=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
     tags = TagField()
 
     history = HistoricalRecords()
@@ -25,6 +29,19 @@ class Payee(models.Model):
     class Meta:
         ordering = ["payee"]
 
+def payee_pre_save(sender, instance, *args, **kwargs):
+    print('pre_save')
+    if instance.slug is None:
+        slugify_instance_payee(instance, save=False)
+
+pre_save.connect(payee_pre_save, sender=Payee)
+
+def payee_post_save(sender, instance, created, *args, **kwargs):
+    print('post_save')
+    if created:
+        slugify_instance_payee(instance, save=True)
+
+post_save.connect(payee_post_save, sender=Payee)
 
 class Category(models.Model):
     category = models.CharField(max_length=255, unique=True)
@@ -45,7 +62,7 @@ class L1Group(models.Model):
 
     active = models.BooleanField(verbose_name='Active', default=True)
 
-    aligned_category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
+    aligned_category = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse("list-l1groups")
@@ -73,8 +90,8 @@ class Account(models.Model):
         ordering = ["account"]
 
 class GroupedCat(models.Model):
-	l1group =  models.ForeignKey(L1Group, on_delete=models.CASCADE, blank=True, null=True)
-	category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
+	l1group =  models.ForeignKey(L1Group, on_delete=models.PROTECT, blank=True, null=True)
+	category = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
 	
 	def __str__(self):
 
@@ -83,7 +100,7 @@ class GroupedCat(models.Model):
 		return str(t)
      
 	def get_absolute_url(self):
-		return reverse("list-gc")
+		return reverse("add-gc")
 		
 	class Meta:
         	ordering = ["l1group__l1group", "category"]
@@ -92,10 +109,10 @@ class Trans(models.Model):
 	tid = models.IntegerField(null=True)
 	tdate = models.DateField(verbose_name='Date')
 	amount = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2)
-	account =  models.ForeignKey(Account, on_delete=models.CASCADE)
-	payee = models.ForeignKey(Payee, on_delete=models.CASCADE)
-	category = models.ForeignKey(Category, on_delete=models.CASCADE)
-	groupedcat = models.ForeignKey(GroupedCat, on_delete=models.CASCADE, null=True, blank=True)
+	account =  models.ForeignKey(Account, on_delete=models.PROTECT)
+	payee = models.ForeignKey(Payee, on_delete=models.PROTECT)
+	category = models.ForeignKey(Category, on_delete=models.PROTECT)
+	groupedcat = models.ForeignKey(GroupedCat, on_delete=models.PROTECT, null=True, blank=True)
 	match = models.CharField(max_length=255, null=True, blank=True)
 	oldCat = models.CharField(max_length=255, null=True, blank=True)
 	oldPayee = models.CharField(max_length=255, null=True, blank=True)
@@ -153,7 +170,7 @@ class BudgetItem(models.Model):
     itemName = models.CharField(verbose_name='Budget Item', max_length=100)
     itemFreq = models.CharField(verbose_name='Frequency', max_length=20, choices=FREQUENCY_CHOICES, default=M)
     itemAmt = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2)
-    itemCat = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    itemCat = models.ForeignKey(Category, on_delete=models.PROTECT, null=True, blank=True)
     
     def annualAmt(self):
         if self.itemFreq == 'once':

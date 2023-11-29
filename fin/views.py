@@ -191,6 +191,8 @@ def merge_payees(request, dpay=None):
 
 	if request.method == 'POST':
 		form = PayeeMergeForm(request.POST)
+
+		next = request.GET.get('next', '/')
 		
 		if form.is_valid():
 			source_payee = form.cleaned_data['source_payee']
@@ -202,7 +204,7 @@ def merge_payees(request, dpay=None):
 			# Delete the target payee
 			target_payee.delete()
 
-			return redirect('/pay/act/payee/') 
+			return redirect(next) 
 
 	else:
 		form = PayeeMergeForm(initial={'target_payee': dpay })
@@ -285,7 +287,7 @@ def category_groupedcat_update_all(request, dcat=None):
 		if form.is_valid():
 			category = form.cleaned_data['category']
 			groupedcat = form.cleaned_data['groupedcat']
-			Trans.objects.filter(category=category).update(groupedcat=groupedcat)
+			Trans.objects.filter(category=category).filter(groupedcat__isnull=True).update(groupedcat=groupedcat)
 
 			return redirect(reverse_lazy('list-categories'))
   
@@ -398,7 +400,7 @@ class CatListView(ListView):
 		ann_budget = float(ann_budget)
 
 		for c in categories:
-			trans_count = Trans.objects.filter(category=c, tdate__gte=start_date).count() or 0
+			trans_count = Trans.objects.filter(category=c, groupedcat__isnull=True).count() or 0
 			trans_total = Trans.objects.filter(category=c, tdate__gte=start_date).aggregate(Sum('amount'))['amount__sum'] or 0
 			ann_total = float(trans_total) * 365/1000
 			ann_total = float(ann_total)
@@ -435,6 +437,16 @@ class CatListView(ListView):
 		page_obj = paginator.get_page(page_number)
 
 		return page_obj
+
+	def get_context_data(self,**kwargs):
+		
+		nogcat = Trans.objects.filter(groupedcat__isnull=True)
+		tcount = nogcat.count()
+		
+		context = super(CatListView,self).get_context_data(**kwargs)
+		context['tcount'] = tcount
+		context['nogcat'] = nogcat
+		return context
 	
 
 ### ADD CATEGORY ###
@@ -475,6 +487,7 @@ class L1GroupUpdateView(UpdateView):
 class GroupedCatListView(ListView):
 	model = GroupedCat
 	template_name = "groupedcats.html"
+		
 
 class GroupedCatCreateView(CreateView):
 	model = GroupedCat

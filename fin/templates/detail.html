@@ -22,7 +22,7 @@
 
        <li class="list-group-item"><a href="{% url 'make-payee-inactive' object.pk %}" class="link-danger btn btn-link">Inact.</a></li>
 
-       <li class="list-group-item"><a href="{% url 'merge' object.pk %}" class="link-danger btn btn-link">Merge</a></li>
+       <li class="list-group-item"><a href="{% url 'merge' object.pk %}?next={{ next }}" class="link-danger btn btn-link">Merge</a></li>
 
        <li class="list-group-item"><a href="{% url 'tlist' 'all' 'all' 'all' object.id %}" class="link-success btn btn-link">View Trans</a></li>
 
