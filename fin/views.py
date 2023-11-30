@@ -189,10 +189,10 @@ class PayeeDeleteView(DeleteView):
 @login_required
 def merge_payees(request, dpay=None):
 
+	next = request.GET.get('next', '/')
+
 	if request.method == 'POST':
 		form = PayeeMergeForm(request.POST)
-
-		next = request.GET.get('next', '/')
 		
 		if form.is_valid():
 			source_payee = form.cleaned_data['source_payee']

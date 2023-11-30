@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'issues',
     'reports',
     'recipes',
+    'django_htmx',
 ]
 
 MIDDLEWARE = [
@@ -76,6 +77,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
+    'django_htmx.middleware.HtmxMiddleware',
 
 ]
 
