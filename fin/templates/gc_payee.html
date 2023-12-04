@@ -1,0 +1,18 @@
+{% extends 'master.html' %}
+
+{% block title %}
+Query Update
+{% endblock %}
+
+{% block content %}
+    <h1>Group Cat / Payee Update</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+
+	<input type="hidden" name="next" value="{{ request.GET.next }}">
+    </form>
+
+{% endblock %}

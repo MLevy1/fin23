@@ -79,7 +79,7 @@
                      
                      <td><a href="{% url 'tlist'  t.account.id 'all' 'all' 'all' %}"> {{ t.account }}</a></td>
                      <td>
-				<a href="{% url 'tlist' 'all' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a>
+				<a href="{% url 'tlist' 'all' 'all' 'all' t.payee.id 'payee' 'n' %}"> {{ t.payee }}</a>
 				<br>
 				<a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}&dcat={{ t.category.id }}">edit</a>
 				<br>

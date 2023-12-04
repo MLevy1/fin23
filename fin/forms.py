@@ -8,10 +8,9 @@ from .models import (
 	Payee, 
 	Trans, 
 	L1Group, 
-	Job, 
-	Location, 
 	GroupedCat
 )
+
 from django.contrib.admin.widgets import AdminDateWidget
 
 class PayeeMergeForm(forms.Form):
@@ -42,8 +41,6 @@ class PayeeGroupedCatUpdateAll(forms.Form):
     payee = forms.ModelChoiceField(queryset=Payee.objects.all())
     category = forms.ModelChoiceField(queryset=Category.objects.all())
     groupedcat = forms.ModelChoiceField(queryset=GroupedCat.objects.all())
-
-
 
 class CategoryGroupedCatUpdateAll(forms.Form):
 
@@ -77,16 +74,6 @@ class L1GroupForm(ModelForm):
 class GroupedCatForm(ModelForm):
 	class Meta:
 		model = GroupedCat
-		fields = "__all__"
-
-class JobForm(ModelForm):
-	class Meta:
-		model = Job
-		fields = "__all__"
-		
-class LocationForm(ModelForm):
-	class Meta:
-		model = Location
 		fields = "__all__"
 
 class AddTransaction(ModelForm):

@@ -11,8 +11,6 @@ from .models import (
 	Trans, 
 	BudgetItem, 
 	L1Group, 
-	Location, 
-	Job, 
 	GroupedCat
 )
 
@@ -106,7 +104,11 @@ def payees(request, a='act', o='payee'):
 	page_number = request.GET.get("page")
 	page_obj = paginator.get_page(page_number)
 
-	context = {"page_obj": page_obj, "tcount": tcount, "nogcat": nogcat }
+	context = {
+		"page_obj": page_obj,
+		"tcount": tcount, 
+		"nogcat": nogcat 
+	}
 
 	return render(request, template, context)
 
@@ -216,7 +218,9 @@ def merge_payees(request, dpay=None):
 def payee_category_update_all(request, dpay=None):
 
 	if request.method == 'POST':
-		form = PayeeCategoryUpdateAll(request.POST)
+		form = PayeeCategoryUpdateAll(request.POST or None)
+		
+		form2 = PayeeGroupedCatUpdateAll(request.POST or None)
 		
 		next = request.POST.get('next', '/')
 
@@ -228,11 +232,17 @@ def payee_category_update_all(request, dpay=None):
 			return redirect(next)
   
 	else:
+		
 		form = PayeeCategoryUpdateAll(initial={'source_payee': dpay})
+	context = {
+		
+			"form": form,
 
+	}
 
-	return render(request, 'qupdate.html', {'form': form  })
-
+	return render(request, 'qupdate.html', context)
+	
+#active only#
 
 def payee_category_update(request):
 	if request.method == 'POST':
@@ -255,6 +265,8 @@ def payee_category_update(request):
 def payee_groupedcat_update_all(request, dpay=None, dcat=None):
 
 	dcat = request.GET.get('dcat')
+	
+	template = 'gc_payee.html'
 
 	if request.method == 'POST':
 		form = PayeeGroupedCatUpdateAll(request.POST)
@@ -273,7 +285,13 @@ def payee_groupedcat_update_all(request, dpay=None, dcat=None):
 		form = PayeeGroupedCatUpdateAll(initial={'payee': dpay, 'category': dcat })
 
 
-	return render(request, 'qupdate.html', {'form': form  })
+	context = {
+		'form': form,
+		'payee': dpay, 
+		'category': dcat,
+	}
+
+	return render(request, template, context)
 
 ### UPDATE CATEGORY'S GROUP CATEGORY ###
 
@@ -597,12 +615,7 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', ord='-tdate', gn
 		)
 	).order_by(ord, '-tid')
 
-	#filter(groupedcat__isnull=True).
-	#order_by('-tdate', '-tid')
-
 	trans_list = list(trans_query)
-
-	context = {"trans_list": trans_list}
 
 	template = loader.get_template('tlist.html')
 	paginator = Paginator(trans_list, 50)
@@ -610,7 +623,15 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', ord='-tdate', gn
 	page_number = request.GET.get("page")
 	page_obj = paginator.get_page(page_number)
 
-	context = {"page_obj": page_obj, "acc": acc, "cat": cat, "gcat": gcat, "pay": pay, "gnull": gnull, "ord": ord}
+	context = {
+		"page_obj": page_obj, 
+		"acc": acc, 
+		"cat": cat, 
+		"gcat": gcat, 
+		"pay": pay, 
+		"gnull": gnull, 
+		"ord": ord
+	}
 
 	return HttpResponse(template.render(context, request))
 

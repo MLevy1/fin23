@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'fin', 
+    'django_htmx',
     'simple_history',
     'django_select2',
     'tagging',
@@ -59,12 +59,15 @@ INSTALLED_APPS = [
     'django_pandas',
     'matplotlib',
     'mpld3',
+    'fin', 
     'projections',
     'moving',
     'issues',
     'reports',
     'recipes',
-    'django_htmx',
+    'jobs',
+    'locations',
+    'transactions',
 ]
 
 MIDDLEWARE = [

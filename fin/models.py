@@ -129,26 +129,8 @@ class Trans(models.Model):
 		return str(t)
 
 	class Meta:
-		#ordering = ["tdate", "amount"]
-		ordering = ["category"]
-
-
-class Location(models.Model):
-       location_name = models.CharField(max_length=255, unique=True, blank=True, null=True)
-       address = models.CharField(max_length=255, unique=True, blank=True, null=True)
-       city = models.CharField(max_length=255, blank=True, null=True)
-       start_date = models.DateField(verbose_name='Date', blank=True, null=True)
-       end_date = models.DateField(verbose_name='Date', null=True, blank=True)
-
-
-class Job(models.Model):
-       employer = models.CharField(max_length=255, blank=True, null=True)
-       job_title = models.CharField(max_length=255, blank=True, null=True)
-       salary = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2, blank=True, null=True)
-       bonus = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2, blank=True, null=True)
-       state = models.CharField(max_length=2, blank=True, null=True)
-       start_date = models.DateField(verbose_name='Date', blank=True, null=True)
-       end_date = models.DateField(verbose_name='Date', blank=True, null=True)
+		ordering = ["tdate", "-amount"]
+		#ordering = ["category"]
 
 class BudgetItem(models.Model):
 
