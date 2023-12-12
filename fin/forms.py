@@ -6,7 +6,6 @@ from .models import (
 	Account, 
 	Category, 
 	Payee, 
-	Trans, 
 	L1Group, 
 	GroupedCat
 )
@@ -28,19 +27,37 @@ class PayeeCategoryUpdateAll(forms.Form):
 #uses get parameters filter the list but cant be used becuase it would have to filter by l1s and not categories
 
 class PayeeGroupedCatUpdateAll(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+	def __init__(self, *args, **kwargs):
+		super(PayeeGroupedCatUpdateAll, self).__init__(*args, **kwargs)
+		for field in self.fields:
+			new_data = {
+				"class": 'form-control',
+			}
+			self.fields[str(field)].widget.attrs.update(
+				new_data
+			)
+		
+		self.fields['payee'].widget.attrs.update(
+			{
+				"hx-get": "/load-c",
+				"hx-target": "#id_category",
+				"hx-trigger": "change, load",
+				"hx-swap": "innerHTML",
+			}
+		)
 
-        # Get the selected category from the form's initial data
-        category = self.initial.get('category')
+		self.fields['category'].widget.attrs.update(
+			{
+				"hx-get": "/load-gc",
+				"hx-target": "#id_groupedcat",
+				"hx-trigger": "change, load delay:500ms",
+				"hx-swap": "innerHTML",
+			}
+		)
 
-        # Update the groupedcat queryset based on the selected category
-        if category:
-            self.fields['groupedcat'].queryset = GroupedCat.objects.filter(l1group__aligned_category=category)
-
-    payee = forms.ModelChoiceField(queryset=Payee.objects.all())
-    category = forms.ModelChoiceField(queryset=Category.objects.all())
-    groupedcat = forms.ModelChoiceField(queryset=GroupedCat.objects.all())
+	payee = forms.ModelChoiceField(queryset=Payee.objects.all())
+	category = forms.ModelChoiceField(queryset=Category.objects.all())
+	groupedcat = forms.ModelChoiceField(queryset=GroupedCat.objects.all())
 
 class CategoryGroupedCatUpdateAll(forms.Form):
 
@@ -76,32 +93,3 @@ class GroupedCatForm(ModelForm):
 		model = GroupedCat
 		fields = "__all__"
 
-class AddTransaction(ModelForm):
-	class Meta:
-		model = Trans
-		widgets = {
-			'tdate': forms.DateInput(attrs={'format': 'yyyy-mm-dd','type':'date'}),
-		}
-		fields = "__all__"
-		
-	def __init__(self, *args, **kwargs):
-			super(AddTransaction, self).__init__(*args, **kwargs)			
-
-			# Filter active accounts and payees
-			self.fields['account'].queryset = Account.objects.filter(active=True)
-			self.fields['payee'].queryset = Payee.objects.filter(active=True)
-
-class AddTransactionAll(ModelForm):
-	class Meta:
-		model = Trans
-		widgets = {
-			'tdate': forms.DateInput(attrs={'format': 'yyyy-mm-dd','type':'date'}),
-		}
-		fields = "__all__"
-		
-	def __init__(self, *args, **kwargs):
-			super(AddTransactionAll, self).__init__(*args, **kwargs)			
-
-			# Filter active accounts and payees
-			self.fields['account'].queryset = Account.objects.all()
-			self.fields['payee'].queryset = Payee.objects.all()

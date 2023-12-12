@@ -1,0 +1,1070 @@
+{% extends 'master.html' %}
+{% load humanize %}
+{% block title %}
+Budget Results
+{% endblock %}
+
+{% block content %}
+
+<h1>Budget Results</h1>
+
+	<a href="/budget/">Budget</a>
+	
+<table>
+<thead>
+	<th></th>
+	<th>Annual</th>
+	<th>Quarterly</th>
+	<th>Monthly</th>
+	<th>Bi-Weekly</th>
+	<th>Weekly</th>
+	<th>Daily</th>
+
+</thead>
+<tr>
+	<td>
+		Gross Salary:
+	</td>
+	<td>
+		${{ result.a_gross_pay|floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.q_gross_pay|floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_gross_pay|floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_gross_pay|floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_gross_pay|floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_gross_pay|floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+		Bonus:
+	</td>
+	<td>
+		${{ result.a_gross_bonus|floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.q_gross_bonus|floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_gross_bonus|floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_gross_bonus|floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_gross_bonus|floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_gross_bonus|floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	<b>Total Pay:</b>
+	</td>
+	<td>
+		<b>
+			${{ result.a_total_pay|floatformat:2|intcomma}}
+		</b>
+	</td>
+	<td>
+		<b>
+			${{ result.q_total_pay|floatformat:2|intcomma}}
+		</b>
+	</td>
+	<td>
+		<b>
+			${{ result.m_total_pay|floatformat:2|intcomma}}
+		</b>
+	</td>
+	<td>
+		<b>
+			${{ result.b_total_pay|floatformat:2|intcomma}}
+		</b>
+	</td>
+	<td>
+		<b>
+			${{ result.w_total_pay|floatformat:2|intcomma}}
+		</b>
+	</td>
+	<td>
+		<b>
+			${{ result.d_total_pay|floatformat:2|intcomma}}
+		</b>
+	</td>
+</tr>
+<tr>
+	<td></td>
+</tr>
+<tr>
+	<td>
+	Medical:
+	</td><td>
+	{{ result.a_medical|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_medical |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_medical |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_medical |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_medical |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_medical |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Dental:
+	</td><td>
+	{{ result.a_dental|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_dental |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_dental |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_dental |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_dental |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_dental |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Daycare:
+	</td><td>
+	{{ result.a_daycare|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_daycare |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_daycare |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_daycare |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_daycare |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_daycare |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	401k:
+	</td><td>
+	{{ result.a_401k|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_401k |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_401k |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_401k |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_401k |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_401k |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Train:
+	</td><td>
+	{{ result.a_train|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_train |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_train |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_train |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_train |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_train |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	<b>Total Taxable:
+	</td><td>
+	<b>{{ result.a_total_taxable|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_total_taxable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_total_taxable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_total_taxable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_total_taxable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_total_taxable |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr></tr>
+<tr>
+	<td>
+	Federal Tax:
+	</td><td>
+	{{ result.a_fedtax|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_fedtax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_fedtax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_fedtax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_fedtax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_fedtax |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Social Security Tax:
+	</td><td>
+	{{ result.a_sstax|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_sstax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_sstax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_sstax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_sstax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_sstax |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Medicare:
+	</td><td>
+	{{ result.a_medicare|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_medicare |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_medicare |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_medicare |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_medicare |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_medicare |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	NY State Tax:
+	</td><td>
+	{{ result.a_nystax|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_nystax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_nystax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_nystax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_nystax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_nystax |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	NJ State Tax:
+	</td><td>
+	{{ result.a_njstax|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_njstax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_njstax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_njstax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_njstax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_njstax |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	<b>Total Post Tax Income:
+	</td><td>
+	<b>{{ result.a_post_tax_inc|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_post_tax_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_post_tax_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_post_tax_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_post_tax_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_post_tax_inc |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr></tr>
+<tr>
+	<td>
+	Less Alyssa's Income:
+	</td><td>
+	-{{ result.a_al_taxable|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_al_taxable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_al_taxable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_al_taxable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_al_taxable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_al_taxable |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	<b>ML Post Tax Income:
+	</td><td>
+	<b>{{ result.a_ml_post_tax_inc|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_ml_post_tax_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_ml_post_tax_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_ml_post_tax_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_ml_post_tax_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_ml_post_tax_inc |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr></tr>
+<tr>
+	<td>
+	Roth 401k:
+	</td><td>
+	{{ result.a_r401k|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_r401k |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_r401k |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_r401k |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_r401k |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_r401k |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Arag:
+	</td><td>
+	{{ result.a_arag|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_arag |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_arag |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_arag |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_arag |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_arag |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Fixed Costs:
+	</td><td>
+	{{ result.a_fixed|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_fixed |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_fixed |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_fixed |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_fixed |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_fixed |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	<b>Income Post Fixed Costs:
+	</td><td>
+	<b>{{ result.a_post_fc_inc|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_post_fc_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_post_fc_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_post_fc_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_post_fc_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_post_fc_inc |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr></tr>
+<tr>
+	<td>
+	Mortgage:
+	</td><td>
+	{{ result.a_mtg|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_mtg |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_mtg |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_mtg |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_mtg |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_mtg |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Property Tax:
+	</td><td>
+	{{ result.a_ptax|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_ptax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_ptax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_ptax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_ptax |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_ptax |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	<b>Income Post Housing Costs:
+	</td><td>
+	<b>{{ result.a_post_h_inc|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_post_h_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_post_h_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_post_h_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_post_h_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_post_h_inc |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr></tr>
+<tr>
+	<td>
+	Cabin Income:
+	</td><td>
+	{{ result.avg_a_cabin_inc|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.avg_q_cabin_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.avg_m_cabin_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.avg_b_cabin_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.avg_w_cabin_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.avg_d_cabin_inc |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Cabin Expenses:
+	</td><td>
+	{{ result.a_cabin_exp|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_cabin_exp |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_cabin_exp |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_cabin_exp |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_cabin_exp |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_cabin_exp |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	<b>Income Post Cabin:
+	</td><td>
+	<b>{{ result.a_post_c_inc|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_post_c_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_post_c_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_post_c_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_post_c_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_post_c_inc |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr></tr>
+<tr>
+	<td>
+	Food:
+	</td><td>
+	{{ result.a_avg_food|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_food |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_food |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_food |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_food |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_food |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Entertainment:
+	</td><td>
+	{{ result.a_avg_entertainment|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_entertainment |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_entertainment |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_entertainment |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_entertainment |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_entertainment |floatformat:2|intcomma}}
+	</td>
+</tr>
+
+<tr>
+	<td>
+	Kids:
+	</td><td>
+	{{ result.a_avg_kids|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_kids |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_kids |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_kids |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_kids |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_kids |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Coffee:
+	</td><td>
+	{{ result.a_avg_coffee|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_coffee |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_coffee |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_coffee |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_coffee |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_coffee |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Furniture:
+	</td><td>
+	{{ result.a_avg_furniture|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_furniture |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_furniture |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_furniture |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_furniture |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_furniture |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Health:
+	</td><td>
+	{{ result.a_avg_health|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_health |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_health |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_health |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_health |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_health |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Home Services:
+	</td><td>
+	{{ result.a_avg_hs|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_hs |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_hs |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_hs |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_hs |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_hs |floatformat:2|intcomma}}
+	</td>
+</tr>
+
+<tr>
+	<td>
+	Household:
+	</td><td>
+	{{ result.a_avg_household|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_household |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_household |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_household |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_household |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_household |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Other:
+	</td><td>
+	{{ result.a_avg_other|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_other |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_other |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_other |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_other |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_other |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Personal Care:
+	</td><td>
+	{{ result.a_avg_pc|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_pc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_pc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_pc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_pc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_pc |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Shopping:
+	</td><td>
+	{{ result.a_avg_shopping|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_shopping |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_shopping |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_shopping |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_shopping |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_shopping |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Pets:
+	</td><td>
+	{{ result.a_avg_pets|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_pets |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_pets |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_pets |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_pets |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_pets |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Transport:
+	</td><td>
+	{{ result.a_avg_transport|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_transport |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_transport |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_transport |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_transport |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_transport |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	Vacation:
+	</td><td>
+	{{ result.a_avg_vacation|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_vacation |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_vacation |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_vacation |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_vacation |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_vacation |floatformat:2|intcomma}}
+	</td>
+</tr>
+
+<tr>
+	<td>
+	Alcohol:
+	</td><td>
+	{{ result.a_avg_alcohol|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_alcohol |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_alcohol |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_alcohol |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_alcohol |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_alcohol |floatformat:2|intcomma}}
+	</td>
+</tr>
+
+<tr>
+	<td>
+	Home Improvement:
+	</td><td>
+	{{ result.a_avg_hi|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_hi |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_hi |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_hi |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_hi |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_hi |floatformat:2|intcomma}}
+	</td>
+</tr>
+
+
+<tr>
+	<td>
+	Total Variable Costs:
+	</td><td>
+		{{ result.a_avg_variable|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_variable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_variable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_variable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_variable |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_variable |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr>
+	<td>
+	<b>Income Post Variable Costs:
+	</td><td>
+	<b>{{ result.a_post_var_inc|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_post_var_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_post_var_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_post_var_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_post_var_inc |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_post_var_inc |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr></tr>
+<tr>
+	<td>
+	Alyssa:
+	</td><td>
+	{{ result.a_avg_alyssa|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_alyssa |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_alyssa |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_alyssa |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_alyssa |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_alyssa |floatformat:2|intcomma}}
+	</td>
+</tr>
+
+<tr>
+	<td>
+	Gifts Given:
+	</td><td>
+	{{ result.a_avg_gifts|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_avg_gifts |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_avg_gifts |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_avg_gifts |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_avg_gifts |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_avg_gifts |floatformat:2|intcomma}}
+	</td>
+</tr>
+<tr></tr>
+<tr>
+	<td>
+	<b>Surplus / Defecit:
+	</td><td>
+	<b>{{ result.a_total|floatformat:2|intcomma}}
+	</td><td>
+		${{ result.q_total |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.m_total |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.b_total |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.w_total |floatformat:2|intcomma}}
+	</td>
+	<td>
+		${{ result.d_total |floatformat:2|intcomma}}
+	</td>
+</tr>
+</table>
+{% endblock %}
+

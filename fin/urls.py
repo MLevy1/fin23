@@ -2,24 +2,15 @@ from django.urls import path
 
 from . import views
 
-from django.views.generic.dates import ArchiveIndexView
-
 from .views import (
 	PayeeDetailView, 
 	L1GroupUpdateView, 
 	L1GroupListView, 
 	L1GroupCreateView, 
-	BudgetItemDeleteView,
-	BudgetItemUpdateView, 
-	BudgetItemCreateView, 
-	BudgetItemView, 
-	TransDeleteView,
 	CatListView, 
 	UpdateCategory, 
 	UpdateAccount, 
 	SearchResultsView, 
-	transactionMonthArchiveView, 
-	TransYearArchiveView, 
 	PayeeCreateView, 
 	AccountCreateView, 
 	CatCreateView, 
@@ -29,10 +20,8 @@ from .views import (
 	GroupedCatCreateView, 
 	GroupedCatUpdateView, 
 	GroupedCatDeleteView,
-	CatSearchView
+	CatSearchView,
 )
-
-from .models import Trans
 
 urlpatterns = [
 
@@ -70,30 +59,7 @@ urlpatterns = [
 	path('qupdate/', views.payee_category_update, name="payee-category-update"),
        path('pcupdateall/<dpay>/', views.payee_category_update_all, name="payee-category-update-all"),
 	path('pau/', views.payee_account_update, name="payee-account-update"),
-
-       path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:ord>/", views.tlist, name="tlist"),
-
-       path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:ord>/<str:gnull>", views.tlist, name="tlist"),
-
-       path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/", views.tlist, name="tlist"),
-
-	path("tlist/", views.tlist, name="tlist"),
-	
-       path('archive/', ArchiveIndexView.as_view(model=Trans, date_field="tdate", template_name="trans_years.html"), name='trans-years'),
-	path('<int:year>/<int:month>/', transactionMonthArchiveView.as_view(month_format='%m'), name="trans-monthly"),
-	path('<int:year>/', TransYearArchiveView.as_view(), name="trans-months"),
-	path("atran/<dpay>/", views.atran, name="add-trans"),
-	path("atran/", views.atran, name="add-trans"),
-
-	path("utran/<int:t_id>/", views.utran, name="update-trans"),
-       path("utran_act/<int:t_id>/", views.utran_act, name="update-trans-act"),
-	path('trans/<int:pk>/delete/', TransDeleteView.as_view(), name='delete-trans'),
-
-	path("budgetitem/", BudgetItemView.as_view(), name="list-budgetitems"),
-	path("abudgetitem/", BudgetItemCreateView.as_view(), name="add-budgetitem"),
-	path("ubudgetitem/<pk>/", BudgetItemUpdateView.as_view(), name="update-budgetitem"),
-	path('dbudgetitem/<pk>/', BudgetItemDeleteView.as_view(), name='delete-budgetitem'),
-
-
+	path("load-c/", views.load_c, name="load-c"),
+       path("load-gc/", views.load_gc, name="load-gc"),
 
 ]

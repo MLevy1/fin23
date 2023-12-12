@@ -12,7 +12,7 @@ from django.db.models import (
 #	Count
 )
 
-from fin.models import Trans
+from transactions.models import Transaction
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
@@ -40,7 +40,7 @@ pd.options.display.float_format = '{:,}'.format
 
 class testform(ReportView):
 
-	report_model = Trans
+	report_model = Transaction
 	date_field = "tdate"
 	group_by = "category"
     
@@ -71,7 +71,7 @@ class SumValueComputationField(ComputationField):
 
 
 class MonthlyCashFlow(ReportView):
-	report_model = Trans
+	report_model = Transaction
 	date_field = "tdate"
 	group_by = "category"
 	columns = ["category"]
@@ -97,7 +97,7 @@ class MonthlyCashFlow(ReportView):
 
 def ptran(request):
 	
-	qs = Trans.objects.all().values()
+	qs = Transaction.objects.all().values()
 	df = read_frame(qs)
 
 	# Convert the 'tdate' column to a datetime series
@@ -130,7 +130,7 @@ def ptran(request):
 
 def testg(request):
 	
-	qs = Trans.objects.all().values()
+	qs = Transaction.objects.all().values()
 	
 	df = read_frame(qs)
 

@@ -1,0 +1,12 @@
+<h1>{{ object.tdate }} {% if object.get_edit_url %}<small><a href='{{ object.get_edit_url }}'>Edit</a></small>{% endif %}</h1>
+
+<p>{{ object.payee }}</p>
+
+<p>{{ object.amount }}</p>
+
+{% for subtran in object.get_subtrans_children %}
+
+<h3>{{ subtran.category }}</h3>
+<h3>{{ subtran.amount }}</h3>
+
+{% endfor %}

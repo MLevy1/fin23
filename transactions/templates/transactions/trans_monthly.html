@@ -1,0 +1,73 @@
+{% extends "master.html" %}
+
+{% load humanize %}
+
+{% block title %}
+
+Transaction Archive - Monthly
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container text-center">
+
+       <h1 class="display-4" style="background-color: #151B54">Transactions</h1>
+
+       <table class="table table-dark">
+
+		<thead>
+			<th scope="col">Date</th>
+			<th scope="col">Account</th>
+			<th scope="col">Payee</th>
+			<th scope="col">Category</th>
+			<th scope="col">Grouped</th>		
+			<th scope="col">Match</th>
+			<th scope="col">Account</th>
+			<th scope="col">Sum</th>
+		</thead>
+
+              {% for t in object_list %}
+
+                     <tr>
+                            <td>
+                                   {% if t.payee.active %}
+                                          <a href="{% url 'update-trans-act' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
+                                   {% else %}
+                                          <a href="{% url 'update-trans' t.id %}?next={{ request.path|urlencode }}">{{ t.tdate }}</a>
+                                   {% endif %}
+                            </td>
+                            <td><a href="{% url 'tlist'  t.account.id 'all' 'all' 'all' %}"> {{ t.account }}</a></td>
+                            <td><a href="{% url 'tlist' 'all' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a> <a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}">edit</a> </td>
+                            <td><a href="{% url 'tlist' 'all' t.category.id 'all' 'all' %}"> {{ t.category }}</a></td>
+                            <td>
+                                   {% if t.groupedcat %}
+                                   <a href="{% url 'tlist' 'all' 'all' t.groupedcat.id 'all' %}">{{ t.groupedcat }}</a></td>
+                                   {% endif %}
+                            <td>
+					{{ t.match }}
+				</td>
+                            <td>
+                                   ${{ t.amount|floatformat:"2g" }} 
+                            </td>
+				<td>
+					{{ t.cumsum|floatformat:"2g" }}
+				</td>
+				<td>
+                                   <a href="{% url 'delete-trans' t.id %}">delete</a>
+                            </td>
+			</tr>
+		{% endfor %}
+	</table>
+
+	<div class="container text-center">
+		{% if previous_month %}
+		<a href='/{{previous_month|date:"Y/m"}}'>{{ previous_month|date:"F Y" }}</a>
+		{% endif %}
+		{% if next_month %}
+		<a href='/{{next_month|date:"Y/m"}}'>{{ next_month|date:"F Y" }}</a>
+		{% endif %}
+	</div>
+
+</div>
+{% endblock %}

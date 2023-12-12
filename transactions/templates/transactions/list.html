@@ -1,0 +1,18 @@
+{% extends 'master.html' %}
+
+
+{% block content %}
+
+<h1>New Transaction List</h1>
+
+<a href='{% url "transactions:create" %}'>Add Transaction</a>
+
+<ul>
+       {% for x in object_list %}
+
+              <li><a href="{{ x.get_absolute_url }}">{{ x.tdate }} {{ x.payee }} {{ x.amount }}</a></li>
+
+       {% endfor %}
+</ul>
+
+{% endblock content %}

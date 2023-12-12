@@ -1,0 +1,29 @@
+{% extends 'master.html' %}
+{% block title %}
+Update Trans
+{% endblock %}
+
+{% block content %}
+
+<h1>Update Trans</h1>
+
+<form action="" method=POST>
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    {% if form2 %}
+
+       <h3>Sub Transactions</h3>
+
+       {{ form2.as_p }}
+
+    {% endif %}
+
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+
+    <br/>
+
+    <input type="submit" value="Update" class="btn btn-secondary">
+
+{% endblock %}

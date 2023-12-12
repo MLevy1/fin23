@@ -8,21 +8,19 @@ from .models import (
 	Category, 
 	Payee, 
 	Account, 
-	Trans, 
-	BudgetItem, 
 	L1Group, 
 	GroupedCat
 )
+
+from projections.models import BudgetedItem
 
 from .forms import (
 	CategoryGroupedCatUpdateAll, 		
 	PayeeGroupedCatUpdateAll, 
 	AddPayee, 
-	AddTransaction, 
 	PayeeMergeForm, 
 	PayeeCategoryUpdate, 
 	PayeeAccountUpdate, 
-	AddTransactionAll, 
 	PayeeCategoryUpdateAll
 )
 
@@ -52,6 +50,11 @@ from django.views.generic import (
 	DeleteView
 )
 
+from transactions.models import (
+       Transaction,
+       SubTransaction,
+)
+
 from django.utils import timezone
 
 from django.apps import apps
@@ -67,36 +70,33 @@ PayeeFormSet = modelformset_factory(Payee, form=AddPayee, extra=0)
 def get_start_date():
 	return datetime.now() - timedelta(days=1000)
 
+@login_required
 def main(request):
 	template = loader.get_template('main.html')
-	tables = [m._meta.db_table for c in apps.get_app_configs() for m in c.get_models()]
-	print(tables)
-	print('hi')
 	return HttpResponse(template.render())
 
 #++++++++++++
 #  PAYEES
 #++++++++++++
 
-
 def payees(request, a='act', o='payee'):
 
 	if a=="all":
 		payees = Payee.objects.all().annotate(
-	 		trans_count=Count('trans', filter=Q(trans__groupedcat__isnull=True)),
-	 		total_transactions=Sum('trans__amount'),
-	 		most_recent_transaction=Max('trans__tdate')
-    		).order_by(o)
+	 		trans_count=Count('transaction', filter=Q(transaction__subtransaction__groupedcat__isnull=True)),
+	 		total_transactions=Sum('transaction__subtransaction__amount'),
+	 		most_recent_transaction=Max('transaction__tdate')
+		).order_by(o)
 
 	else:
 		payees = Payee.objects.filter(active=True).annotate(
-	 	trans_count=Count('trans', filter=Q(trans__groupedcat__isnull=True)),
-	 	total_transactions=Sum('trans__amount'),
-	 	most_recent_transaction=Max('trans__tdate')
+			trans_count=Count('transaction', filter=Q(transaction__subtransaction__groupedcat__isnull=True)),
+			total_transactions=Sum('transaction__subtransaction__amount'),
+			most_recent_transaction=Max('transaction__tdate')
     		).order_by(o)
 
-	nogcat = Trans.objects.filter(groupedcat__isnull=True)
-
+	nogcat = Transaction.objects.filter(subtransaction__groupedcat__isnull=True)
+	
 	tcount = nogcat.count()
 	template = 'payees.html'
 	paginator = Paginator(payees, 25)
@@ -111,7 +111,6 @@ def payees(request, a='act', o='payee'):
 	}
 
 	return render(request, template, context)
-
 
 ### SEARCH ###
 
@@ -171,7 +170,6 @@ class UpdatePayee(UpdateView):
 		
 		return reverse_lazy('list-payees', kwargs={"a": "act", "o": "payee"})
 	
-
 ### INACTIVATE PAYEE ###
 
 def make_inactive(request, pk):
@@ -201,7 +199,7 @@ def merge_payees(request, dpay=None):
 			target_payee = form.cleaned_data['target_payee']
 
 			# Update transactions with the target payee to use the source payee
-			Trans.objects.filter(payee=target_payee).update(payee=source_payee)
+			Transaction.objects.filter(payee=target_payee).update(payee=source_payee)
 
 			# Delete the target payee
 			target_payee.delete()
@@ -220,15 +218,17 @@ def payee_category_update_all(request, dpay=None):
 	if request.method == 'POST':
 		form = PayeeCategoryUpdateAll(request.POST or None)
 		
-		form2 = PayeeGroupedCatUpdateAll(request.POST or None)
-		
 		next = request.POST.get('next', '/')
 
 		if form.is_valid():
 			source_payee = form.cleaned_data['source_payee']
 			target_category = form.cleaned_data['target_category']
-			Trans.objects.filter(payee=source_payee).update(category=target_category)
 
+			qs = Transaction.objects.filter(payee=source_payee)
+			
+			for t in qs:
+				t.get_subtrans_children().update(category=target_category)
+				
 			return redirect(next)
   
 	else:
@@ -251,7 +251,7 @@ def payee_category_update(request):
 		if form.is_valid():
 			source_payee = form.cleaned_data['source_payee']
 			target_category = form.cleaned_data['target_category']
-			Trans.objects.filter(payee=source_payee).update(category=target_category)
+			Transaction.objects.filter(payee=source_payee).update(category=target_category)
 
 			return redirect('/qupdate/') # Redirect placholder
   
@@ -266,6 +266,9 @@ def payee_groupedcat_update_all(request, dpay=None, dcat=None):
 
 	dcat = request.GET.get('dcat')
 	
+	if dcat is None and dpay is not None:
+		pass
+	
 	template = 'gc_payee.html'
 
 	if request.method == 'POST':
@@ -277,7 +280,12 @@ def payee_groupedcat_update_all(request, dpay=None, dcat=None):
 			payee = form.cleaned_data['payee']
 			category = form.cleaned_data['category']
 			groupedcat = form.cleaned_data['groupedcat']
-			Trans.objects.filter(payee=payee).filter(category=category).filter(groupedcat__isnull=True).update(groupedcat=groupedcat)
+
+			qs = Transaction.objects.filter(payee=payee)
+
+			for t in qs:
+				t.get_subtrans_children().filter(category=category).filter(groupedcat__isnull=True or groupedcat is None).update(groupedcat = groupedcat)
+
 			return redirect(next)
   
 	else:
@@ -293,6 +301,40 @@ def payee_groupedcat_update_all(request, dpay=None, dcat=None):
 
 	return render(request, template, context)
 
+def load_c(request, payee_id=None):
+	
+	payee_id = request.GET.get("payee")
+
+	if payee_id:
+		cats =Category.objects.filter(transaction__payee=payee_id).distinct()
+	else:
+		cats = Category.objects.all()
+		
+
+	template = "c-options.html"
+
+	context = { "cats": cats }
+
+	return render(request, template, context)
+
+
+def load_gc(request, category_id=None):
+	
+	category_id = request.GET.get("category")
+
+	if category_id:
+		groupedcats = GroupedCat.objects.filter(l1group__aligned_category=category_id)
+	else:
+		groupedcats = GroupedCat.objects.all()
+		
+
+	template = "gc-options.html"
+
+	context = { "groupedcats": groupedcats }
+
+	return render(request, template, context)
+
+
 ### UPDATE CATEGORY'S GROUP CATEGORY ###
 
 def category_groupedcat_update_all(request, dcat=None):
@@ -305,7 +347,7 @@ def category_groupedcat_update_all(request, dcat=None):
 		if form.is_valid():
 			category = form.cleaned_data['category']
 			groupedcat = form.cleaned_data['groupedcat']
-			Trans.objects.filter(category=category).filter(groupedcat__isnull=True).update(groupedcat=groupedcat)
+			Transaction.objects.filter(category=category).filter(groupedcat__isnull=True).update(groupedcat=groupedcat)
 
 			return redirect(reverse_lazy('list-categories'))
   
@@ -325,7 +367,7 @@ def payee_account_update(request):
 		if form.is_valid():
 			source_payee = form.cleaned_data['source_payee']
 			target_account = form.cleaned_data['target_account']
-			Trans.objects.filter(payee=source_payee).update(account=target_account)
+			Transaction.objects.filter(payee=source_payee).update(account=target_account)
 
 			return redirect('/qupdate/') # Redirect placholder
   
@@ -385,12 +427,13 @@ class CatSearchView(ListView):
 	context_object_name = "page_obj"
 
 	def get_queryset(self):
+		
 		results = Category.objects.filter(category__contains=self.request.GET.get("q")).annotate(
 			trans_count=Count('trans'),
 			total_transactions=Sum('trans__amount'),
 			most_recent_transaction=Max('trans__tdate')
 		)
-	 
+
 		paginator = Paginator(results, 25)
 		page_number = self.request.GET.get("page")
 		page_obj = paginator.get_page(page_number)
@@ -418,29 +461,36 @@ class CatListView(ListView):
 		ann_budget = float(ann_budget)
 
 		for c in categories:
-			trans_count = Trans.objects.filter(category=c, groupedcat__isnull=True).count() or 0
-			trans_total = Trans.objects.filter(category=c, tdate__gte=start_date).aggregate(Sum('amount'))['amount__sum'] or 0
+			trans_count = Transaction.objects.filter(category=c, subtransaction__groupedcat__isnull=True).count() or 0
+			
+			trans_total = Transaction.objects.filter(category=c, tdate__gte=start_date).aggregate(Sum('amount'))['amount__sum'] or 0
+			
 			ann_total = float(trans_total) * 365/1000
+			
 			ann_total = float(ann_total)
-			budget_items = BudgetItem.objects.filter(itemCat=c)
+			
+			budget_items = BudgetedItem.objects.filter(itemCat=c)
+			
 			budget_total = sum(item.annualAmt() for item in budget_items)
+			
 			budget_total = float(budget_total)
 
 			if c.active != False:
 				ann_actual += ann_total
 				ann_budget += budget_total
-
-			data.append({
-				'pk': c.pk,
-				'active': c.active,
-				'category': c,
-				'trans_count': trans_count,
-				'trans_total': trans_total,
-				'ann_total': ann_total,
-				'budget_total': budget_total,
-				'test_ann_act': ann_actual,
-				'test_ann_bud': ann_budget,
-			})
+				
+			if trans_count>0:
+				data.append({
+					'pk': c.pk,
+					'active': c.active,
+					'category': c,
+					'trans_count': trans_count,
+					'trans_total': trans_total,
+					'ann_total': ann_total,
+					'budget_total': budget_total,
+					'test_ann_act': ann_actual,
+					'test_ann_bud': ann_budget,
+				})
 
 		surplus = ann_budget - ann_actual
 
@@ -449,7 +499,7 @@ class CatListView(ListView):
 			'ann_budget': ann_budget,
 			'surplus': surplus,
 		})
-
+		
 		paginator = Paginator(data, 25)
 		page_number = self.request.GET.get("page")
 		page_obj = paginator.get_page(page_number)
@@ -458,7 +508,7 @@ class CatListView(ListView):
 
 	def get_context_data(self,**kwargs):
 		
-		nogcat = Trans.objects.filter(groupedcat__isnull=True)
+		nogcat = Transaction.objects.filter(subtransaction__groupedcat__isnull=True)
 		tcount = nogcat.count()
 		
 		context = super(CatListView,self).get_context_data(**kwargs)
@@ -522,192 +572,3 @@ class GroupedCatDeleteView(DeleteView):
 	model = GroupedCat
 	success_url = reverse_lazy('list-gc')
 	template_name = "confirm_delete.html"
-	
-#+++++++++++++++
-#  TRANSACTIONS
-#+++++++++++++++
-
-### VIEW ALL TRANS ###
-
-def transactions(request):
-	transactions = Trans.objects.all().order_by('tdate')
-	template = loader.get_template('transactions.html')
-	paginator = Paginator(transactions, 50)
-
-	page_number = request.GET.get("page")
-	page_obj = paginator.get_page(page_number)
-
-	context = {"page_obj": page_obj}
-
-	return HttpResponse(template.render(context, request))
-
-### ARCHIVE VIEWS
-
-class TransYearArchiveView(YearArchiveView):
-	queryset = Trans.objects.all()
-	date_field = "tdate"
-	make_object_list = True
-	template_name = "trans_months.html"
-    
-class transactionMonthArchiveView(MonthArchiveView):
-	queryset = Trans.objects.all().annotate(cumsum=Window(Sum('amount'), order_by=(F('tdate').asc(), F('tid').asc())))
-	date_field = "tdate"
-	template_name = "trans_monthly.html"
-
-### ADD TRANSACTION ###
-
-def atran(request, dpay=None):
-    
-  context = {}
-
-  lt=Trans.objects.all().order_by("-tid").first().tid
-	
-  nt=lt+1
-
-  if request.method == 'POST':
-    form = AddTransaction(request.POST)
-    
-    if form.is_valid():
-      form.save()
-      lt=Trans.objects.all().order_by("-tid").first().tid
-      nt=lt+1
-      la=Trans.objects.all().order_by("-tid").first().account
-      ld=Trans.objects.all().order_by("-tid").first().tdate
-      form = AddTransaction(initial={'tid': nt, 'account': la, 'tdate': ld })
-
-  else:
-    form = AddTransaction(initial={'tid': nt, 'payee': dpay })
-
-  context['form'] = form
-
-  return render(request, "add.html", context)
-
-### TLIST ###
-
-def tlist(request, acc='all', cat='all', gcat='all', pay='all', ord='-tdate', gnull='y'):
-  
-	filters = {}
-
-	if acc != 'all':
-		filters['account'] = acc
-
-	if cat != 'all':
-		filters['category'] = cat
-	
-	if gcat != 'all':
-		filters['groupedcat'] = gcat
-	  
-	if pay != 'all':
-		filters['payee'] = pay
-	
-	if gnull != 'y':
-		trans_query = Trans.objects.all()
-	else:
-		trans_query = Trans.objects.filter(groupedcat__isnull=True)
-
-	if filters:
-		trans_query = trans_query.filter(**filters)
-
-	trans_query = trans_query.annotate(
-		cumsum=Window(
-			Sum('amount'),
-			order_by=(F('tdate').asc(), F('tid').asc())
-		)
-	).order_by(ord, '-tid')
-
-	trans_list = list(trans_query)
-
-	template = loader.get_template('tlist.html')
-	paginator = Paginator(trans_list, 50)
-
-	page_number = request.GET.get("page")
-	page_obj = paginator.get_page(page_number)
-
-	context = {
-		"page_obj": page_obj, 
-		"acc": acc, 
-		"cat": cat, 
-		"gcat": gcat, 
-		"pay": pay, 
-		"gnull": gnull, 
-		"ord": ord
-	}
-
-	return HttpResponse(template.render(context, request))
-
-### UPDATE TRANSACTION ###
-
-def utran_act(response, t_id):
-
-  tran = Trans.objects.get(pk=t_id)
-
-  form = AddTransaction(response.POST or None, instance=tran)
-
-  next = response.POST.get('next', '/')
-
-  if form.is_valid():
-    form.save()
-    
-    return redirect(next)
-
-  return render(response, 'update.html', {"tran": tran, 'form': form})
-
-def utran(response, t_id):
-
-  tran = Trans.objects.get(pk=t_id)
-
-  form = AddTransactionAll(response.POST or None, instance=tran)
-
-  next = response.POST.get('next', '/')
-
-  if form.is_valid():
-    form.save()
-    
-    return redirect(next)
-
-  return render(response, 'update.html', {"tran": tran, 'form': form})
-
-### DELETE TRANSACTION ###
-
-class TransDeleteView(DeleteView):
-    model = Trans
-    success_url = reverse_lazy('main')
-    template_name = "confirm_delete.html"
-
-
-'''
-**************************
-      BUDGET ITEMS
-**************************
-'''
-
-### VIEW BUDGET ITEMS ###
-
-class BudgetItemView(ListView):
-	model = BudgetItem
-	template_name = "budgetitems.html"
-
-### ADD BUDGET ITEM ###
-
-class BudgetItemCreateView(CreateView):
-	model = BudgetItem
-	fields = "__all__"
-	template_name = "add.html"
-	success_url = reverse_lazy('budgetitems')
-
-### UPDATE BUDGET ITEM ###
-
-class BudgetItemUpdateView(UpdateView):
-	model = BudgetItem
-	fields = "__all__"
-	template_name = "update.html"
-	success_url = reverse_lazy('budgetitems')
-
-
-### DELETE BUDGET ITEM ###
-
-class BudgetItemDeleteView(DeleteView):
-	model = BudgetItem
-	success_url = reverse_lazy('budgetitems')
-	template_name = "confirm_delete.html"
-

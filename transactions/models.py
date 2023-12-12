@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.urls import reverse
+
 from django_pandas.managers import DataFrameManager
 
 from fin.models import (
@@ -22,8 +24,29 @@ class Transaction(models.Model):
 	note = models.CharField(max_length=255, null=True, blank=True)
 	oldCat = models.CharField(max_length=255, null=True, blank=True)
 	oldPayee = models.CharField(max_length=255, null=True, blank=True)
-
+	
 	objects = DataFrameManager()
+	
+	def get_absolute_url(self):
+		return reverse("transactions:detail", kwargs={"id": self.id})
+
+	def get_hx_url(self):
+		return reverse("transactions:hx-detail", kwargs={"id": self.id})
+
+	def get_transaction_total(self):
+		tsum = 0
+		for t in self.subtransaction_set.all():
+			tsum += t.amount
+		return tsum
+
+	def get_edit_url(self):
+		return reverse("transactions:update", kwargs={"id": self.id})
+
+	def get_delete_url(self):
+		return reverse("transactions:delete", kwargs={"id": self.id})
+
+	def get_subtrans_children(self):
+		return self.subtransaction_set.all()
 
 	def __str__(self):
 
@@ -42,6 +65,19 @@ class SubTransaction(models.Model):
 	category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True, blank=True)
 	groupedcat = models.ForeignKey(GroupedCat, on_delete=models.PROTECT, null=True, blank=True)
 	note = models.CharField(max_length=255, null=True, blank=True)
+
+	def get_absolute_url(self):
+		return self.trans.get_absolute_url()
+
+	def get_delete_url(self):
+		return reverse("transactions:subtran-delete", kwargs = {"parent_id": self.trans.id, "id": self.id})
+
+	def get_hx_edit_url(self):
+		kwargs = {
+			"parent_id": self.trans.id,
+			"id": self.id
+		}
+		return reverse("transactions:hx-subtran-update", kwargs=kwargs)
 
 	class Meta:
 		ordering = ["-amount"]

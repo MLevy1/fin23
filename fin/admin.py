@@ -6,7 +6,6 @@ from .models import (
 	Category, 
 	Payee, 
 	Trans, 
-	BudgetItem, 
 	L1Group, 
 	GroupedCat
 )
@@ -49,6 +48,5 @@ admin.site.register(Account)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Payee, PayeeAdmin)
 admin.site.register(Trans)
-admin.site.register(BudgetItem)
 admin.site.register(L1Group, L1GroupAdmin)
 admin.site.register(GroupedCat)

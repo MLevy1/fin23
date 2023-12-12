@@ -3,6 +3,14 @@ from datetime import (
 	timedelta
 )
 
+from django.views.generic import (
+	ListView, 
+	CreateView, 
+	UpdateView, 
+	DeleteView
+)
+
+
 from django.shortcuts import render
 
 from django.db.models import (
@@ -10,11 +18,47 @@ from django.db.models import (
 	Avg,
 )
 
-from fin.models import Trans
+from transactions.models import Transaction
+
+from .models import BudgetedItem
 
 from .forms import Budget
 
+from django.urls import reverse_lazy
+
 # Create your views here.
+### VIEW BUDGET ITEMS ###
+
+class BudgetItemView(ListView):
+	model = BudgetedItem
+	template_name = "budgetitems.html"
+
+### ADD BUDGET ITEM ###
+
+class BudgetItemCreateView(CreateView):
+	model = BudgetedItem
+	fields = "__all__"
+	template_name = "add.html"
+	success_url = reverse_lazy('budgetitems')
+
+### UPDATE BUDGET ITEM ###
+
+class BudgetItemUpdateView(UpdateView):
+	model = BudgetedItem
+	fields = "__all__"
+	template_name = "update.html"
+	success_url = reverse_lazy('budgetitems')
+
+
+### DELETE BUDGET ITEM ###
+
+class BudgetItemDeleteView(DeleteView):
+	model = BudgetedItem
+	success_url = reverse_lazy('budgetitems')
+	template_name = "confirm_delete.html"
+
+
+
 
 def budget(response):
 	if response.method=="POST":
@@ -314,7 +358,7 @@ def budget(response):
 		res["w_cabin_exp"] = aval /52
 		res["d_cabin_exp"] = aval /365
 
-		avg_cabin_inc = Trans.objects.filter(payee__payee__exact="rental income: tn").aggregate(Avg("amount")).get("amount__avg")
+		avg_cabin_inc = Transaction.objects.filter(payee__payee__exact="rental income: tn").aggregate(Avg("amount")).get("amount__avg")
 
 		aval = res["avg_a_cabin_inc"] = avg_a_cabin_inc = avg_cabin_inc*12
 		res["avg_q_cabin_inc"] = aval /4
@@ -361,7 +405,7 @@ def budget(response):
 
 		a_avg_variable = 0
 
-		sum_food = Trans.objects.filter(category__category__exact="food").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_food = Transaction.objects.filter(category__category__exact="food").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_food"] = a_avg_food = float(sum_food) * (365/denom)
 		res["q_avg_food"] = aval /4
@@ -372,7 +416,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_food
 
-		sum_entertainment = Trans.objects.filter(category__category__exact="entertainment").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_entertainment = Transaction.objects.filter(category__category__exact="entertainment").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_entertainment"] = a_avg_entertainment = float(sum_entertainment) * (365/denom)
 		res["q_avg_entertainment"] = aval /4
@@ -383,7 +427,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_entertainment
 
-		sum_kids = Trans.objects.filter(category__category__exact="kids").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_kids = Transaction.objects.filter(category__category__exact="kids").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_kids"] = a_avg_kids = float(sum_kids) * (365/denom)
 		res["q_avg_kids"] = aval /4
@@ -394,7 +438,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_kids
 
-		sum_coffee = Trans.objects.filter(category__category__exact="coffee").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_coffee = Transaction.objects.filter(category__category__exact="coffee").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_coffee"] = a_avg_coffee = float(sum_coffee) * (365/denom)
 		res["q_avg_coffee"] = aval /4
@@ -405,7 +449,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_coffee
 
-		sum_furniture = Trans.objects.filter(category__category__exact="furniture").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_furniture = Transaction.objects.filter(category__category__exact="furniture").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_furniture"] = a_avg_furniture = float(sum_furniture) * (365/denom)
 		res["q_avg_furniture"] = aval /4
@@ -416,7 +460,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_furniture
 
-		sum_health = Trans.objects.filter(category__category__exact="health").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_health = Transaction.objects.filter(category__category__exact="health").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_health"] = a_avg_health = float(sum_health) * (365/denom)
 		res["q_avg_health"] = aval /4
@@ -427,7 +471,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_health
 
-		sum_hs = Trans.objects.filter(category__category__exact="home services").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_hs = Transaction.objects.filter(category__category__exact="home services").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_hs"] = a_avg_hs = float(sum_hs) * (365/denom)
 		res["q_avg_hs"] = aval /4
@@ -438,7 +482,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_hs
 
-		sum_household = Trans.objects.filter(category__category__exact="household").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_household = Transaction.objects.filter(category__category__exact="household").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_household"] = a_avg_household = float(sum_household) * (365/denom)
 		res["q_avg_household"] = aval /4
@@ -449,7 +493,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_household
 
-		sum_other = Trans.objects.filter(category__category__exact="other").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_other = Transaction.objects.filter(category__category__exact="other").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_other"] = a_avg_other = float(sum_other) * (365/denom)
 		res["q_avg_other"] = aval /4
@@ -460,7 +504,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_other
 
-		sum_pc = Trans.objects.filter(category__category__exact="personal care").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_pc = Transaction.objects.filter(category__category__exact="personal care").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_pc"] = a_avg_pc = float(sum_pc) * (365/denom)
 		res["q_avg_pc"] = aval /4
@@ -471,7 +515,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_pc
 
-		sum_pets = Trans.objects.filter(category__category__exact="pets").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_pets = Transaction.objects.filter(category__category__exact="pets").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_pets"] = a_avg_pets = float(sum_pets) * (365/denom)
 		res["q_avg_pets"] = aval /4
@@ -482,7 +526,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_pets
 
-		sum_shopping = Trans.objects.filter(category__category__exact="shopping").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_shopping = Transaction.objects.filter(category__category__exact="shopping").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_shopping"] = a_avg_shopping = float(sum_shopping) * (365/denom)
 		res["q_avg_shopping"] = aval /4
@@ -493,7 +537,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_shopping
 
-		sum_transport = Trans.objects.filter(category__category__exact="transport").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_transport = Transaction.objects.filter(category__category__exact="transport").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_transport"] = a_avg_transport = float(sum_transport) * (365/denom)
 		res["q_avg_transport"] = aval /4
@@ -504,7 +548,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_transport
 
-		sum_vacation = Trans.objects.filter(category__category__exact="vacation").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_vacation = Transaction.objects.filter(category__category__exact="vacation").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_vacation"] = a_avg_vacation = float(sum_vacation) * (365/denom)
 		res["q_avg_vacation"] = aval /4
@@ -515,7 +559,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_vacation
 
-		sum_alcohol = Trans.objects.filter(category__category__exact="alcohol").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_alcohol = Transaction.objects.filter(category__category__exact="alcohol").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_alcohol"] = a_avg_alcohol = float(sum_alcohol) * (365/denom)
 		res["q_avg_alcohol"] = aval /4
@@ -526,7 +570,7 @@ def budget(response):
 
 		a_avg_variable += a_avg_alcohol
 
-		sum_hi = Trans.objects.filter(category__category__exact="home improvement").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_hi = Transaction.objects.filter(category__category__exact="home improvement").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_hi"] = a_avg_hi = float(sum_hi) * (365/denom)
 		res["q_avg_hi"] = aval /4
@@ -551,7 +595,7 @@ def budget(response):
 		res["w_post_var_inc"] = aval /52
 		res["d_post_var_inc"] = aval /365
 
-		sum_alyssa = Trans.objects.filter(category__category__exact="alyssa").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_alyssa = Transaction.objects.filter(category__category__exact="alyssa").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_alyssa"] = a_avg_alyssa = float(sum_alyssa) * (365/denom)
 		res["q_avg_alyssa"] = aval /4
@@ -560,7 +604,7 @@ def budget(response):
 		res["w_avg_alyssa"] = aval /52
 		res["d_avg_alyssa"] = aval /365
 
-		sum_gifts = Trans.objects.filter(category__category__exact="gifts given").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
+		sum_gifts = Transaction.objects.filter(category__category__exact="gifts given").filter(tdate__gte=datetime.now()-timedelta(days=1000)).aggregate(Sum("amount")).get("amount__sum")
 
 		aval = res["a_avg_gifts"] = a_avg_gifts = float(sum_gifts) * (365/denom)
 		res["q_avg_gifts"] = aval /4

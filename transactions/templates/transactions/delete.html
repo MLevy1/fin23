@@ -1,0 +1,19 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+{% if object %}
+
+<form method='POST' action='.'>
+
+       {% csrf_token %}
+
+       <p>Delete {{ object.tdate }} {{ object.category}} - {{ object.account }} {{object.groupedcat }} - {{ object.payee }} {{ object.amount }}?</p>
+
+       <button type='submit'>Yes</button>
+       <a href="{% url 'main' %}">Cancel</a>
+</form>
+
+{% endif %}
+
+{% endblock content %}
