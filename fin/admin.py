@@ -5,40 +5,47 @@ from .models import (
 	Account, 
 	Category, 
 	Payee, 
-	Trans, 
 	L1Group, 
 	GroupedCat
 )
 
-class PayeeAdmin(admin.ModelAdmin):
-	list_display=[
-		'id',
-		'payee',
-		'slug',
-		'active'
-	]
-	search_fields = ['payee']
+from transactions.models import (
+	Transaction
+)
 
 class GroupedCategoryInline(admin.StackedInline):
 	model = GroupedCat
+	list_display = [
+		'l1group',
+		'category'
+	]
+	readonly_fields = ['pk']
 	extra = 0
 
 class L1GroupAdmin(admin.ModelAdmin):
 	inlines = [GroupedCategoryInline]
 	list_display = [
 		'l1group',
-		'active',
-		'aligned_category'
+		'active'
 	]
 
+
 class TransInline(admin.StackedInline):
-	model = Trans
+	model = Transaction
 	extra = 0
 	max_num = 25
 
 
-class CategoryAdmin(admin.ModelAdmin):
+class PayeeAdmin(admin.ModelAdmin):
 	inlines = [TransInline]
+	list_display=[
+		'id',
+		'payee',
+		'active'
+	]
+	search_fields = ['payee']
+
+class CategoryAdmin(admin.ModelAdmin):
 	list_display = [
 		'category',
 		'active'
@@ -47,6 +54,5 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Account)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Payee, PayeeAdmin)
-admin.site.register(Trans)
 admin.site.register(L1Group, L1GroupAdmin)
 admin.site.register(GroupedCat)

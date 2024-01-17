@@ -26,7 +26,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 		<title>{% block title %}{% endblock %}</title>
-
+              {% load humanize %}
 		{% load bootstrap5 %}
 		{% bootstrap_css %}
 		{% bootstrap_javascript %}
@@ -47,7 +47,7 @@
 					<div class="collapse navbar-collapse" id="navbarNavDropdown">
 						<ul class="navbar-nav">
 							<li class="nav-item">
-								<a class="nav-link" href="{% url 'main' %}">Home</a>
+								<a class="nav-link" href="{% url 'main' %}">1 Home</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="/admin/">Admin</a>
@@ -63,8 +63,8 @@
 									Accounts
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li><a class="dropdown-item" href="{% url 'list-accounts' 'all' %}">View</a></li>
-									<li><a class="dropdown-item" href="{% url 'add-account' %}">Add New</a></li>
+									<li><a class="dropdown-item" href="{% url 'list-accounts' 'act' %}">2 View</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-account' %}">3 Add New</a></li>
 								</ul>
 							</li>
 							<li class="nav-item dropdown">
@@ -72,13 +72,13 @@
 									Categories
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li><a class="dropdown-item" href="{% url 'list-categories' %}">View</a></li>
-									<li><a class="dropdown-item" href="{% url 'add-category' %}">Add New</a></li>
-									<li><a class="dropdown-item" href="{% url 'payee-category-update' %}">Payee - Category Update (Active)</a></li>
-                                                               <li><a class="dropdown-item" href="{% url 'list-l1groups' %}">View L1 Groups</a></li>
-                                                               <li><a class="dropdown-item" href="{% url 'add-l1group' %}">Add L1 Group</a></li>
-                                                               <li><a class="dropdown-item" href="{% url 'list-gc' %}">View Grouped Cats</a></li>
-                                                               <li><a class="dropdown-item" href="{% url 'add-gc' %}">Add Grouped Cat</a></li>
+									<li><a class="dropdown-item" href="{% url 'list-categories' %}">5 View</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-category' %}">6 Add New</a></li>
+									<li><a class="dropdown-item" href="{% url 'payee-category-update-all' %}">17 Payee - Category Update</a></li>
+                                                               <li><a class="dropdown-item" href="{% url 'list-l1groups' %}">9 View L1 Groups</a></li>
+                                                               <li><a class="dropdown-item" href="{% url 'add-l1group' %}">22 Add L1 Group</a></li>
+                                                               <li><a class="dropdown-item" href="{% url 'list-gc' %}">19 View Grouped Cats</a></li>
+                                                               <li><a class="dropdown-item" href="{% url 'add-gc' %}">12 Add Grouped Cat</a></li>
 
 								</ul>
 							</li>
@@ -87,9 +87,9 @@
 									Payees
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li><a class="dropdown-item" href="{% url 'list-payees' 'all' '-trans_count' %}" >View</a></li>
-									<li><a class="dropdown-item" href="{% url 'add-payee' %}">Add New</a></li>
-                                                               <li><a class="dropdown-item" href="{% url 'payee-account-update' %}">Payee - Account Update</a></li>
+									<li><a class="dropdown-item" href="{% url 'list-payees' 'act' '-trans_count' %}" >13 View</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-payee' %}">23 Add New</a></li>
+                                                               <li><a class="dropdown-item" href="{% url 'payee-account-update' %}">18 Payee - Account Update</a></li>
 									
 								</ul>
 							</li>
@@ -98,8 +98,8 @@
 									Transactions
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li><a class="dropdown-item" href="{% url 'trans-years' %}">View</a></li>
-									<li><a class="dropdown-item" href="{% url 'add-trans' %}">Add New</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:list' %}">View</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:create' %}">Add New</a></li>
 								</ul>
 							</li>
 						</ul>

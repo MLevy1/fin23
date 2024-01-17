@@ -42,7 +42,7 @@ from .forms import (
 )
 
 
-from .models import (
+from transactions.models import (
 	Transaction,
 	SubTransaction
 )
@@ -78,7 +78,9 @@ class TransYearArchiveView(YearArchiveView):
 	template_name = "transactions/trans_months.html"
 
 class transactionMonthArchiveView(MonthArchiveView):
-	queryset = Transaction.objects.all().annotate(cumsum=Window(Sum('amount'), order_by=(F('tdate').asc(), F('tid').asc())))
+
+	queryset = Transaction.objects.all().annotate(cumsum=Window(Sum('subtransaction__amount'), order_by=(F('tdate').asc(), F('tid').asc())))
+	
 	date_field = "tdate"
 	template_name = "transactions/trans_monthly.html"
 
@@ -110,9 +112,11 @@ def atran(request, dpay=None):
 
 	return render(request, "add.html", context)
 
+
 ### TLIST ###
 
-def tlist(request, acc='all', cat='all', gcat='all', pay='all', ord='-tdate', gnull='y'):
+
+def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-tdate'):
   
 	filters = {}
 
@@ -120,37 +124,41 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', ord='-tdate', gn
 		filters['account'] = acc
 
 	if cat != 'all':
-		filters['category'] = cat
+		filters['subtransaction__groupedcat__category'] = cat
 	
 	if gcat != 'all':
-		filters['groupedcat'] = gcat
+		filters['subtransaction__groupedcat'] = gcat
 	  
 	if pay != 'all':
 		filters['payee'] = pay
+
+	if l1 != 'all':
+		filters['subtransaction__groupedcat__l1group'] = l1
 	
-	if gnull != 'y':
-		trans_query = Transaction.objects.all()
-	else:
-		trans_query = Transaction.objects.filter(subtransaction__groupedcat__isnull=True)
+	trans_query = Transaction.objects.all()
 
 	if filters:
 		trans_query = trans_query.filter(**filters)
 
 	trans_query = trans_query.annotate(
 		cumsum=Window(
-			Sum('amount'),
+			Sum('subtransaction__amount'),
 			order_by=(F('tdate').asc(), F('tid').asc())
 		)
 	).order_by(ord, '-tid')
+
+	tqcnt = trans_query.count()
 
 	trans_list = list(trans_query)
 	
 	listCnt = len(trans_list)
 
 	template = loader.get_template('transactions/tlist.html')
+	
 	paginator = Paginator(trans_list, 50)
 
 	page_number = request.GET.get("page")
+	
 	page_obj = paginator.get_page(page_number)
 
 	context = {
@@ -158,10 +166,11 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', ord='-tdate', gn
 		"acc": acc, 
 		"cat": cat, 
 		"gcat": gcat, 
-		"pay": pay, 
-		"gnull": gnull, 
+		"pay": pay,
+		"l1": l1,
 		"ord": ord,
-		"listCnt": listCnt
+		"listCnt": listCnt,
+		"tqcnt": tqcnt
 	}
 
 	return HttpResponse(template.render(context, request))
@@ -299,8 +308,6 @@ def TransSubTrans_delete_view(request, parent_id=None, id=None):
 	except:
 		obj = None
 
-	print(obj)
-
 	if obj is None:
 		if request.htmx:
 			return HttpResponse("Not Found")
@@ -311,7 +318,7 @@ def TransSubTrans_delete_view(request, parent_id=None, id=None):
 	template = "transactions/delete.html"
 
 	if request.method == "POST":
-		print("POST")
+
 		obj.delete()
 		if request.htmx:
 			headers = {
@@ -327,24 +334,45 @@ def TransSubTrans_delete_view(request, parent_id=None, id=None):
 	return render(request, template, context)
 
 def Transaction_create_view(request):
-	form = TransForm(request.POST or None)
-	context = {
-		"form": form
-	}
+
+	lt=Transaction.objects.all().order_by("-tid").first().tid
+	nt=lt+1
+
+	ld=Transaction.objects.all().order_by("-tid").first().tdate
+
+	la=Transaction.objects.all().order_by("-tid").first().account
+
+	initial_values = {
+		'tid': nt,
+		'tdate': ld,
+		'account': la,
+		
+    	}
+
+	form = TransForm(request.POST or None, initial=initial_values)
+	
 	template = "transactions/create-update.html"
+	
+	context = {
+		"form": form,
+	}
+	
 	if form.is_valid():
-		obj = form.save()
+		obj = form.save(commit=False)
 		obj.save()
-		return redirect(obj.get_absoulte_url())
+		if request.htmx:
+			headers = {
+				"HX-Redirect": obj.get_absolute_url()
+			}
+			return HttpResponse("Created", headers=headers)
+		return redirect(obj.get_absolute_url())
+
 	return render(request, template, context)
 
 def Transaction_update_view(request, id=None):
-	obj = get_object_or_404(Transaction, id=id)
-	
+	obj = get_object_or_404(Transaction, id=id) 
 	form = TransForm(request.POST or None, instance=obj)
-	
-	new_subtran_url = reverse("transactions:hx-subtran-create", kwargs={"parent_id": obj.id })
-	
+	new_subtran_url = reverse('transactions:hx-subtran-create', kwargs={"parent_id": obj.id})
 	template = "transactions/create-update.html"
 
 	context = {
@@ -356,8 +384,10 @@ def Transaction_update_view(request, id=None):
 	if form.is_valid(): 
 		form.save()
 		context['message'] = 'saved'
+
 	if request.htmx:
 		return render(request, "transactions/partials/forms.html", context)
+	
 	return render(request, template, context)
 
 class TransDeleteView(DeleteView):
@@ -367,12 +397,16 @@ class TransDeleteView(DeleteView):
 
 
 def Transaction_subtran_update_hx_view(request, parent_id=None, id=None):
+
 	if not request.htmx:
 		raise Http404
-	try: 
+		
+	try:	
 		parent_obj = Transaction.objects.get(id=parent_id)
+		
 	except:
-		parent_obj = None
+		parent_obj = None 
+		
 	if parent_obj is None:
 		return HttpResponse("Not Found")	
 	
@@ -384,37 +418,24 @@ def Transaction_subtran_update_hx_view(request, parent_id=None, id=None):
 			instance = None
 
 	form = TransSubTransForm(request.POST or None, instance=instance)
-	url = reverse("transactions:hx-subtran-create", kwargs={"parent_id": parent_obj.id })
-	if instance:
-		url = instance.get_hx_edit_url()
+
+	url = instance.get_hx_edit_url() if instance else reverse('transactions:hx-subtran-create', kwargs={"parent_id": parent_obj.id})
+
 	context = {
 		"url": url,
 		"form": form,
-		"object": instance
+		"object": instance,
 	}
 
-	template = "transactions/partials/subtran-inline.html"
-       
 	if form.is_valid():
-		new_obj = form.save()
+		new_obj = form.save(commit=False)
+		
 		if instance is None:
 			new_obj.trans = parent_obj
 		new_obj.save()
+		
 		context['object'] = new_obj
-		return render(request, template, context)
+		
+		return render(request, "transactions/partials/subtran-inline.html", context)
 
 	return render(request, "transactions/partials/subtran-form.html", context)
-
-def load_groupedcats(request, category_id=None):
-	
-	category_id = request.GET.get("category")
-	if category_id:
-		groupedcats = GroupedCat.objects.filter(l1group__aligned_category=category_id)
-	else:
-		groupedcats = GroupedCat.objects.all()
-		
-
-	template = "transactions/partials/groupedcat_options.html"
-	context = { "groupedcats": groupedcats }
-
-	return render(request, template, context)

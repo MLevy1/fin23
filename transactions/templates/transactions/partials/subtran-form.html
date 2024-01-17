@@ -1,4 +1,5 @@
 <form action="." method="POST" hx-post="{% if url %}{{url}}{% else %}.{% endif %}" hx-swap='outerHTML'>
+
 	{% csrf_token %}
 
 	{% for field in form %}
@@ -8,6 +9,7 @@
 	{{ field.errors }}
 
 	{{ field.label_tag }} {{ field }}
+	
 	</div>
 
 	{% endfor %}
@@ -15,5 +17,6 @@
 	<div class='htmx-indicator'>Loading...</div>   
    
 	<button class="btn btn-secondary" type="submit">save</button>
-   
-   </form>
+
+
+</form>

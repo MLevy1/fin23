@@ -1,13 +1,12 @@
-{% extends "master.html" %}
-
+{% extends "masterp.html" %}
+{% load humanize %}
 {% block title %}
 
 Grouped Cats
 
 {% endblock %}
 
-
-{% block content %}
+{% block page_content %}
 
 <h1 class="display-4" style="background-color: #151B54">Grouped Cats</h1>
 
@@ -21,9 +20,13 @@ Grouped Cats
 
 				<div class="card" style="background-color: #151B54">
 				
-					<h5 class="card-title"><a class="link-warning" href="{% url 'update-gc' x.id %}"> {{ x }} </a></h5>
+					<h5 class="card-title"><a class="link-warning" href="{% url 'update-gc' x.pk %}"> {{ x.groupedcat }} </a></h5>
+					
+					<p class="card-text"># of trans: {{ x.trans_count }}</p>
+					
+					<p class="card-text">total: {{ x.trans_total|floatformat:2|intcomma}}</p>
 
-                                   <p><a href="{% url 'tlist' 'all' 'all' x.id 'all' %}">Trans</a></p>
+					<p><a href="{% url 'transactions:tlist' 'all' 'all' x.pk 'all' 'all' '-tdate' %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}"> Trans</a></p>
 
                                    <p><a href="{% url 'delete-gc' x.pk %}" class="link-danger btn btn-link">Delete</a></p>
 

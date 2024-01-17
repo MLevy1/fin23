@@ -57,9 +57,7 @@ Categories
        <div class="container text-center">
 
 
-		{% for x in object_list %}
-
-		{% if x.pk and x.active %}
+              {% for x in page_obj  %}
 
 		<div class="d-flex justify-content-center align-items-center my-4">
                      
@@ -74,47 +72,12 @@ Categories
 					</h6>
 					
 					<p class="card-text"># of trans: {{ x.trans_count }}</p>
-
-					<p class="card-text">buget: ${{ x.budget_total|floatformat:2|intcomma }}</p>
-
-					<p class="card-text">avg actual: {{ x.ann_total|floatformat:2|intcomma  }}</p>
-
-					<div class="btn-group">
-
-						<a href="{% url 'tlist' 'all' x.pk 'all' 'all' %}" class="btn btn-link">trans</a>
-
-						<a href="{% url 'category-gc-update-all' x.pk %}" class="btn btn-link">group cat</a>
-
-					</div>
-
-				</div>
-
-			</div>
-
-		</div>
-	
-	{% endif %}
-	{% if x.pk and not x.active %}
-
-		<div class="d-flex justify-content-center align-items-center my-4">
-                     
-			<div class="col-8">
-
-				<div class="card" style="background-color: #151B54">
-
-					<h5 class="card-title">{{ x.category }}</h5>
-
-					<h6 class="card-subtitle mb-2 text-body-secondary">
-						<a href="{% url 'update-category' x.pk %}">edit</a>
-
 					
-					<p class="card-text">avg actual: {{ x.ann_total|floatformat:2|intcomma  }}</p>
+					<p class="card-text">total: {{ x.trans_total|floatformat:2|intcomma}}</p>
 
 					<div class="btn-group">
 
-						<a href="{% url 'tlist' 'all' x.pk 'all' 'all' %}" class="btn btn-link">trans</a>
-						
-						<a href="{% url 'category-gc-update-all' x.pk %}" class="btn btn-link">group cat</a>
+						<a href="{% url 'transactions:tlist' 'all' x.pk 'all' 'all' 'all' '-tdate' %}" class="btn btn-link">trans</a>
 
 					</div>
 
@@ -124,32 +87,9 @@ Categories
 
 		</div>
 
-	{% endif %}
-	{% if not x.pk %}
+	       {% endfor %}
 
-	       <div class="d-flex justify-content-center align-items-center my-4">
-
-                     <div class="col-8">
-
-                            <div class="card" style="background-color: #151B54">
-
-                                   <h5 class="card-title">Grand Totals</h5>
-
-                                   <p class="card-text">budget: {{ x.ann_budget|floatformat:2|intcomma }}</p>
-
-                                   <p class="card-text">actual: {{ x.ann_actual |floatformat:2|intcomma}}</p>
-
-                                   <p class="card-text">surplus: {{ x.surplus |floatformat:2|intcomma}}</p>
-
-                            </div>
-
-              </div>
-
-	</div>
-
-	{% endif %}
-
-	{% endfor %}
+       </div>
 
 </div>
 

@@ -1,19 +1,18 @@
-{% extends "master.html" %}
-
+{% extends "masterp.html" %}
+{% load humanize %}
 {% block title %}
 
 L1Groups
 
 {% endblock %}
 
-
-{% block content %}
+{% block page_content %}
 
 <h1 class="display-4" style="background-color: #151B54">L1Groups</h1>
 
 	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-l1group' %}">Add L1 Group</a>
 
-	{% for x in object_list %}
+	{% for x in page_obj %}
 
 	<div class="d-flex justify-content-center align-items-center my-4">
 
@@ -21,9 +20,20 @@ L1Groups
 
 				<div class="card" style="background-color: #151B54">
 				
-					<h5 class="card-title"><a class="link-warning" href="{% url 'update-l1group' x.id %}">{{ x.l1group }} </a></h5>
+					<h5 class="card-title"><a class="link-warning" href="{% url 'update-l1group' x.pk %}">{{ x.l1group }} </a></h5>
+                                   
+                                   <p class="card-text"># of trans: {{ x.trans_count }}</p>
+                                   
+                                   <p class="card-text">total: {{ x.trans_total|floatformat:2|intcomma}}</p>
 
-					<p class="card-text">Status: {{ x.active }}</p>
+					<p class="card-text">{% if x.active %} Active {% else %} Inactive {% endif %}</p>
+
+                                   <div class="btn-group">
+
+						<a href="{% url 'transactions:tlist' 'all' 'all' 'all' 'all' x.pk '-tdate' %}" class="btn btn-link">trans</a>
+						
+					</div>
+
 				</div>
 			</div>
 		</div>

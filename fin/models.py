@@ -62,8 +62,6 @@ class L1Group(models.Model):
 
     active = models.BooleanField(verbose_name='Active', default=True)
 
-    aligned_category = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
-
     def get_absolute_url(self):
         return reverse("list-l1groups")
     
@@ -85,9 +83,6 @@ class Account(models.Model):
 
     def __str__(self):
         return self.account
-    
-    class Meta:
-        ordering = ["account"]
 
 class GroupedCat(models.Model):
 	l1group =  models.ForeignKey(L1Group, on_delete=models.PROTECT, blank=True, null=True)
@@ -104,30 +99,3 @@ class GroupedCat(models.Model):
 		
 	class Meta:
         	ordering = ["l1group__l1group", "category"]
-
-class Trans(models.Model):
-	tid = models.IntegerField(null=True)
-	tdate = models.DateField(verbose_name='Date')
-	amount = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2)
-	account =  models.ForeignKey(Account, on_delete=models.PROTECT)
-	payee = models.ForeignKey(Payee, on_delete=models.PROTECT)
-	category = models.ForeignKey(Category, on_delete=models.PROTECT)
-	groupedcat = models.ForeignKey(GroupedCat, on_delete=models.PROTECT, null=True, blank=True)
-	match = models.CharField(max_length=255, null=True, blank=True)
-	oldCat = models.CharField(max_length=255, null=True, blank=True)
-	oldPayee = models.CharField(max_length=255, null=True, blank=True)
-	note = models.CharField(max_length=255, null=True, blank=True)
-	history = HistoricalRecords()
-	tag = TagField()
-
-	objects = DataFrameManager()
-
-	def __str__(self):
-
-		t = str(self.tdate) + " " + str(self.payee) + ": " + str(self.amount) +  "[ " + str(self.tid) + " ]"
-
-		return str(t)
-
-	class Meta:
-		ordering = ["tdate", "-amount"]
-		#ordering = ["category"]

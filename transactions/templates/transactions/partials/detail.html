@@ -2,8 +2,6 @@
 
 <p>{{ object.payee }}</p>
 
-<p>{{ object.amount }}</p>
-
 {% for subtran in object.get_subtrans_children %}
 
 <h3>{{ subtran.category }}</h3>

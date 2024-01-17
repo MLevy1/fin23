@@ -12,8 +12,6 @@ from .models import (
 	GroupedCat
 )
 
-from projections.models import BudgetedItem
-
 from .forms import (
 	CategoryGroupedCatUpdateAll, 		
 	PayeeGroupedCatUpdateAll, 
@@ -51,8 +49,8 @@ from django.views.generic import (
 )
 
 from transactions.models import (
-       Transaction,
-       SubTransaction,
+	Transaction,
+	SubTransaction,
 )
 
 from django.utils import timezone
@@ -70,6 +68,7 @@ PayeeFormSet = modelformset_factory(Payee, form=AddPayee, extra=0)
 def get_start_date():
 	return datetime.now() - timedelta(days=1000)
 
+#1
 @login_required
 def main(request):
 	template = loader.get_template('main.html')
@@ -79,25 +78,24 @@ def main(request):
 #  PAYEES
 #++++++++++++
 
+#13
+@login_required
 def payees(request, a='act', o='payee'):
 
 	if a=="all":
 		payees = Payee.objects.all().annotate(
-	 		trans_count=Count('transaction', filter=Q(transaction__subtransaction__groupedcat__isnull=True)),
+	 		trans_count=Count('transaction'),
 	 		total_transactions=Sum('transaction__subtransaction__amount'),
 	 		most_recent_transaction=Max('transaction__tdate')
 		).order_by(o)
-
+		
 	else:
 		payees = Payee.objects.filter(active=True).annotate(
-			trans_count=Count('transaction', filter=Q(transaction__subtransaction__groupedcat__isnull=True)),
-			total_transactions=Sum('transaction__subtransaction__amount'),
+			trans_count=Count('transaction'), 	total_transactions=Sum('transaction__subtransaction__amount'),
 			most_recent_transaction=Max('transaction__tdate')
     		).order_by(o)
-
-	nogcat = Transaction.objects.filter(subtransaction__groupedcat__isnull=True)
 	
-	tcount = nogcat.count()
+	tcount = Payee.objects.all().count()
 	template = 'payees.html'
 	paginator = Paginator(payees, 25)
 
@@ -107,13 +105,13 @@ def payees(request, a='act', o='payee'):
 	context = {
 		"page_obj": page_obj,
 		"tcount": tcount, 
-		"nogcat": nogcat 
 	}
 
 	return render(request, template, context)
 
-### SEARCH ###
+### PAYEE SEARCH ###
 
+#28
 class SearchResultsView(ListView):
 	model = Payee
 	template_name = ('payees.html')
@@ -121,9 +119,9 @@ class SearchResultsView(ListView):
 
 	def get_queryset(self):
 		results = Payee.objects.filter(payee__contains=self.request.GET.get("q")).annotate(
-			trans_count=Count('trans'),
-			total_transactions=Sum('trans__amount'),
-			most_recent_transaction=Max('trans__tdate')
+			trans_count=Count('transaction'),
+			total_transactions=Sum('transaction__subtransaction__amount'),
+			most_recent_transaction=Max('transaction__tdate')
 		)
 	 
 		paginator = Paginator(results, 25)
@@ -134,6 +132,7 @@ class SearchResultsView(ListView):
 
 ### PAYEE DETAIL ###
 
+#24
 class PayeeDetailView(DetailView):
 	model = Payee
 	template_name = "detail.html"
@@ -149,6 +148,7 @@ class PayeeDetailView(DetailView):
   
 ### ADD PAYEE ###
 
+#23
 class PayeeCreateView(CreateView):
 	model = Payee
 	fields = "__all__"
@@ -156,6 +156,7 @@ class PayeeCreateView(CreateView):
 
 ### UPDATE PAYEE ###
 
+#25
 class UpdatePayee(UpdateView):
 	model = Payee
 	fields = "__all__"
@@ -172,21 +173,29 @@ class UpdatePayee(UpdateView):
 	
 ### INACTIVATE PAYEE ###
 
+#27
 def make_inactive(request, pk):
+
+	next = request.GET.get('next', '/')
+
 	payee = Payee.objects.get(pk=pk)
 	payee.active = False
 	payee.save()
-	return redirect('/pay/act')
+	return redirect(next) 
 
 ### DELETE PAYEE ###
 
+#26
 class PayeeDeleteView(DeleteView):
 	model = Payee
-	success_url = reverse_lazy('payees', kwargs={"a": "act", "o": "payee"})
+	success_url = reverse_lazy('list-payees', kwargs={"a": "act", "o": "payee"})
 	template_name = "confirm_delete.html"
 
 ### MERGE 2 PAYEES ###
-@login_required
+
+#14
+
+@ login_required
 def merge_payees(request, dpay=None):
 
 	next = request.GET.get('next', '/')
@@ -212,6 +221,8 @@ def merge_payees(request, dpay=None):
 	return render(request, 'merge_payees.html', {'form': form  })
 
 ### UPDATE PAYEES CATEGORY ###
+
+#17
 
 def payee_category_update_all(request, dpay=None):
 
@@ -244,23 +255,10 @@ def payee_category_update_all(request, dpay=None):
 	
 #active only#
 
-def payee_category_update(request):
-	if request.method == 'POST':
-		form = PayeeCategoryUpdate(request.POST)
-
-		if form.is_valid():
-			source_payee = form.cleaned_data['source_payee']
-			target_category = form.cleaned_data['target_category']
-			Transaction.objects.filter(payee=source_payee).update(category=target_category)
-
-			return redirect('/qupdate/') # Redirect placholder
-  
-	else:
-		form = PayeeCategoryUpdate()
-
-	return render(request, 'qupdate.html', {'form': form  })
 
 ### UPDATE PAYEES GROUP CATEGORY ###
+
+#10
 
 def payee_groupedcat_update_all(request, dpay=None, dcat=None):
 
@@ -301,41 +299,9 @@ def payee_groupedcat_update_all(request, dpay=None, dcat=None):
 
 	return render(request, template, context)
 
-def load_c(request, payee_id=None):
-	
-	payee_id = request.GET.get("payee")
-
-	if payee_id:
-		cats =Category.objects.filter(transaction__payee=payee_id).distinct()
-	else:
-		cats = Category.objects.all()
-		
-
-	template = "c-options.html"
-
-	context = { "cats": cats }
-
-	return render(request, template, context)
-
-
-def load_gc(request, category_id=None):
-	
-	category_id = request.GET.get("category")
-
-	if category_id:
-		groupedcats = GroupedCat.objects.filter(l1group__aligned_category=category_id)
-	else:
-		groupedcats = GroupedCat.objects.all()
-		
-
-	template = "gc-options.html"
-
-	context = { "groupedcats": groupedcats }
-
-	return render(request, template, context)
-
-
 ### UPDATE CATEGORY'S GROUP CATEGORY ###
+
+#11
 
 def category_groupedcat_update_all(request, dcat=None):
 
@@ -359,6 +325,8 @@ def category_groupedcat_update_all(request, dcat=None):
 
 
 ### UPDATE PAYEES ACCOUNT ###
+
+#11
 
 def payee_account_update(request):
 	if request.method == 'POST':
@@ -385,22 +353,28 @@ def payee_account_update(request):
 
 # not using generic view yet because of the need to filter and annotate #
 
+#2
+
 def accounts(request, a='act'):
 
 	if a=="all":
 		accounts = Account.objects.all().annotate(
-			balance=Sum('trans__amount'),
-			most_recent_transaction=Max('trans__tdate')
+			balance=Sum('transaction__subtransaction__amount'),
+			most_recent_transaction=Max('transaction__tdate')
 		)
 	else:
 		accounts = Account.objects.filter(active=True).annotate(
-			balance=Sum('trans__amount'),
-			most_recent_transaction=Max('trans__tdate')
+			balance=Sum('transaction__subtransaction__amount'),
+			most_recent_transaction=Max('transaction__tdate')
 		)
 
+	accounts = accounts.order_by('account')
+	
 	return render(request, "accounts.html", {'accounts': accounts})
 
 ### ADD ACCOUNT ###
+
+#3
 
 class AccountCreateView(CreateView):
 	model = Account
@@ -409,39 +383,21 @@ class AccountCreateView(CreateView):
 
 ### UPDATE ACCOUNT ###
 
+#4
+
 class UpdateAccount(UpdateView):
 	model = Account
 	fields = "__all__"
 	template_name = "update.html"
-	success_url = reverse_lazy('accounts', kwargs={"a": "act"})
+	success_url = reverse_lazy('list-accounts', kwargs={"a": "act"})
 
 #+++++++++++++
 #  CATEGORIES
 #+++++++++++++
 
-### SEARCH ###
-
-class CatSearchView(ListView):
-	model = Category
-	template_name = ('categories.html')
-	context_object_name = "page_obj"
-
-	def get_queryset(self):
-		
-		results = Category.objects.filter(category__contains=self.request.GET.get("q")).annotate(
-			trans_count=Count('trans'),
-			total_transactions=Sum('trans__amount'),
-			most_recent_transaction=Max('trans__tdate')
-		)
-
-		paginator = Paginator(results, 25)
-		page_number = self.request.GET.get("page")
-		page_obj = paginator.get_page(page_number)
-
-		return page_obj
-
-
 ### VIEW CATEGORIES
+
+#5
 
 class CatListView(ListView):
 	model = Category
@@ -452,32 +408,10 @@ class CatListView(ListView):
 		categories = Category.objects.all()
 		data = []
 
-		start_date = get_start_date()
-
-		ann_actual = 0
-		ann_budget = 0
-
-		ann_actual = float(ann_actual)
-		ann_budget = float(ann_budget)
-
 		for c in categories:
-			trans_count = Transaction.objects.filter(category=c, subtransaction__groupedcat__isnull=True).count() or 0
+			trans_count = Transaction.objects.filter(subtransaction__groupedcat__category=c).count() or 0
 			
-			trans_total = Transaction.objects.filter(category=c, tdate__gte=start_date).aggregate(Sum('amount'))['amount__sum'] or 0
-			
-			ann_total = float(trans_total) * 365/1000
-			
-			ann_total = float(ann_total)
-			
-			budget_items = BudgetedItem.objects.filter(itemCat=c)
-			
-			budget_total = sum(item.annualAmt() for item in budget_items)
-			
-			budget_total = float(budget_total)
-
-			if c.active != False:
-				ann_actual += ann_total
-				ann_budget += budget_total
+			trans_total = Transaction.objects.filter(subtransaction__groupedcat__category=c).aggregate(Sum('subtransaction__amount'))['subtransaction__amount__sum'] or 0
 				
 			if trans_count>0:
 				data.append({
@@ -486,19 +420,7 @@ class CatListView(ListView):
 					'category': c,
 					'trans_count': trans_count,
 					'trans_total': trans_total,
-					'ann_total': ann_total,
-					'budget_total': budget_total,
-					'test_ann_act': ann_actual,
-					'test_ann_bud': ann_budget,
 				})
-
-		surplus = ann_budget - ann_actual
-
-		data.append({
-			'ann_actual': ann_actual,
-			'ann_budget': ann_budget,
-			'surplus': surplus,
-		})
 		
 		paginator = Paginator(data, 25)
 		page_number = self.request.GET.get("page")
@@ -508,16 +430,67 @@ class CatListView(ListView):
 
 	def get_context_data(self,**kwargs):
 		
-		nogcat = Transaction.objects.filter(subtransaction__groupedcat__isnull=True)
+		nogcat = Transaction.objects.all()
 		tcount = nogcat.count()
 		
 		context = super(CatListView,self).get_context_data(**kwargs)
 		context['tcount'] = tcount
-		context['nogcat'] = nogcat
+		
+		print("no search context", context)
+		
 		return context
 	
+### SEARCH ###
+
+#8
+
+class CatSearchView(ListView):
+	model = Category
+	template_name = "categories.html"
+	context_object_name = "page_obj"
+
+	def get_queryset(self):
+		results = Category.objects.filter(category__contains=self.request.GET.get("q"))
+		data = []
+
+		for c in results:
+
+			trans_count = Transaction.objects.filter(subtransaction__groupedcat__category=c).count() or 0
+
+			trans_total = Transaction.objects.filter(subtransaction__groupedcat__category=c).aggregate(Sum('subtransaction__amount'))['subtransaction__amount__sum'] or 0
+				
+			if trans_count>0:
+				data.append({
+					'pk': c.pk,
+					'active': c.active,
+					'category': c,
+					'trans_count': trans_count,
+					'trans_total': trans_total,
+				})
+
+		paginator = Paginator(data, 25)
+		page_number = self.request.GET.get("page")
+		page_obj = paginator.get_page(page_number)
+
+		return page_obj
+
+	def get_context_data(self,**kwargs):
+		
+		nogcat = Transaction.objects.all()
+		tcount = nogcat.count()
+		
+		context = super(CatSearchView, self).get_context_data(**kwargs)
+		context['tcount'] = tcount
+		
+		print("search context", context)
+
+		return context
+
+
 
 ### ADD CATEGORY ###
+
+#6
 
 class CatCreateView(CreateView):
 	model = Category
@@ -525,6 +498,8 @@ class CatCreateView(CreateView):
 	template_name = "add.html"
 
 ### UPDATE CATEGORY ###
+
+#7
 
 class UpdateCategory(UpdateView):
 	model = Category
@@ -534,11 +509,51 @@ class UpdateCategory(UpdateView):
 
 ### VIEW L1GROUPS
 
+#9
+
 class L1GroupListView(ListView):
 	model = L1Group
 	template_name = "l1groups.html"
+	context_object_name = 'page_obj'
+
+	def get_queryset(self):
+		l1g = L1Group.objects.all()
+		data = []
+
+		for l in l1g:
+			trans_count = Transaction.objects.filter(subtransaction__groupedcat__l1group=l.pk).count() or 0
+			
+			trans_total = Transaction.objects.filter(subtransaction__groupedcat__l1group=l.pk).aggregate(Sum('subtransaction__amount'))['subtransaction__amount__sum'] or 0
+				
+			if trans_count>0:
+				data.append({
+					'pk': l.pk,
+					'active': l.active,
+					'l1group': l,
+					'trans_count': trans_count,
+					'trans_total': trans_total,
+				})
+		
+		paginator = Paginator(data, 25)
+		page_number = self.request.GET.get("page")
+		page_obj = paginator.get_page(page_number)
+
+		return page_obj
+
+	def get_context_data(self,**kwargs):
+		
+		nogcat = Transaction.objects.all()
+		tcount = nogcat.count()
+		
+		context = super(L1GroupListView, self).get_context_data(**kwargs)
+		context['tcount'] = tcount
+		
+		return context
 
 ### ADD L1 GROUP ###
+
+#22
+
 class L1GroupCreateView(CreateView):
 	model = L1Group
 	fields = "__all__"
@@ -546,29 +561,104 @@ class L1GroupCreateView(CreateView):
 
 ### UPDATE L1 GROUP ###
 
+#15
+
 class L1GroupUpdateView(UpdateView):
 	model = L1Group
 	fields = "__all__"
 	template_name = "update.html"
 	success_url = reverse_lazy('list-l1groups')
 
+#19
+
 class GroupedCatListView(ListView):
 	model = GroupedCat
 	template_name = "groupedcats.html"
+	context_object_name = 'page_obj'
+
+	def get_queryset(self):
+		gcs = GroupedCat.objects.all()
+		data = []
+
+		for c in gcs:
+			trans_count = Transaction.objects.filter(subtransaction__groupedcat=c.pk).count() or 0
+			
+			trans_total = Transaction.objects.filter(subtransaction__groupedcat=c.pk).aggregate(Sum('subtransaction__amount'))['subtransaction__amount__sum'] or 0
+				
+			if trans_count>0:
+				data.append({
+					'pk': c.pk,
+					'groupedcat': c,
+					'trans_count': trans_count,
+					'trans_total': trans_total,
+				})
 		
+		paginator = Paginator(data, 25)
+		page_number = self.request.GET.get("page")
+		page_obj = paginator.get_page(page_number)
+
+		return page_obj
+
+	def get_context_data(self,**kwargs):
+		
+		nogcat = Transaction.objects.all()
+		tcount = nogcat.count()
+		
+		context = super(GroupedCatListView	,self).get_context_data(**kwargs)
+		context['tcount'] = tcount
+		
+		return context
+
+#22		
 
 class GroupedCatCreateView(CreateView):
 	model = GroupedCat
 	fields = "__all__"
 	template_name = "add.html"
-	
+
+#20
+
 class GroupedCatUpdateView(UpdateView):
 	model = GroupedCat
 	fields = "__all__"
 	template_name = "update.html"
 	success_url = reverse_lazy('list-gc')
 	
+#21
+	
 class GroupedCatDeleteView(DeleteView):
 	model = GroupedCat
 	success_url = reverse_lazy('list-gc')
 	template_name = "confirm_delete.html"
+	
+#29
+
+def load_c(request, payee_id=None):
+	
+	payee_id = request.GET.get("payee")
+
+	if payee_id:
+		cats =Category.objects.filter(transaction__payee=payee_id).distinct()
+	else:
+		cats = Category.objects.all()
+		
+
+	template = "c-options.html"
+
+	context = { "cats": cats }
+
+	return render(request, template, context)
+
+#30
+
+def load_gc(request, category_id=None):
+	
+	category_id = request.GET.get("category")
+
+	groupedcats = GroupedCat.objects.all()
+
+	template = "gc-options.html"
+
+	context = { "groupedcats": groupedcats }
+
+	return render(request, template, context)

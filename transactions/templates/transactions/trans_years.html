@@ -14,11 +14,11 @@ Transaction Archive - Years
 
 	<div class="list-group">
 
-		<a class="list-group-item list-group-item-action list-group-item-success" href='/atran/'>New Trans</a>
+		<a class="list-group-item list-group-item-action list-group-item-success" href="{% url 'transactions:create' %}">New Trans</a>
 
 		{% for year in date_list %}
 		
-			<a class="list-group-item list-group-item-action list-group-item-primary" href="/{{ year|date:'Y'}}">{{ year|date:"Y" }}</a>
+			<a class="list-group-item list-group-item-action list-group-item-primary" href="tyear/{{ year|date:'Y'}}">{{ year|date:"Y" }}</a>
 		
 		{% endfor %}
 

@@ -15,7 +15,6 @@ class TransactionAdmin(admin.ModelAdmin):
        list_display=[
               'tid',
               'tdate',
-              'amount',
               'payee',
               'match',
               'note',

@@ -91,6 +91,7 @@ Payees List
 		
 		{% for p in page_obj %}
 
+
 		<div class="d-flex justify-content-center align-items-center my-4">
 
 			<div class="col-10">
@@ -116,7 +117,7 @@ Payees List
 
                                           <a href="{% url 'delete-payee' p.pk %}" class="link-danger btn btn-link">Delete</a>
 
-                                          <a href="{% url 'make-payee-inactive' p.pk %}" class="link-danger btn btn-link">Inact.</a>
+                                          <a href="{% url 'make-payee-inactive' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-danger btn btn-link">Inact.</a>
                                           
                                           <a href="{% url 'merge' p.pk %}" class="link-danger btn btn-link">Merge</a>
 						
@@ -124,9 +125,7 @@ Payees List
 						
                                    <div class="btn-group">
 
-                                          <a href="{% url 'tlist' 'all' 'all' 'all' p.id '-tdate' 'n' %}" class="link-success btn btn-link">View Trans</a>
-
-                                          <a href="{% url 'add-trans' p.pk %}" class="link-success btn btn-link">Add Trans</a>
+                                          <a href="{% url 'transactions:tlist' 'all' 'all' 'all' p.id 'all' '-tdate' %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-success btn btn-link">View Trans</a>
 
                                           <a href="{% url 'payee-gc-update-all' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-success btn btn-link">Change Group</a>
 

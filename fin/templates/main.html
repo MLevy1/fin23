@@ -15,9 +15,9 @@
 	
 	<div class="list-group">
   
-	       <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-accounts' 'act' %}">Accounts</a>
+	       <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-accounts' 'act' %}">2 Accounts</a>
   
-		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-account' %}">Add Account</a>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-account' %}">3 Add Account</a>
   
        </div>
 	
@@ -25,9 +25,9 @@
   	
        <div class="list-group">
  
-		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-categories' %}">Categories</a>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-categories' %}">5 Categories</a>
 
-		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-category' %}">Add Category</a>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-category' %}">6 Add Category</a>
 
 		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'payee-category-update-all' 'None' %}">Payee - Category Update</a>
 
@@ -49,7 +49,7 @@
 
   <div class="list-group">
 
-    <a class="list-group-item list-group-item-action list-group-item-primary" href="pay/act/payee/">Payees</a>
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-payees' 'all' '-trans_count' %}">Payees</a>
 
     <a class="list-group-item list-group-item-action list-group-item-primary" href="apay/">Add Payee</a>
 
@@ -59,9 +59,9 @@
 
   <div class="list-group">
 
-    <a class="list-group-item list-group-item-action list-group-item-primary" href="archive">Transactions</a>
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'transactions:list' %}">Transactions</a>
   
-    <a class="list-group-item list-group-item-action list-group-item-primary" href="atran/">Add Transaction</a>
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'transactions:create' %}">Add Transaction</a>
   
 </div>
   
@@ -86,6 +86,21 @@
     <a class="list-group-item list-group-item-action list-group-item-primary" href="budget/">Budget</a>
   
   </div>
+
+
+  <h3 class="display-4" style="background-color: #151B54">Reports</h3>
+  
+  <div class="list-group">
+
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'reports:pd-trans' %}">pandas</a>
+
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'reports:g' %}">graph</a>
+
+    <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'reports:mrep' %}">monthly cf</a>
+  
+  </div>
+
+
 
 </div>
 

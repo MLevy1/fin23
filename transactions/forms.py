@@ -61,9 +61,9 @@ class TransForm(forms.ModelForm):
 			'tdate', 
 			'account', 
 			'payee', 
-			'match', 
-			'oldCat', 
-			'oldPayee', 
+			#'match', 
+			#'oldCat', 
+			#'oldPayee', 
 			'note',
 		]
 		
@@ -79,18 +79,16 @@ class TransForm(forms.ModelForm):
 			)		
 
 			# Filter active accounts and payees
-			self.fields['account'].queryset = Account.objects.all()
-			self.fields['payee'].queryset = Payee.objects.all()
+			self.fields['account'].queryset = Account.objects.filter(active="True")
+			self.fields['payee'].queryset = Payee.objects.filter(active="True")
 
 class TransSubTransForm(forms.ModelForm):
 	class Meta:
 		model = SubTransaction
-		fields = ['category', 'groupedcat', 'amount', 'note']
+		fields = ['groupedcat', 'amount', 'note']
 		
 	def __init__(self, *args, **kwargs):
 		super(TransSubTransForm, self).__init__(*args, **kwargs)
-		
-		print(self.instance.groupedcat)
 
 		for field in self.fields:
 			new_data = {
@@ -99,26 +97,6 @@ class TransSubTransForm(forms.ModelForm):
 			self.fields[str(field)].widget.attrs.update(
 				new_data
 			)
-		
-		if self.instance.groupedcat:
-
-			self.fields['category'].widget.attrs.update(
-				{
-					"hx-get": "/trans/load-gc",
-					"hx-target": "#id_groupedcat",
-					"hx-trigger": "change",
-					"hx-swap": "innerHTML",
-				}
-			)
-
-		else:
-
-			self.fields['category'].widget.attrs.update(
-				{
-					"hx-get": "/trans/load-gc",
-					"hx-target": "#id_groupedcat",
-					"hx-trigger": "change, load delay:500ms",
-					"hx-swap": "innerHTML",
-				}
-			)
 			
+		self.fields['groupedcat'].queryset = GroupedCat.objects.filter(l1group__active="True")
+
