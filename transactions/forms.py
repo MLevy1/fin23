@@ -61,7 +61,7 @@ class TransForm(forms.ModelForm):
 			'tdate', 
 			'account', 
 			'payee', 
-			#'match', 
+			'match', 
 			#'oldCat', 
 			#'oldPayee', 
 			'note',

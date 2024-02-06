@@ -25,6 +25,8 @@ Update Trans
 
        	{% endfor %}
 
+	<p>{{ object.get_transaction_total|floatformat:"2g" }}</p>
+
        {% if new_subtran_url %}
 
               <div id='subtran-create'>
@@ -35,6 +37,8 @@ Update Trans
 
 
        {% endif %}
+
+
 
 </div>
 

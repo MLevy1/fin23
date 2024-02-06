@@ -1,11 +1,14 @@
 {% extends 'master.html' %}
 
+{{ form.media }}
+
 {% block title %}
 Form
 {% endblock %}
 
 {% block content %}
     <h1>Form</h1>
+    <p>{{ context }} </p>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

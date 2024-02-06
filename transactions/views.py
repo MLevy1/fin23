@@ -55,6 +55,9 @@ from django.urls import (
 	reverse_lazy, 
 	reverse
 )
+
+from datetime import datetime
+
 ### VIEW ALL TRANS ###
 
 def transactions(request):
@@ -116,8 +119,11 @@ def atran(request, dpay=None):
 ### TLIST ###
 
 
-def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-tdate'):
-  
+def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-tdate', mindate=None, maxdate=None, **kwargs):
+	
+	if maxdate == None:
+		maxdate = datetime.today().strftime('%Y-%m-%d')
+
 	filters = {}
 
 	if acc != 'all':
@@ -135,6 +141,9 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-
 	if l1 != 'all':
 		filters['subtransaction__groupedcat__l1group'] = l1
 	
+	if mindate is not None:
+		filters['tdate__range'] = [mindate, maxdate]
+
 	trans_query = Transaction.objects.all()
 
 	if filters:
