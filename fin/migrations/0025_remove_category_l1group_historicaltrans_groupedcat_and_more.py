@@ -15,11 +15,15 @@ class Migration(migrations.Migration):
             model_name='category',
             name='l1group',
         ),
-        migrations.AddField(
-            model_name='historicaltrans',
-            name='groupedcat',
-            field=models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='fin.groupedcat'),
-        ),
+
+
+        #migrations.AddField(
+        #    model_name='historicaltrans',
+        #    name='groupedcat',
+        #    field=models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='fin.groupedcat'),
+        #,
+
+
         migrations.AddField(
             model_name='trans',
             name='groupedcat',

@@ -7,6 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('fin', '0019_historicaltrans_tag_trans_tag'),
+
     ]
 
     operations = [

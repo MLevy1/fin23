@@ -2,7 +2,7 @@ from django.db import models
 
 from django.urls import reverse
 
-from django_pandas.managers import DataFrameManager
+#from django_pandas.managers import DataFrameManager
 
 from fin.models import (
 	Account,
@@ -14,16 +14,13 @@ from fin.models import (
 class Transaction(models.Model):
 	tid = models.IntegerField(null=True)
 	tdate = models.DateField(verbose_name='Date', null=True, blank=True)
-	#amount = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2, null=True, blank=True)
 	account = models.ForeignKey(Account, on_delete=models.PROTECT, null=True, blank=True)
 	payee = models.ForeignKey(Payee, on_delete=models.PROTECT, null=True, blank=True)
 	match = models.CharField(max_length=255, null=True, blank=True)
 	note = models.CharField(max_length=255, null=True, blank=True)
 	oldCat = models.CharField(max_length=255, null=True, blank=True)
 	oldPayee = models.CharField(max_length=255, null=True, blank=True)
-	
-	objects = DataFrameManager()
-	
+
 	def get_absolute_url(self):
 		return reverse("transactions:detail", kwargs={"id": self.id})
 

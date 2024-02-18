@@ -1,10 +1,8 @@
 from django.urls import (
 	path,
-	reverse,
 )
 
 from .views import (
-	Transaction_list_view,
 	Transaction_detail_view,
 	Transaction_create_view,
 	Transaction_update_view,
@@ -13,17 +11,17 @@ from .views import (
 	Transaction_delete_view,
 	TransSubTrans_delete_view,
 	TransDeleteView,
-       TransYearArchiveView, 
-       transactionMonthArchiveView,
-       tlist,
-       atran,
-       utran,
-       utran_act,
+    TransYearArchiveView,
+    transactionMonthArchiveView,
+    tlist,
+    atran,
+    utran,
+    utran_act,
 )
 
 from django.views.generic.dates import ArchiveIndexView
 
-from .models import Transaction, SubTransaction
+from .models import Transaction
 
 app_name = 'transactions'
 
@@ -40,18 +38,15 @@ urlpatterns = [
 	path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:l1>/<str:ord>/<mindate>/<maxdate>/", tlist, name="tlist"),
 	path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:l1>/<str:ord>/<mindate>/", tlist, name="tlist"),
 	path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:l1>/<str:ord>/", tlist, name="tlist"),
-       path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/", tlist, name="tlist"),
+    path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/", tlist, name="tlist"),
 	path("tlist/", tlist, name="tlist"),
-	
-       path('archive/', ArchiveIndexView.as_view(model=Transaction, date_field="tdate", template_name="trans_years.html"), name='trans-years'),
+    path('archive/', ArchiveIndexView.as_view(model=Transaction, date_field="tdate", template_name="trans_years.html"), name='trans-years'),
 	path('tmonth/<int:year>/<int:month>/', transactionMonthArchiveView.as_view(month_format='%m'), name="trans-monthly"),
 	path('tyear/<int:year>/', TransYearArchiveView.as_view(), name="trans-months"),
 	path("atran/<dpay>/", atran, name="add-trans"),
 	path("atran/", atran, name="add-trans"),
-
 	path("utran/<int:t_id>/", utran, name="update-trans"),
-       path("utran_act/<int:t_id>/", utran_act, name="update-trans-act"),
-
+    path("utran_act/<int:t_id>/", utran_act, name="update-trans-act"),
 	path('trans/<int:pk>/delete/', TransDeleteView.as_view(), name='delete-trans'),
-	
+
 ]

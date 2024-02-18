@@ -3,14 +3,12 @@ from django import forms
 from django.forms import ModelForm
 
 from .models import (
-	Account, 
-	Category, 
-	Payee, 
-	L1Group, 
+	Account,
+	Category,
+	Payee,
+	L1Group,
 	GroupedCat
 )
-
-from django.contrib.admin.widgets import AdminDateWidget
 
 class PayeeMergeForm(forms.Form):
     source_payee = forms.ModelChoiceField(queryset=Payee.objects.filter(active=True))
@@ -19,7 +17,7 @@ class PayeeMergeForm(forms.Form):
 class PayeeCategoryUpdate(forms.Form):
 	source_payee = forms.ModelChoiceField(queryset=Payee.objects.filter(active=True))
 	target_category = forms.ModelChoiceField(queryset=Category.objects.all())
-	
+
 class PayeeCategoryUpdateAll(forms.Form):
 	source_payee = forms.ModelChoiceField(queryset=Payee.objects.all())
 	target_category = forms.ModelChoiceField(queryset=Category.objects.all())
@@ -36,7 +34,7 @@ class PayeeGroupedCatUpdateAll(forms.Form):
 			self.fields[str(field)].widget.attrs.update(
 				new_data
 			)
-		
+
 		self.fields['payee'].widget.attrs.update(
 			{
 				"hx-get": "/load-c",
@@ -77,7 +75,7 @@ class AddCategory(ModelForm):
 	class Meta:
 		model = Category
 		fields = "__all__"
-		
+
 class AddPayee(ModelForm):
 	class Meta:
 		model = Payee

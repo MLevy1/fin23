@@ -1,6 +1,5 @@
 from django.shortcuts import (
-	render, 
-	get_list_or_404,
+	render,
 	get_object_or_404,
 	redirect,
 	Http404,
@@ -13,32 +12,22 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 
 from django.views.generic import (
-	DetailView, 
-	ListView, 
-	MonthArchiveView, 
-	YearArchiveView, 
-	CreateView, 
-	UpdateView, 
+	MonthArchiveView,
+	YearArchiveView,
 	DeleteView
 )
 
 from django.db.models import (
-	F, 
-	Sum, 
-	Window, 
-	Q, 	
-	Avg, 
-	Max, 
-	Count
+	F,
+	Sum,
+	Window,
 )
 
-from django.forms.models import modelformset_factory
-
 from .forms import (
-	AddTransaction, 
-	AddTransactionAll, 
+	AddTransaction,
 	TransSubTransForm,
 	TransForm,
+
 )
 
 
@@ -47,16 +36,14 @@ from transactions.models import (
 	SubTransaction
 )
 
-from fin.models import (
-	GroupedCat,
-)
-
 from django.urls import (
-	reverse_lazy, 
+	reverse_lazy,
 	reverse
 )
 
 from datetime import datetime
+
+
 
 ### VIEW ALL TRANS ###
 
@@ -83,7 +70,7 @@ class TransYearArchiveView(YearArchiveView):
 class transactionMonthArchiveView(MonthArchiveView):
 
 	queryset = Transaction.objects.all().annotate(cumsum=Window(Sum('subtransaction__amount'), order_by=(F('tdate').asc(), F('tid').asc())))
-	
+
 	date_field = "tdate"
 	template_name = "transactions/trans_monthly.html"
 
@@ -94,12 +81,12 @@ def atran(request, dpay=None):
 	context = {}
 
 	lt=Transaction.objects.all().order_by("-tid").first().tid
-	
+
 	nt=lt+1
 
 	if request.method == 'POST':
 		form = AddTransaction(request.POST)
-    
+
 		if form.is_valid():
 			form.save()
 			lt=Transaction.objects.all().order_by("-tid").first().tid
@@ -120,7 +107,7 @@ def atran(request, dpay=None):
 
 
 def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-tdate', mindate=None, maxdate=None, **kwargs):
-	
+
 	if maxdate == None:
 		maxdate = datetime.today().strftime('%Y-%m-%d')
 
@@ -131,16 +118,16 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-
 
 	if cat != 'all':
 		filters['subtransaction__groupedcat__category'] = cat
-	
+
 	if gcat != 'all':
 		filters['subtransaction__groupedcat'] = gcat
-	  
+
 	if pay != 'all':
 		filters['payee'] = pay
 
 	if l1 != 'all':
 		filters['subtransaction__groupedcat__l1group'] = l1
-	
+
 	if mindate is not None:
 		filters['tdate__range'] = [mindate, maxdate]
 
@@ -159,22 +146,22 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-
 	tqcnt = trans_query.count()
 
 	trans_list = list(trans_query)
-	
+
 	listCnt = len(trans_list)
 
 	template = loader.get_template('transactions/tlist.html')
-	
+
 	paginator = Paginator(trans_list, 50)
 
 	page_number = request.GET.get("page")
-	
+
 	page_obj = paginator.get_page(page_number)
 
 	context = {
-		"page_obj": page_obj, 
-		"acc": acc, 
-		"cat": cat, 
-		"gcat": gcat, 
+		"page_obj": page_obj,
+		"acc": acc,
+		"cat": cat,
+		"gcat": gcat,
 		"pay": pay,
 		"l1": l1,
 		"ord": ord,
@@ -208,7 +195,7 @@ def utran(request, t_id):
 	form = TransForm(request.POST or None, instance=obj)
 
 	form2 = TransSubTransForm(request.POST or None)
-	
+
 	subtrans_forms = []
 
 	for subtran_obj in obj.transsubtrans_set.all():
@@ -221,13 +208,13 @@ def utran(request, t_id):
 		'subtrans_forms': subtrans_forms,
 		'object': obj,
 	}
-	
+
 	template = "transactions/update.html"
 
 	next = request.POST.get('next', '/')
 
 	my_forms = all([form.is_valid() for form in subtrans_forms])
-		
+
 	if my_forms and form.is_valid():
 		parent = form.save()
 		parent.save()
@@ -237,7 +224,7 @@ def utran(request, t_id):
 			child.save()
 
 		context['message'] = 'saved'
-		
+
 		return redirect(next)
 
 	return render(request, template, context)
@@ -253,7 +240,7 @@ def Transaction_list_view(request):
 
 def Transaction_detail_view(request, id=None):
 	hx_url = reverse("transactions:hx-detail", kwargs={"id": id})
-	
+
 	template = "transactions/detail.html"
 
 	context = {
@@ -263,12 +250,12 @@ def Transaction_detail_view(request, id=None):
 	return render(request, template, context)
 
 def Transaction_detail_hx_view(request, id=None):
-	try: 
+	try:
 		obj = Transaction.objects.get(id=id)
 	except:
 		obj = None
 	if obj is None:
-		return HttpResponse("Not Found")	
+		return HttpResponse("Not Found")
 	template = "transactions/partials/detail.html"
 
 	context = {
@@ -355,17 +342,17 @@ def Transaction_create_view(request):
 		'tid': nt,
 		'tdate': ld,
 		'account': la,
-		
+
     	}
 
 	form = TransForm(request.POST or None, initial=initial_values)
-	
+
 	template = "transactions/create-update.html"
-	
+
 	context = {
 		"form": form,
 	}
-	
+
 	if form.is_valid():
 		obj = form.save(commit=False)
 		obj.save()
@@ -379,7 +366,7 @@ def Transaction_create_view(request):
 	return render(request, template, context)
 
 def Transaction_update_view(request, id=None):
-	obj = get_object_or_404(Transaction, id=id) 
+	obj = get_object_or_404(Transaction, id=id)
 	form = TransForm(request.POST or None, instance=obj)
 	new_subtran_url = reverse('transactions:hx-subtran-create', kwargs={"parent_id": obj.id})
 	template = "transactions/create-update.html"
@@ -390,13 +377,13 @@ def Transaction_update_view(request, id=None):
 		"new_subtran_url": new_subtran_url,
 	}
 
-	if form.is_valid(): 
+	if form.is_valid():
 		form.save()
 		context['message'] = 'saved'
 
 	if request.htmx:
 		return render(request, "transactions/partials/forms.html", context)
-	
+
 	return render(request, template, context)
 
 class TransDeleteView(DeleteView):
@@ -409,20 +396,21 @@ def Transaction_subtran_update_hx_view(request, parent_id=None, id=None):
 
 	if not request.htmx:
 		raise Http404
-		
-	try:	
+
+	try:
 		parent_obj = Transaction.objects.get(id=parent_id)
-		
+
 	except:
-		parent_obj = None 
-		
+		parent_obj = None
+
 	if parent_obj is None:
-		return HttpResponse("Not Found")	
-	
+		return HttpResponse("Not Found")
+
 	instance = None
 	if id is not None:
 		try:
 			instance = SubTransaction.objects.get(trans=parent_obj, id=id)
+
 		except:
 			instance = None
 
@@ -438,13 +426,17 @@ def Transaction_subtran_update_hx_view(request, parent_id=None, id=None):
 
 	if form.is_valid():
 		new_obj = form.save(commit=False)
-		
+
 		if instance is None:
 			new_obj.trans = parent_obj
 		new_obj.save()
-		
+
 		context['object'] = new_obj
-		
+
 		return render(request, "transactions/partials/subtran-inline.html", context)
 
 	return render(request, "transactions/partials/subtran-form.html", context)
+
+
+
+
