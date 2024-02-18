@@ -1,4 +1,4 @@
-{% extends "master.html" %}
+{% extends "fin23/master.html" %}
 {% load humanize %}
 {% block content %}
 
@@ -11,43 +11,43 @@
               {% with q=request.GET.q %}
 
                      {% if page_obj.has_previous %}
-                     
+
                             <li class="page-item"><a href="?page=1&q={{q}}" class="page-link">&laquo;</a></li>
                             <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}&q={{q}}" class="page-link">&lsaquo;</a></li>
 
                      {% else %}
-                     
+
                             <span class="page-link">&laquo;</span>
                             <span class="page-link">&lsaquo;</span>
 
                      {% endif %}
 
                      {% if page_obj.number|add:'-1' > 1 %}
-              
+
                             <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}&q={{q}}">&hellip;</a></li>
 
                      {% endif %}
-              
+
 
                      {% for i in page_obj.paginator.page_range %}
-                     
+
                             {% if page_obj.number == i %}
 
                                    <li class="active"><span class="page-link bg-primary text-white">{{ i }}</span></span></li>
-                            
+
                             {% elif i > page_obj.number|add:'-2' and i < page_obj.number|add:'2' %}
-                            
+
                                    <li><a class="page-link" href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
-                            
+
                             {% endif %}
 
                      {% endfor %}
 
 
                      {% if page_obj.paginator.num_pages > page_obj.number|add:'1' %}
-                            
+
                             <li><a class="page-link" href="?page={{ page_obj.number|add:'2' }}&q={{q}}">&hellip;</a></li>
-                     
+
                      {% endif %}
 
                      {% if page_obj.has_next %}
@@ -57,7 +57,7 @@
 
                      {% else %}
 
-                            <span class="page-link">&raquo;</span> 
+                            <span class="page-link">&raquo;</span>
 
                      {% endif %}
 
@@ -74,31 +74,31 @@
                      <span class="page-link">&lsaquo;</span>
 
               {% endif %}
-              
+
               {% if page_obj.number|add:'-1' > 1 %}
 
                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}">&hellip;</a></li>
 
               {% endif %}
-              
+
               {% for i in page_obj.paginator.page_range %}
 
                      {% if page_obj.number == i %}
 
                             <li class="active"><span class="page-link bg-primary text-white">{{ i }}</span></span></li>
-                     
+
                      {% elif i > page_obj.number|add:'-2' and i < page_obj.number|add:'2' %}
-                     
+
                             <li><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                     
+
                      {% endif %}
 
               {% endfor %}
 
               {% if page_obj.paginator.num_pages > page_obj.number|add:'1' %}
-                     
+
                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'2' }}">&hellip;</a></li>
-              
+
               {% endif %}
 
               {% if page_obj.has_next %}
@@ -108,10 +108,10 @@
 
 
               {% else %}
-              
+
                      <li class="page-item disabled"><span class="page-link">&rsaquo;</span>
                      <li class="page-item disabled"><span class="page-link">&raquo;</span>
-              
+
               {% endif %}
 
        {% endif %}
@@ -134,12 +134,12 @@
               {% with q=request.GET.q %}
 
                      {% if page_obj.has_previous %}
-                     
+
                             <li class="page-item"><a href="?page=1&q={{q}}" class="page-link">&laquo;</a></li>
                             <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}&q={{q}}" class="page-link">&lsaquo;</a></li>
 
                      {% else %}
-                     
+
                             <span class="page-link">&laquo;</span>
                             <span class="page-link">&lsaquo;</span>
 
@@ -150,27 +150,27 @@
                             <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}&q={{q}}">&hellip;</a></li>
 
                      {% endif %}
-              
+
 
                      {% for i in page_obj.paginator.page_range %}
-                     
+
                             {% if page_obj.number == i %}
 
                                    <li class="active"><span class="page-link bg-primary text-white">{{ i }}</span></span></li>
-                            
+
                             {% elif i > page_obj.number|add:'-2' and i < page_obj.number|add:'2' %}
-                            
+
                                    <li><a class="page-link" href="?page={{ i }}&q={{q}}">{{ i }}</a></li>
-                            
+
                             {% endif %}
 
                      {% endfor %}
 
 
                      {% if page_obj.paginator.num_pages > page_obj.number|add:'1' %}
-                            
+
                             <li><a class="page-link" href="?page={{ page_obj.number|add:'2' }}&q={{q}}">&hellip;</a></li>
-                     
+
                      {% endif %}
 
                      {% if page_obj.has_next %}
@@ -179,7 +179,7 @@
 
                      {% else %}
 
-                            <span class="page-link">&raquo;</span> 
+                            <span class="page-link">&raquo;</span>
 
                      {% endif %}
 
@@ -196,31 +196,31 @@
                      <span class="page-link">&lsaquo;</span>
 
               {% endif %}
-              
+
               {% if page_obj.number|add:'-1' > 1 %}
 
                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-2' }}">&hellip;</a></li>
 
               {% endif %}
-              
+
               {% for i in page_obj.paginator.page_range %}
 
                      {% if page_obj.number == i %}
 
                             <li class="active"><span class="page-link bg-primary text-white">{{ i }}</span></span></li>
-                     
+
                      {% elif i > page_obj.number|add:'-2' and i < page_obj.number|add:'2' %}
-                     
+
                             <li><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                     
+
                      {% endif %}
 
               {% endfor %}
 
               {% if page_obj.paginator.num_pages > page_obj.number|add:'1' %}
-                     
+
                      <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'2' }}">&hellip;</a></li>
-              
+
               {% endif %}
 
               {% if page_obj.has_next %}
@@ -230,10 +230,10 @@
 
 
               {% else %}
-              
+
                      <li class="page-item disabled"><span class="page-link">&rsaquo;</span>
                             <li class="page-item disabled"><span class="page-link">&raquo;</span>
-              
+
               {% endif %}
 
        {% endif %}

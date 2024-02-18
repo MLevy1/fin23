@@ -1,4 +1,4 @@
-{% extends "masterp.html" %}
+{% extends "fin23/masterp.html" %}
 {% load humanize %}
 {% block title %}
 
@@ -19,11 +19,11 @@ L1Groups
 			<div class="col-8">
 
 				<div class="card" style="background-color: #151B54">
-				
+
 					<h5 class="card-title"><a class="link-warning" href="{% url 'update-l1group' x.pk %}">{{ x.l1group }} </a></h5>
-                                   
+
                                    <p class="card-text"># of trans: {{ x.trans_count }}</p>
-                                   
+
                                    <p class="card-text">total: {{ x.trans_total|floatformat:2|intcomma}}</p>
 
 					<p class="card-text">{% if x.active %} Active {% else %} Inactive {% endif %}</p>
@@ -31,13 +31,13 @@ L1Groups
                                    <div class="btn-group">
 
 						<a href="{% url 'transactions:tlist' 'all' 'all' 'all' 'all' x.pk '-tdate' %}" class="btn btn-link">trans</a>
-						
+
 					</div>
 
 				</div>
 			</div>
 		</div>
-	
+
 	{% endfor %}
 
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "masterp.html" %}
+{% extends "fin23/masterp.html" %}
 {% load humanize %}
 {% block title %}
 
@@ -13,7 +13,7 @@ Payees List
 	<nav class="navbar fixed navbar-dark" style="background-color: #151B54">
 
 		<div class="container-fluid">
-                     
+
 			<a class="navbar-brand" href="#">Payees {{ tcount }}</a>
 
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
@@ -25,12 +25,12 @@ Payees List
 			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 
 				<div class="navbar-nav">
-                                   
+
                                    <form class="d-flex justify-content-center" method="GET" action="{% url 'results' %}">
                                           <input class="form-control-sm me-2" type="search" name="q" placeholder="Search">
                                           <button class="btn btn-outline-success" type="submit">Search</button>
                                    </form>
-					
+
                                    <a class="nav-link active" href="{% url 'add-payee' %}">Add</a>
 
 					<a class="nav-link" href="{% url 'merge' %}">Merge</a>
@@ -88,7 +88,7 @@ Payees List
        </br>
 
 	<div class="container text-center justify-content-center">
-		
+
 		{% for p in page_obj %}
 
 
@@ -100,11 +100,19 @@ Payees List
 
 					<h5 class="card-title">{{ p.payee }}</h5>
 
+					<h6 class="card-subtitle mb-2 text-body-warning">
+
+						{{ p.def_gcat }}
+
+					</h6>
+
 					<h6 class="card-subtitle mb-2 text-body-secondary">
 
 						<a class="link-warning" href="{% url 'update-payee' p.id %}">edit</a>
 
 					</h6>
+
+
 
 					<p class="card-text"># of trans: {{ p.trans_count }}</p>
 
@@ -118,11 +126,11 @@ Payees List
                                           <a href="{% url 'delete-payee' p.pk %}" class="link-danger btn btn-link">Delete</a>
 
                                           <a href="{% url 'make-payee-inactive' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-danger btn btn-link">Inact.</a>
-                                          
+
                                           <a href="{% url 'merge' p.pk %}" class="link-danger btn btn-link">Merge</a>
-						
+
                                    </div>
-						
+
                                    <div class="btn-group">
 
                                           <a href="{% url 'transactions:tlist' 'all' 'all' 'all' p.id 'all' '-tdate' %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-success btn btn-link">View Trans</a>

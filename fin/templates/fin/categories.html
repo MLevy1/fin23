@@ -1,4 +1,4 @@
-{% extends "masterp.html" %}
+{% extends "fin23/masterp.html" %}
 {% load humanize %}
 {% block title %}
 
@@ -60,7 +60,7 @@ Categories
               {% for x in page_obj  %}
 
 		<div class="d-flex justify-content-center align-items-center my-4">
-                     
+
 			<div class="col-8">
 
 				<div class="card" style="background-color: #151B54">
@@ -70,9 +70,9 @@ Categories
 					<h6 class="card-subtitle mb-2 text-body-secondary">
 						<a href="{% url 'update-category' x.pk %}">edit</a>
 					</h6>
-					
+
 					<p class="card-text"># of trans: {{ x.trans_count }}</p>
-					
+
 					<p class="card-text">total: {{ x.trans_total|floatformat:2|intcomma}}</p>
 
 					<div class="btn-group">

@@ -43,8 +43,6 @@ from django.urls import (
 
 from datetime import datetime
 
-
-
 ### VIEW ALL TRANS ###
 
 def transactions(request):
@@ -436,7 +434,3 @@ def Transaction_subtran_update_hx_view(request, parent_id=None, id=None):
 		return render(request, "transactions/partials/subtran-inline.html", context)
 
 	return render(request, "transactions/partials/subtran-form.html", context)
-
-
-
-

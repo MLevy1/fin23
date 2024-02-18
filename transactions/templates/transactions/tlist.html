@@ -1,4 +1,4 @@
-{% extends 'masterp.html' %}
+{% extends 'fin23/masterp.html' %}
 
 {% load humanize %}
 
@@ -44,7 +44,7 @@
        <h1>Transactions</h1>
 
        <table class="table table-dark">
-              
+
               <thead>
                      <th scope="col">Date</th>
                      <th scope="col">Account</th>
@@ -75,7 +75,7 @@
 					<tr>
 						<td align="left">{{ st.groupedcat }}</td>
 						<td style="vertical-align: top; color:{% if st.amount < 0 %} pink {% else %} lightGreen {% endif %}">{{ st.amount|floatformat:"2g" }} </td>
-				    		
+
 					</tr>
                             {% endfor %}
 

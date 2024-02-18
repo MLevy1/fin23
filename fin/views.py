@@ -60,7 +60,7 @@ def get_start_date():
 #1
 @login_required
 def main(request):
-	template = loader.get_template('main.html')
+	template = loader.get_template('fin23/main.html')
 	return HttpResponse(template.render())
 
 #++++++++++++
@@ -85,7 +85,7 @@ def payees(request, a='act', o='payee'):
     		).order_by(o)
 
 	tcount = Payee.objects.all().count()
-	template = 'payees.html'
+	template = 'fin/payees.html'
 	paginator = Paginator(payees, 25)
 
 	page_number = request.GET.get("page")
@@ -103,7 +103,7 @@ def payees(request, a='act', o='payee'):
 #28
 class SearchResultsView(ListView):
 	model = Payee
-	template_name = ('payees.html')
+	template_name = ('fin/payees.html')
 	context_object_name = "page_obj"
 
 	def get_queryset(self):
@@ -124,7 +124,7 @@ class SearchResultsView(ListView):
 #24
 class PayeeDetailView(DetailView):
 	model = Payee
-	template_name = "detail.html"
+	template_name = "fin/detail.html"
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -141,7 +141,7 @@ class PayeeDetailView(DetailView):
 class PayeeCreateView(CreateView):
 	model = Payee
 	fields = "__all__"
-	template_name = "add.html"
+	template_name = "fin/add.html"
 
 ### UPDATE PAYEE ###
 
@@ -149,7 +149,7 @@ class PayeeCreateView(CreateView):
 class UpdatePayee(UpdateView):
 	model = Payee
 	fields = "__all__"
-	template_name = "update.html"
+	template_name = "fin/update.html"
 
 	def get_success_url(self):
 		next = self.request.GET.get("next")
@@ -158,7 +158,7 @@ class UpdatePayee(UpdateView):
 
 			return next
 
-		return reverse_lazy('list-payees', kwargs={"a": "act", "o": "payee"})
+		return reverse_lazy('list-payees', kwargs={"a": "act", "o": "-trans_count"})
 
 ### INACTIVATE PAYEE ###
 
@@ -178,7 +178,7 @@ def make_inactive(request, pk):
 class PayeeDeleteView(DeleteView):
 	model = Payee
 	success_url = reverse_lazy('list-payees', kwargs={"a": "act", "o": "payee"})
-	template_name = "confirm_delete.html"
+	template_name = "fin/confirm_delete.html"
 
 ### MERGE 2 PAYEES ###
 
@@ -207,7 +207,7 @@ def merge_payees(request, dpay=None):
 	else:
 		form = PayeeMergeForm(initial={'target_payee': dpay })
 
-	return render(request, 'merge_payees.html', {'form': form  })
+	return render(request, 'fin/merge_payees.html', {'form': form  })
 
 ### UPDATE PAYEES CATEGORY ###
 
@@ -240,7 +240,7 @@ def payee_category_update_all(request, dpay=None):
 
 	}
 
-	return render(request, 'qupdate.html', context)
+	return render(request, 'fin/qupdate.html', context)
 
 #active only#
 
@@ -256,7 +256,7 @@ def payee_groupedcat_update_all(request, dpay=None, dcat=None):
 	if dcat is None and dpay is not None:
 		pass
 
-	template = 'gc_payee.html'
+	template = 'fin/gc_payee.html'
 
 	if request.method == 'POST':
 		form = PayeeGroupedCatUpdateAll(request.POST)
@@ -310,7 +310,7 @@ def category_groupedcat_update_all(request, dcat=None):
 		form = CategoryGroupedCatUpdateAll(initial={'category': dcat })
 
 
-	return render(request, 'qupdate.html', {'form': form  })
+	return render(request, 'fin/qupdate.html', {'form': form  })
 
 
 ### UPDATE PAYEES ACCOUNT ###
@@ -331,7 +331,7 @@ def payee_account_update(request):
 	else:
 		form = PayeeAccountUpdate()
 
-	return render(request, 'qupdate.html', {'form': form  })
+	return render(request, 'fin/qupdate.html', {'form': form  })
 
 
 #++++++++++++
@@ -359,7 +359,7 @@ def accounts(request, a='act'):
 
 	accounts = accounts.order_by('account')
 
-	return render(request, "accounts.html", {'accounts': accounts})
+	return render(request, "fin/accounts.html", {'accounts': accounts})
 
 ### ADD ACCOUNT ###
 
@@ -368,7 +368,7 @@ def accounts(request, a='act'):
 class AccountCreateView(CreateView):
 	model = Account
 	fields = "__all__"
-	template_name = "add.html"
+	template_name = "fin/add.html"
 
 ### UPDATE ACCOUNT ###
 
@@ -377,7 +377,7 @@ class AccountCreateView(CreateView):
 class UpdateAccount(UpdateView):
 	model = Account
 	fields = "__all__"
-	template_name = "update.html"
+	template_name = "fin/update.html"
 	success_url = reverse_lazy('list-accounts', kwargs={"a": "act"})
 
 #+++++++++++++
@@ -390,7 +390,7 @@ class UpdateAccount(UpdateView):
 
 class CatListView(ListView):
 	model = Category
-	template_name = "categories.html"
+	template_name = "fin/categories.html"
 	context_object_name = 'page_obj'
 
 	def get_queryset(self):
@@ -435,7 +435,7 @@ class CatListView(ListView):
 
 class CatSearchView(ListView):
 	model = Category
-	template_name = "categories.html"
+	template_name = "fin/categories.html"
 	context_object_name = "page_obj"
 
 	def get_queryset(self):
@@ -484,7 +484,7 @@ class CatSearchView(ListView):
 class CatCreateView(CreateView):
 	model = Category
 	fields = "__all__"
-	template_name = "add.html"
+	template_name = "fin/add.html"
 
 ### UPDATE CATEGORY ###
 
@@ -493,7 +493,7 @@ class CatCreateView(CreateView):
 class UpdateCategory(UpdateView):
 	model = Category
 	fields = "__all__"
-	template_name = "update.html"
+	template_name = "fin/update.html"
 	success_url = reverse_lazy('list-categories')
 
 ### VIEW L1GROUPS
@@ -502,7 +502,7 @@ class UpdateCategory(UpdateView):
 
 class L1GroupListView(ListView):
 	model = L1Group
-	template_name = "l1groups.html"
+	template_name = "fin/l1groups.html"
 	context_object_name = 'page_obj'
 
 	def get_queryset(self):
@@ -546,7 +546,7 @@ class L1GroupListView(ListView):
 class L1GroupCreateView(CreateView):
 	model = L1Group
 	fields = "__all__"
-	template_name = "add.html"
+	template_name = "fin/add.html"
 
 ### UPDATE L1 GROUP ###
 
@@ -555,14 +555,14 @@ class L1GroupCreateView(CreateView):
 class L1GroupUpdateView(UpdateView):
 	model = L1Group
 	fields = "__all__"
-	template_name = "update.html"
+	template_name = "fin/update.html"
 	success_url = reverse_lazy('list-l1groups')
 
 #19
 
 class GroupedCatListView(ListView):
 	model = GroupedCat
-	template_name = "groupedcats.html"
+	template_name = "fin/groupedcats.html"
 	context_object_name = 'page_obj'
 
 	def get_queryset(self):
@@ -603,14 +603,14 @@ class GroupedCatListView(ListView):
 class GroupedCatCreateView(CreateView):
 	model = GroupedCat
 	fields = "__all__"
-	template_name = "add.html"
+	template_name = "fin/add.html"
 
 #20
 
 class GroupedCatUpdateView(UpdateView):
 	model = GroupedCat
 	fields = "__all__"
-	template_name = "update.html"
+	template_name = "fin/update.html"
 	success_url = reverse_lazy('list-gc')
 
 #21
@@ -618,7 +618,7 @@ class GroupedCatUpdateView(UpdateView):
 class GroupedCatDeleteView(DeleteView):
 	model = GroupedCat
 	success_url = reverse_lazy('list-gc')
-	template_name = "confirm_delete.html"
+	template_name = "fin/confirm_delete.html"
 
 #29
 
@@ -632,7 +632,7 @@ def load_c(request, payee_id=None):
 		cats = Category.objects.all()
 
 
-	template = "c-options.html"
+	template = "fin/c-options.html"
 
 	context = { "cats": cats }
 
@@ -646,7 +646,7 @@ def load_gc(request, category_id=None):
 
 	groupedcats = GroupedCat.objects.all()
 
-	template = "gc-options.html"
+	template = "fin/gc-options.html"
 
 	context = { "groupedcats": groupedcats }
 
