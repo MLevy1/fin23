@@ -1,0 +1,16 @@
+{% extends "fin23/master.html" %}
+
+{% block content %}
+
+<h1>{{ object.note }}<small><a href='{{ object.get_edit_url }}'>Edit</a></small></h1>
+<p>{{ object.payee }}</p>
+<p>{{ object.active }}</p>
+
+{% for item in object.get_paycheck_children %}
+
+<div>
+    {{ item.groupedcat }}>{{ item.amount }}{% if item.note %} {{ item.note }} {% endif %}</p>
+
+{% endfor %}
+
+{% endblock content %}

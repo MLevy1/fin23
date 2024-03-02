@@ -1,0 +1,29 @@
+{% extends 'fin23/master.html' %}
+{% block title %}
+Update Trans
+{% endblock %}
+
+{% block content %}
+
+<h1>Create-Update Paycheck</h1>
+
+<div style='margin-top:30px;'>
+    {% include 'transactions/partials/paycheck-form.html' %}
+
+    <h3>Paycheck Items</h3>
+
+    {% for i in object.get_paycheck_children %}
+
+        {% include 'transactions/partials/paycheck-item-inline.html' with i=i  %}
+
+    {% endfor %}
+    {% if new_item_url %}
+
+    <div id='item-create'></div>
+
+    <button hx-trigger="click" class="btn btn-secondary" hx-get="{{ new_item_url }}" hx-target="#item-create" hx-swap='beforeend'>Add</button>
+
+    {% endif %}
+</div>
+
+{% endblock content %}

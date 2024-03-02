@@ -1,0 +1,13 @@
+<div id ='item_form'>
+    <form action='.' method='POST' hx-post='{% if url %}{{ url }}{% else %}.{% endif %}' hx-swap='outerHTML'>
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <div class='htmx-indicator'>Loading...</div>
+
+        <button class="btn btn-secondary" type="submit">pi save</button>
+
+    </form>
+
+</div>
