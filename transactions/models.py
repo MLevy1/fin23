@@ -34,7 +34,7 @@ class Transaction(models.Model):
 		return tsum
 
 	def get_edit_url(self):
-		return reverse("transactions:update", kwargs={"id": self.id})
+		return reverse("transactions:update", kwargs={"id": self.id })
 
 	def get_delete_url(self):
 		return reverse("transactions:delete", kwargs={"id": self.id})
@@ -73,3 +73,43 @@ class SubTransaction(models.Model):
 
 	class Meta:
 		ordering = ["-amount"]
+
+class Paycheck(models.Model):
+    payee = models.ForeignKey(Payee, on_delete=models.PROTECT, null=True, blank=True)
+    note = models.CharField(max_length=255, null=True, blank=True)
+    added = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+
+    def get_absolute_url(self):
+        return reverse("transactions:paycheck-detail", kwargs={"id": self.id})
+
+    def get_edit_url(self):
+        return reverse("transactions:paycheck-update", kwargs={"id": self.id})
+
+    def get_net_pay(self):
+        tsum = 0
+        for t in self.paycheckitems_set.all():
+            tsum += t.amount
+        return tsum
+
+    def get_paycheck_children(self):
+        return self.paycheckitems_set.all()
+
+class PaycheckItems(models.Model):
+    paycheck = models.ForeignKey(Paycheck, on_delete=models.PROTECT, null=True, blank=True)
+    groupedcat = models.ForeignKey(GroupedCat, on_delete=models.PROTECT, null=True, blank=True)
+    amount = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2, null=True, blank=True)
+    note = models.CharField(max_length=255, null=True, blank=True)
+
+    def get_absolute_url(self):
+        return self.paycheck.get_absolute_url()
+
+	def get_delete_url(self):
+		return reverse("transactions:subtran-delete", kwargs = {"parent_id": self.trans.id, "id": self.id})
+
+    def get_hx_edit_url(self):
+        kwargs = {
+            "parent_id": self.paycheck.id,
+            "id": self.id
+        }
+        return reverse("transactions:paycheck_item_update_hx", kwargs=kwargs)

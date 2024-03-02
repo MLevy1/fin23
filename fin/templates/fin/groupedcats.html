@@ -22,6 +22,16 @@ Grouped Cats
 
 					<h5 class="card-title"><a class="link-warning" href="{% url 'update-gc' x.pk %}"> {{ x.groupedcat }} </a></h5>
 
+					{% if x.active == "Yes" %}
+
+					<p class="text-success">Active</p>
+
+					{%  else %}
+
+					<p class="text-danger">Not Active h{{ x.active }}</p>
+
+					{% endif %}
+
 					<p class="card-text"># of trans: {{ x.trans_count }}</p>
 
 					<p class="card-text">total: {{ x.trans_total|floatformat:2|intcomma}}</p>

@@ -8,7 +8,7 @@ from django.urls import (
 urlpatterns = [
 	path('', include('fin.urls')),
     path('trans/', include('transactions.urls')),
-    path('csv/', include('csvimp.urls')),
+    path('csv/', include('csv_importer.urls')),
     path('issues/', include('issues.urls')),
     path('accounts/', include('accounts.urls')),
 	path('admin/', admin.site.urls),

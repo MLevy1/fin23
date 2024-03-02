@@ -25,8 +25,11 @@
 
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<title>{% block title %}{% endblock %}</title>
-              {% load humanize %}
+		<title>
+		    {% block title %}
+		    {% endblock %}
+		</title>
+		{% load humanize %}
 		{% load bootstrap5 %}
 		{% bootstrap_css %}
 		{% bootstrap_javascript %}
@@ -72,10 +75,10 @@
 									<li><a class="dropdown-item" href="{% url 'list-categories' %}">5 View</a></li>
 									<li><a class="dropdown-item" href="{% url 'add-category' %}">6 Add New</a></li>
 									<li><a class="dropdown-item" href="{% url 'payee-category-update-all' %}">17 Payee - Category Update</a></li>
-                                                               <li><a class="dropdown-item" href="{% url 'list-l1groups' %}">9 View L1 Groups</a></li>
-                                                               <li><a class="dropdown-item" href="{% url 'add-l1group' %}">22 Add L1 Group</a></li>
-                                                               <li><a class="dropdown-item" href="{% url 'list-gc' %}">19 View Grouped Cats</a></li>
-                                                               <li><a class="dropdown-item" href="{% url 'add-gc' %}">12 Add Grouped Cat</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'list-l1groups' %}">9 View L1 Groups</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'add-l1group' %}">22 Add L1 Group</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'list-gc' %}">19 View Grouped Cats</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'add-gc' %}">12 Add Grouped Cat</a></li>
 
 								</ul>
 							</li>
@@ -97,8 +100,27 @@
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 									<li><a class="dropdown-item" href="{% url 'transactions:list' %}">View</a></li>
 									<li><a class="dropdown-item" href="{% url 'transactions:create' %}">Add New</a></li>
-									<li><a class="dropdown-item" href="{% url 'csv:upload-file' %}">upload</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:transfer' %}">Add Transfer</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:cc-pmt' %}">Credit Card Pmt</a></li>
 								</ul>
+							</li>
+							<li class="nav-item dropdown">
+							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
+							        CSV Uploader
+							    </a>
+								<ul class="dropdown-menu">
+								    <li><a class="dropdown-item" href="{% url 'csv:upload-file' %}">New Upload</a></li>
+								    <li><a class="dropdown-item" href="{% url 'csv:imported-payees-list' %}">Uploaded Payees</a></li>
+								    <li><a class="dropdown-item" href="{% url 'csv:staged-transactions-list' %}">Staged Transactions</a></li>
+								</ul>
+							</li>
+							<li class="nav-item dropdown">
+							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
+							        Paychecks
+							    </a>
+							    <ul class="dropdown-menu">
+							        <li><a class="dropdown-item" href="{% url 'transactions:paycheck-list' %}">List</a></li>
+							    </ul>
 							</li>
 						</ul>
 					</div>

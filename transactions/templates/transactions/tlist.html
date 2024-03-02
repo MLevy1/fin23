@@ -42,7 +42,7 @@
        </div>
 
        <h1>Transactions</h1>
-
+       <p><a class="btn-success btn-large" href="{% url 'transactions:create' %}?next={{ request.path|urlencode }}">New Trans</a></p>
        <table class="table table-dark">
 
               <thead>

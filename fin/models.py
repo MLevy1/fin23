@@ -19,7 +19,6 @@ class Category(models.Model):
 
 class L1Group(models.Model):
     l1group = models.CharField(max_length=255, unique=True)
-
     active = models.BooleanField(verbose_name='Active', default=True)
 
     def get_absolute_url(self):
@@ -43,9 +42,13 @@ class Account(models.Model):
     def __str__(self):
         return self.account
 
+    class Meta:
+        ordering = ['account']
+
 class GroupedCat(models.Model):
 	l1group =  models.ForeignKey(L1Group, on_delete=models.PROTECT, blank=True, null=True)
 	category = models.ForeignKey(Category, on_delete=models.PROTECT, blank=True, null=True)
+	active = models.BooleanField(default=True, null=True, blank=True)
 
 	def __str__(self):
 

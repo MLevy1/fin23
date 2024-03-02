@@ -12,6 +12,10 @@ from transactions.models import (
 	Transaction
 )
 
+@admin.action(description="Set active to True")
+def act_true(modeladmin, request, queryset):
+    queryset.update(imported=True)
+
 class GroupedCategoryInline(admin.StackedInline):
 	model = GroupedCat
 	list_display = [
@@ -27,7 +31,6 @@ class L1GroupAdmin(admin.ModelAdmin):
 		'l1group',
 		'active'
 	]
-
 
 class TransInline(admin.StackedInline):
 	model = Transaction
@@ -45,13 +48,24 @@ class PayeeAdmin(admin.ModelAdmin):
 	search_fields = ['payee']
 
 class CategoryAdmin(admin.ModelAdmin):
-	list_display = [
+    list_display = [
 		'category',
 		'active'
 	]
+
+class GroupedCatAdmin(admin.ModelAdmin):
+    list_display = [
+        'l1group',
+        'category',
+        'active'
+    ]
+
+    actions = [act_true]
+
+
 
 admin.site.register(Account)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Payee, PayeeAdmin)
 admin.site.register(L1Group, L1GroupAdmin)
-admin.site.register(GroupedCat)
+admin.site.register(GroupedCat, GroupedCatAdmin)

@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'fin',
     'issues',
     'transactions',
-    'csvimp',
+    'csv_importer',
 ]
 
 MIDDLEWARE = [
@@ -152,9 +152,3 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
-
-FORCE_LOWERCASE_TAGS = True
-
-CRISPY_TEMPLATE_PACK = "bootstrap4"

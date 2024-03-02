@@ -2,12 +2,18 @@
 <form action="." method="POST" hx-post="." hx-swap='outerHTML' hx-trigger='submit'>
        {% csrf_token %}
 
+        {% if message %}
+
+            <p>{{ message }}</p>
+
+        {% endif %}
+
        {{ form.as_p }}
-   
-       <div class='htmx-indicator'>Loading...</div>   
-       <p hidden>{{request.GET.next}}</p>
+
+       <div class='htmx-indicator'>Loading...</div>
+       <p>{{request.GET.next}}</p>
        <button class="btn btn-secondary" type="submit">save</button>
-	<a href="{{ request.GET.next }}" class="btn btn-secondary btn" hx-trigger='click' role="button">back</a>
-	<a href="{% url 'transactions:create' %}" class="btn btn-secondary btn" hx-trigger='click' role="button">new trans</a>
+        <a href="{{ request.GET.next }}" class="btn btn-secondary btn" hx-trigger='click' role="button">back</a>
+	    <a href="{% url 'transactions:create' %}" class="btn btn-secondary btn" hx-trigger='click' role="button">new trans</a>
    </form>
 </div>

@@ -9,20 +9,20 @@ from .views import (
 	#2 m f
 	accounts,
 	#3 m f
-	AccountCreateView, 
+	AccountCreateView,
 	#4
 	UpdateAccount,
 
 	#CATEGORY
 	#5 m
-	CatListView, 
+	CatListView,
 	#6 m
-	CatCreateView, 
+	CatCreateView,
 	#7
 	UpdateCategory,
 	#11
 	category_groupedcat_update_all,
-	#8 	
+	#8
 	CatSearchView,
 	#29
 	load_c,
@@ -37,25 +37,25 @@ from .views import (
 
 	#GROUPED CAT
 	#19 m
-	GroupedCatListView, 
+	GroupedCatListView,
 	#12
-	GroupedCatCreateView, 
+	GroupedCatCreateView,
 	#20
-	GroupedCatUpdateView, 
+	GroupedCatUpdateView,
 	#21
 	GroupedCatDeleteView,
 	#30
 	load_gc,
-	
+
 	#PAYEE
 	#13 m
 	payees,
 	#23 m
-	PayeeCreateView, 
+	PayeeCreateView,
 	#25
-	UpdatePayee, 
+	UpdatePayee,
 	#26
-	PayeeDeleteView, 
+	PayeeDeleteView,
 	#27
 	make_inactive,
 	#14
@@ -69,15 +69,15 @@ from .views import (
 	#28
 	SearchResultsView,
 	#24
-	PayeeDetailView, 
+	PayeeDetailView,
 )
 
 urlpatterns = [
-	
+
 	#MAIN
 	#1
 	path('', main, name='main'),
-	
+
 	#ACCOUNT
 	#2
 	path('act/<str:a>/', accounts, name='list-accounts'),
@@ -94,7 +94,7 @@ urlpatterns = [
 	#7
 	path("ucat/<pk>/", UpdateCategory.as_view(), name="update-category"),
 	#11
-       path("cgcua/<dcat>/", category_groupedcat_update_all, name="category-gc-update-all"),
+    path("cgcua/<dcat>/", category_groupedcat_update_all, name="category-gc-update-all"),
 	#8
 	path("csearch/", CatSearchView.as_view(), name="results-category"),
 	#29
@@ -102,23 +102,23 @@ urlpatterns = [
 
 	#L1GROUP
 	#9
-       path("l1g/", L1GroupListView.as_view(), name="list-l1groups"),
+    path("l1g/", L1GroupListView.as_view(), name="list-l1groups"),
 	#22
-       path("al1g/", L1GroupCreateView.as_view(), name="add-l1group"),
+    path("al1g/", L1GroupCreateView.as_view(), name="add-l1group"),
 	#15
-       path("ul1g/<pk>/", L1GroupUpdateView.as_view(), name="update-l1group"),
+    path("ul1g/<pk>/", L1GroupUpdateView.as_view(), name="update-l1group"),
 
 	#GROUPED CAT
 	#19
-       path("gc/", GroupedCatListView.as_view(), name="list-gc"),
+    path("gc/", GroupedCatListView.as_view(), name="list-gc"),
 	#12
-       path("agc/", GroupedCatCreateView.as_view(), name="add-gc"),
+    path("agc/", GroupedCatCreateView.as_view(), name="add-gc"),
 	#20
-       path("ugc/<pk>/", GroupedCatUpdateView.as_view(), name="update-gc"),
+    path("ugc/<pk>/", GroupedCatUpdateView.as_view(), name="update-gc"),
 	#21
-       path("dgc/<pk>/", GroupedCatDeleteView.as_view(), name="delete-gc"),
+    path("dgc/<pk>/", GroupedCatDeleteView.as_view(), name="delete-gc"),
 	#30
-       path("load-gc/", load_gc, name="load-gc"),
+    path("load-gc/", load_gc, name="load-gc"),
 
 	#PAYEE
 	#13
@@ -128,7 +128,7 @@ urlpatterns = [
 	#25
 	path("upay/<pk>/", UpdatePayee.as_view(), name="update-payee"),
 	#26
-       path('payee/<int:pk>/delete/', PayeeDeleteView.as_view(), name='delete-payee'),
+    path('payee/<int:pk>/delete/', PayeeDeleteView.as_view(), name='delete-payee'),
 	#27
 	path('payee/<int:pk>/make_inactive/', make_inactive, name='make-payee-inactive'),
 	#14
@@ -138,15 +138,12 @@ urlpatterns = [
 	path('pcupdateall/<dpay>/', payee_category_update_all, name="payee-category-update-all"),
 	path('pcupdateall/', payee_category_update_all, name="payee-category-update-all"),
 	#10
-       path("pgcua/<dpay>/", payee_groupedcat_update_all, name="payee-gc-update-all"),
+    path("pgcua/<dpay>/", payee_groupedcat_update_all, name="payee-gc-update-all"),
 	#18
 	path('pau/', payee_account_update, name="payee-account-update"),
 	#28
-       path("search/", SearchResultsView.as_view(), name="results"),
+    path("search/", SearchResultsView.as_view(), name="results"),
 	#24
 	path("paydet/<pk>/", PayeeDetailView.as_view(), name="payee-detail"),
-
-
-
 
 ]

@@ -17,6 +17,14 @@ from .views import (
     atran,
     utran,
     utran_act,
+    Transfer_create_view,
+    CC_Pmt_create_view,
+    add_staged_trans,
+    paycheck_list_view,
+    paycheck_detail_view,
+    paycheck_create_view,
+    paycheck_update_view,
+    paycheck_item_update_hx_view,
 )
 
 from django.views.generic.dates import ArchiveIndexView
@@ -28,6 +36,8 @@ app_name = 'transactions'
 urlpatterns = [
 	path("", ArchiveIndexView.as_view(model=Transaction, template_name = "transactions/trans_years.html", date_field="tdate"), name="list"),
 	path("create/", Transaction_create_view, name='create'),
+	path("transfer/", Transfer_create_view, name='transfer'),
+	path("ccpmt/", CC_Pmt_create_view, name='cc-pmt'),
 	path("<int:id>/edit/", Transaction_update_view, name='update'),
 	path("hx/<int:parent_id>/subtran/<int:id>/", Transaction_subtran_update_hx_view, name='hx-subtran-update'),
 	path("hx/<int:parent_id>/subtran/", Transaction_subtran_update_hx_view, name='hx-subtran-create'),
@@ -48,5 +58,12 @@ urlpatterns = [
 	path("utran/<int:t_id>/", utran, name="update-trans"),
     path("utran_act/<int:t_id>/", utran_act, name="update-trans-act"),
 	path('trans/<int:pk>/delete/', TransDeleteView.as_view(), name='delete-trans'),
+	path('import/<st>/', add_staged_trans, name='add-staged-trans'),
+	path("paycheck/", paycheck_list_view, name="paycheck-list"),
+	path("paycheck/create/", paycheck_create_view, name="paycheck-create"),
+	path("paycheck/<int:id>/edit/", paycheck_update_view, name="paycheck-update"),
+	path("paycheck/<int:id>/", paycheck_detail_view, name="paycheck-detail"),
+	path("paycheck/hx/<int:parent_id>/item/<int:id>/", paycheck_item_update_hx_view, name="paycheck_item_update_hx"),
+	path("paycheck/hx/<int:parent_id>/item/", paycheck_item_update_hx_view, name="paycheck_item_create_hx"),
 
 ]

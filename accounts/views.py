@@ -17,7 +17,7 @@ def login_view(request):
 
 			context = {"error": "Invalid username or password."}
 
-			return render(request, "login.html", context)
+			return render(request, "accounts/login.html", context)
 
 		login(request, user)
 		return redirect('/')
@@ -31,7 +31,7 @@ def logout_view(request):
 
 		logout(request)
 
-		return redirect('/login/')
+		return redirect('accounts/login/')
 
 	return render(request, 'accounts/logout.html', {})
 

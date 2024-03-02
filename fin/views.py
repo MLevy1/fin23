@@ -1,5 +1,3 @@
-from django.contrib.auth.decorators import login_required
-
 from django.http import HttpResponse
 
 from django.template import loader
@@ -42,6 +40,7 @@ from django.views.generic import (
 
 from transactions.models import (
 	Transaction,
+	SubTransaction,
 )
 
 from django.utils import timezone
@@ -58,7 +57,6 @@ def get_start_date():
 	return datetime.now() - timedelta(days=1000)
 
 #1
-@login_required
 def main(request):
 	template = loader.get_template('fin23/main.html')
 	return HttpResponse(template.render())
@@ -68,7 +66,6 @@ def main(request):
 #++++++++++++
 
 #13
-@login_required
 def payees(request, a='act', o='payee'):
 
 	if a=="all":
@@ -80,7 +77,7 @@ def payees(request, a='act', o='payee'):
 
 	else:
 		payees = Payee.objects.filter(active=True).annotate(
-			trans_count=Count('transaction'), 	total_transactions=Sum('transaction__subtransaction__amount'),
+			trans_count=Count('transaction'), total_transactions=Sum('transaction__subtransaction__amount'),
 			most_recent_transaction=Max('transaction__tdate')
     		).order_by(o)
 
@@ -140,7 +137,12 @@ class PayeeDetailView(DetailView):
 #23
 class PayeeCreateView(CreateView):
 	model = Payee
-	fields = "__all__"
+	#fields = "__all__"
+	fields = [
+	    'payee',
+	    'def_gcat',
+	    'active',
+	]
 	template_name = "fin/add.html"
 
 ### UPDATE PAYEE ###
@@ -184,7 +186,6 @@ class PayeeDeleteView(DeleteView):
 
 #14
 
-@ login_required
 def merge_payees(request, dpay=None):
 
 	next = request.GET.get('next', '/')
@@ -212,7 +213,6 @@ def merge_payees(request, dpay=None):
 ### UPDATE PAYEES CATEGORY ###
 
 #17
-
 def payee_category_update_all(request, dpay=None):
 
 	if request.method == 'POST':
@@ -248,7 +248,6 @@ def payee_category_update_all(request, dpay=None):
 ### UPDATE PAYEES GROUP CATEGORY ###
 
 #10
-
 def payee_groupedcat_update_all(request, dpay=None, dcat=None):
 
 	dcat = request.GET.get('dcat')
@@ -291,7 +290,6 @@ def payee_groupedcat_update_all(request, dpay=None, dcat=None):
 ### UPDATE CATEGORY'S GROUP CATEGORY ###
 
 #11
-
 def category_groupedcat_update_all(request, dcat=None):
 
 	dcat = request.GET.get('dcat')
@@ -359,7 +357,14 @@ def accounts(request, a='act'):
 
 	accounts = accounts.order_by('account')
 
-	return render(request, "fin/accounts.html", {'accounts': accounts})
+	tsum = SubTransaction.objects.all().aggregate(Sum("amount"))
+	tsum = float(tsum['amount__sum'])
+
+	tsum = f"${tsum:,.2f}"
+
+
+
+	return render(request, "fin/accounts.html", {'accounts': accounts, 'tsum': tsum})
 
 ### ADD ACCOUNT ###
 
@@ -402,14 +407,13 @@ class CatListView(ListView):
 
 			trans_total = Transaction.objects.filter(subtransaction__groupedcat__category=c).aggregate(Sum('subtransaction__amount'))['subtransaction__amount__sum'] or 0
 
-			if trans_count>0:
-				data.append({
-					'pk': c.pk,
-					'active': c.active,
-					'category': c,
-					'trans_count': trans_count,
-					'trans_total': trans_total,
-				})
+			data.append({
+				'pk': c.pk,
+				'active': c.active,
+				'category': c,
+				'trans_count': trans_count,
+				'trans_total': trans_total,
+			})
 
 		paginator = Paginator(data, 25)
 		page_number = self.request.GET.get("page")
@@ -419,13 +423,10 @@ class CatListView(ListView):
 
 	def get_context_data(self,**kwargs):
 
-		nogcat = Transaction.objects.all()
-		tcount = nogcat.count()
+		ccount = Category.objects.all().count()
 
 		context = super(CatListView,self).get_context_data(**kwargs)
-		context['tcount'] = tcount
-
-		print("no search context", context)
+		context['ccount'] = ccount
 
 		return context
 
@@ -574,13 +575,12 @@ class GroupedCatListView(ListView):
 
 			trans_total = Transaction.objects.filter(subtransaction__groupedcat=c.pk).aggregate(Sum('subtransaction__amount'))['subtransaction__amount__sum'] or 0
 
-			if trans_count>0:
-				data.append({
-					'pk': c.pk,
-					'groupedcat': c,
-					'trans_count': trans_count,
-					'trans_total': trans_total,
-				})
+			data.append({
+				'pk': c.pk,
+				'groupedcat': c,
+				'trans_count': trans_count,
+				'trans_total': trans_total,
+			})
 
 		paginator = Paginator(data, 25)
 		page_number = self.request.GET.get("page")

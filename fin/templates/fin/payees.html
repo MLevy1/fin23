@@ -108,7 +108,15 @@ Payees List
 
 					<h6 class="card-subtitle mb-2 text-body-secondary">
 
-						<a class="link-warning" href="{% url 'update-payee' p.id %}">edit</a>
+                        {% if request.path|urlencode == "/search/" %}
+
+						<a class="link-warning" href="{% url 'update-payee' p.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">edit</a>
+
+                        {% else %}
+
+                        <a class="link-warning" href="{% url 'update-payee' p.id %}">edit</a>
+
+                        {% endif %}
 
 					</h6>
 
@@ -116,7 +124,27 @@ Payees List
 
 					<p class="card-text"># of trans: {{ p.trans_count }}</p>
 
-					<p class="card-text">total: ${{ p.total_transactions|floatformat:2|intcomma }}</p>
+					<p class="card-text">total:
+
+					{% if p.total_transactions > 999 %}
+
+					     ${{ p.total_transactions|floatformat:2|intcomma }}
+
+					{% elif p.total_transactions < -999 %}
+
+					     -${{ p.total_transactions|floatformat:2|intcomma|slice:"1:" }}
+
+					{% elif p.total_transactions < 0 %}
+
+					     -${{ p.total_transactions|floatformat:2|slice:"1:" }}
+
+				    {% else %}
+
+				         ${{ p.total_transactions|floatformat:2 }}
+
+				    {% endif %}
+
+				    </p>
 
 					<p class="card-text">most recent: {{ p.most_recent_transaction }}</p>
 

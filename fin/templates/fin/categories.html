@@ -14,7 +14,7 @@ Categories
 
               <div class="container-fluid">
 
-                     <a class="navbar-brand" href="#">Categories {{ tcount }}</a>
+                     <a class="navbar-brand" href="#">Categories {{ ccount }}</a>
 
                      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
 
@@ -56,7 +56,6 @@ Categories
 
        <div class="container text-center">
 
-
               {% for x in page_obj  %}
 
 		<div class="d-flex justify-content-center align-items-center my-4">
@@ -70,6 +69,16 @@ Categories
 					<h6 class="card-subtitle mb-2 text-body-secondary">
 						<a href="{% url 'update-category' x.pk %}">edit</a>
 					</h6>
+
+					{% if x.active %}
+
+					 <p class="text-success">active</p>
+
+					{% else %}
+
+					 <p class="text-danger">inactive</p>
+
+					{% endif %}
 
 					<p class="card-text"># of trans: {{ x.trans_count }}</p>
 
