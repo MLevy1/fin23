@@ -1,0 +1,32 @@
+{% extends "fin23/master.html" %}
+
+{% block content %}
+
+<h1>{{ title }}</h1>
+
+<a href="{{ new_url }}">New Tax Return</a>
+
+<table width=100%>
+{% for x in object_list %}
+<tr>
+    <td>
+        <a href="{{ x.get_edit_url }}">edit</a>
+    </td>
+    <td>
+        <a href="{{ x.get_delete_url }}">del</a>
+    </td>
+    <td>
+        {{ x.year }}
+    </td>
+    <td>
+        {{ x.payee }}
+    </td>
+    <td>
+        <a href="{{ x.get_absolute_url }}">view</a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+
+{% endblock content %}

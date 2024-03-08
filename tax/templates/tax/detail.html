@@ -1,0 +1,19 @@
+{% extends "fin23/master.html" %}
+
+{% block content %}
+
+{% if title %}
+
+    <h1>{{ title }}</h1>
+<hr>
+{% endif %}
+
+<h2>{{ object.year }}: {{ object.payee }}</h2>
+
+    {% for c in object.get_children %}
+
+	    {% include 'tax/partials/inline.html' with object=c %}
+
+    {% endfor %}
+
+{% endblock content %}

@@ -26,7 +26,7 @@ Account List
 
                             <div class="navbar-nav">
 
-                                   <a class="nav-link active" href="/aact/">Add</a>
+                                   <a class="nav-link active" href="{% url 'add-account' %}">3 Add</a>
 
                                    <div class="nav-item dropdown">
 
@@ -34,9 +34,9 @@ Account List
 
                                           <ul class="dropdown-menu text-center" style="background-color: #191970">
 
-                                                 <li><a class="dropdown-item" style="color: #707019" href="/act/act/">Active</a></li>
+                                                 <li><a class="dropdown-item" style="color: #707019" href="{% url 'list-accounts' 'act' %}">2 Active</a></li>
 
-                                                 <li><a class="dropdown-item" style="color: #707019" href="/act/all/">All</a></li>
+                                                 <li><a class="dropdown-item" style="color: #707019" href="{% url 'list-accounts' 'all' %}">2 All</a></li>
 						</ul>
 					</div>
 				</div>
@@ -61,17 +61,17 @@ Account List
 
 				<h6 class="card-subtitle mb-2 text-body-secondary">
 
-					<a href="{% url 'update-account' x.id %}">edit</a>
+					<a href="{% url 'update-account' x.id %}">4 edit</a>
 
 				</h6>
 
-				<p class="card-text">total: ${{ x.balance|floatformat:2|intcomma }}</p>
+				<p class="card-text">total: ${{ x.balance|floatformat:"2g"  }}</p>
 
 				<p class="card-text">most recent: {{ x.most_recent_transaction }}</p>
 
 				<div class="btn-group">
 
-					<a href="{% url 'transactions:tlist' x.id "all" "all" "all" %}" class="btn btn-link">trans</a>
+					<a href="{% url 'transactions:tlist' x.id 'all' 'all' 'all' %}" class="btn btn-link">T3 trans</a>
 
 				</div>
 

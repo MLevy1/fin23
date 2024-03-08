@@ -1,6 +1,12 @@
 <div id ='trans_container'>
 
-    <form action='.' method='POST' hx-post='.' hx-swap='outerHTML'>
+<form action="." method="POST" hx-post="." hx-swap='outerHTML' hx-trigger='submit'>
+        {% if title %}
+
+            <h1>{{ title }}</h1>
+
+        {% endif %}
+
         {% csrf_token %}
 
         {% if message %}
@@ -14,7 +20,5 @@
         <div class='htmx-indicator'>Loading...</div>
 
         <button class="btn btn-secondary" type="submit">save</button>
-
-    </form>
-
+   </form>
 </div>

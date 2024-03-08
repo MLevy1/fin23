@@ -74,7 +74,6 @@
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 									<li><a class="dropdown-item" href="{% url 'list-categories' %}">5 View</a></li>
 									<li><a class="dropdown-item" href="{% url 'add-category' %}">6 Add New</a></li>
-									<li><a class="dropdown-item" href="{% url 'payee-category-update-all' %}">17 Payee - Category Update</a></li>
                                     <li><a class="dropdown-item" href="{% url 'list-l1groups' %}">9 View L1 Groups</a></li>
                                     <li><a class="dropdown-item" href="{% url 'add-l1group' %}">22 Add L1 Group</a></li>
                                     <li><a class="dropdown-item" href="{% url 'list-gc' %}">19 View Grouped Cats</a></li>
@@ -89,19 +88,17 @@
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 									<li><a class="dropdown-item" href="{% url 'list-payees' 'act' '-trans_count' %}" >13 View</a></li>
 									<li><a class="dropdown-item" href="{% url 'add-payee' %}">23 Add New</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'payee-account-update' %}">18 Payee - Account Update</a></li>
 
 								</ul>
-							</li>
+
 							<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 									Transactions
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li><a class="dropdown-item" href="{% url 'transactions:list' %}">View</a></li>
-									<li><a class="dropdown-item" href="{% url 'transactions:create' %}">Add New</a></li>
-									<li><a class="dropdown-item" href="{% url 'transactions:transfer' %}">Add Transfer</a></li>
-									<li><a class="dropdown-item" href="{% url 'transactions:cc-pmt' %}">Credit Card Pmt</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:list' %}">T1 View</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:create' %}">T2 Add New</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:transfer' %}">T8 Add Transfer</a></li>
 								</ul>
 							</li>
 							<li class="nav-item dropdown">
@@ -116,10 +113,18 @@
 							</li>
 							<li class="nav-item dropdown">
 							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
-							        Paychecks
+							        Fixed Flows
 							    </a>
 							    <ul class="dropdown-menu">
-							        <li><a class="dropdown-item" href="{% url 'transactions:paycheck-list' %}">List</a></li>
+							        <li><a class="dropdown-item" href="{% url 'fixed:list' %}">F1 List</a></li>
+							    </ul>
+							</li>
+							<li class="nav-item dropdown">
+							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
+							        Taxes
+							    </a>
+							    <ul class="dropdown-menu">
+							        <li><a class="dropdown-item" href="{% url 'tax:tax-return-list' %}">Tax Returns</a></li>
 							    </ul>
 							</li>
 						</ul>

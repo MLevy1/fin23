@@ -3,28 +3,31 @@ from django.urls import (
 )
 
 from .views import (
-	Transaction_detail_view,
+	#T2
 	Transaction_create_view,
+	#T3
+	tlist,
+	#T4
 	Transaction_update_view,
-	Transaction_detail_hx_view,
-	Transaction_subtran_update_hx_view,
+    #T5
 	Transaction_delete_view,
+    #T6
+	Transaction_subtran_update_hx_view,
+	#T7
 	TransSubTrans_delete_view,
-	TransDeleteView,
-    TransYearArchiveView,
-    transactionMonthArchiveView,
-    tlist,
-    atran,
-    utran,
-    utran_act,
+    #T8
     Transfer_create_view,
-    CC_Pmt_create_view,
+    #T10
     add_staged_trans,
-    paycheck_list_view,
-    paycheck_detail_view,
-    paycheck_create_view,
-    paycheck_update_view,
-    paycheck_item_update_hx_view,
+    #T11
+    add_fixed,
+	#T12
+    transactionMonthArchiveView,
+    #T13
+    TransYearArchiveView,
+    #T14
+	Transaction_detail_view,
+
 )
 
 from django.views.generic.dates import ArchiveIndexView
@@ -34,36 +37,38 @@ from .models import Transaction
 app_name = 'transactions'
 
 urlpatterns = [
+    #T1 [master][main]
 	path("", ArchiveIndexView.as_view(model=Transaction, template_name = "transactions/trans_years.html", date_field="tdate"), name="list"),
+	path('archive/', ArchiveIndexView.as_view(model=Transaction, date_field="tdate", template_name="trans_years.html"), name='trans-years'),
+	#T2 [master][main][list][trans_years]
 	path("create/", Transaction_create_view, name='create'),
-	path("transfer/", Transfer_create_view, name='transfer'),
-	path("ccpmt/", CC_Pmt_create_view, name='cc-pmt'),
-	path("<int:id>/edit/", Transaction_update_view, name='update'),
-	path("hx/<int:parent_id>/subtran/<int:id>/", Transaction_subtran_update_hx_view, name='hx-subtran-update'),
-	path("hx/<int:parent_id>/subtran/", Transaction_subtran_update_hx_view, name='hx-subtran-create'),
-	path("hx/<int:id>/", Transaction_detail_hx_view, name='hx-detail'),
-	path("<int:id>/delete/", Transaction_delete_view, name='delete'),
-	path("<int:parent_id>/subtran/<int:id>/delete/", TransSubTrans_delete_view, name='subtran-delete'),
-	path("<int:id>/", Transaction_detail_view, name='detail'),
+    #T3 [accounts][categories][groupedcats][l1][payees][detail]
 	path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:l1>/<str:ord>/<mindate>/<maxdate>/", tlist, name="tlist"),
 	path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:l1>/<str:ord>/<mindate>/", tlist, name="tlist"),
 	path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:l1>/<str:ord>/", tlist, name="tlist"),
     path("tlist/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/", tlist, name="tlist"),
+    path("tlist/<str:acc>/", tlist, name="tlist"),
 	path("tlist/", tlist, name="tlist"),
-    path('archive/', ArchiveIndexView.as_view(model=Transaction, date_field="tdate", template_name="trans_years.html"), name='trans-years'),
-	path('tmonth/<int:year>/<int:month>/', transactionMonthArchiveView.as_view(month_format='%m'), name="trans-monthly"),
-	path('tyear/<int:year>/', TransYearArchiveView.as_view(), name="trans-months"),
-	path("atran/<dpay>/", atran, name="add-trans"),
-	path("atran/", atran, name="add-trans"),
-	path("utran/<int:t_id>/", utran, name="update-trans"),
-    path("utran_act/<int:t_id>/", utran_act, name="update-trans-act"),
-	path('trans/<int:pk>/delete/', TransDeleteView.as_view(), name='delete-trans'),
+    #T4 [mTransaction-edit][tlist][trans_monthly]
+	path("<int:id>/edit/", Transaction_update_view, name='update'),
+    #T5 [mTransaction-delete][tlist][trans_monthly]
+	path("<int:id>/delete/", Transaction_delete_view, name='delete'),
+    #T6 [mSubTransaction-edit][subtran-inline]
+	path("hx/<int:parent_id>/subtran/<int:id>/", Transaction_subtran_update_hx_view, name='hx-subtran-update'),
+	path("hx/<int:parent_id>/subtran/", Transaction_subtran_update_hx_view, name='hx-subtran-create'),
+    #T7 [mSubTransaction-delete][subtran-inline]
+	path("<int:parent_id>/subtran/<int:id>/delete/", TransSubTrans_delete_view, name='subtran-delete'),
+	#T8 [master]
+	path("transfer/", Transfer_create_view, name='transfer'),
+    #T10 [staged-transactions-list]
 	path('import/<st>/', add_staged_trans, name='add-staged-trans'),
-	path("paycheck/", paycheck_list_view, name="paycheck-list"),
-	path("paycheck/create/", paycheck_create_view, name="paycheck-create"),
-	path("paycheck/<int:id>/edit/", paycheck_update_view, name="paycheck-update"),
-	path("paycheck/<int:id>/", paycheck_detail_view, name="paycheck-detail"),
-	path("paycheck/hx/<int:parent_id>/item/<int:id>/", paycheck_item_update_hx_view, name="paycheck_item_update_hx"),
-	path("paycheck/hx/<int:parent_id>/item/", paycheck_item_update_hx_view, name="paycheck_item_create_hx"),
+	#T11 [fixed-list]
+	path('fixed/<flow>/', add_fixed, name='add-fixed'),
+    #T12 [trans_monthly][trans_months]
+	path('tmonth/<int:year>/<int:month>/', transactionMonthArchiveView.as_view(month_format='%m'), name="trans-monthly"),
+	#T13 [trans_months][trans_years]
+	path('tyear/<int:year>/', TransYearArchiveView.as_view(), name="trans-months"),
+    #T14 [mTransaction-abs][list]
+	path("<int:id>/", Transaction_detail_view, name='detail'),
 
 ]

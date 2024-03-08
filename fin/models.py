@@ -1,12 +1,14 @@
 from django.db import models
 from django.urls import reverse
 
+
 # Create your models here.
 
 class Category(models.Model):
     category = models.CharField(max_length=255, unique=True)
     active = models.BooleanField(verbose_name='Active', default=True)
 
+    #6
     def get_absolute_url(self):
         return reverse("add-category")
 
@@ -21,6 +23,7 @@ class L1Group(models.Model):
     l1group = models.CharField(max_length=255, unique=True)
     active = models.BooleanField(verbose_name='Active', default=True)
 
+    #9
     def get_absolute_url(self):
         return reverse("list-l1groups")
 
@@ -36,6 +39,7 @@ class Account(models.Model):
     account = models.CharField(max_length=255, unique=True)
     active = models.BooleanField(verbose_name='Active', default=True)
 
+    #2
     def get_absolute_url(self):
         return reverse("add-account")
 
@@ -56,6 +60,7 @@ class GroupedCat(models.Model):
 
 		return str(t)
 
+    #12
 	def get_absolute_url(self):
 		return reverse("add-gc")
 
@@ -67,7 +72,7 @@ class Payee(models.Model):
     def_gcat = models.ForeignKey(GroupedCat, on_delete=models.PROTECT, null=True, blank=True)
     active = models.BooleanField(verbose_name='Active', default=True)
 
-
+    #23
     def get_absolute_url(self):
         return reverse("add-payee")
 

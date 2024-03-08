@@ -11,5 +11,7 @@ urlpatterns = [
     path('csv/', include('csv_importer.urls')),
     path('issues/', include('issues.urls')),
     path('accounts/', include('accounts.urls')),
+    path('fixed/', include('fixed.urls')),
+    path('tax/', include('tax.urls')),
 	path('admin/', admin.site.urls),
 ]

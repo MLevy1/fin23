@@ -1,8 +1,7 @@
 <div id="subtran-{{ object.id }}">
 
-       <button class="btn btn-secondary" hx-trigger='click' hx-get='{{ object.get_hx_edit_url }}' hx-target="#subtran-{{ object.id }}">Edit</button>
-      
-       <button class="btn btn-secondary" hx-post='{{ object.get_delete_url }}' hx-confirm='delete item?' hx-trigger='click' hx-target='#subtran-{{ object.id }}' hx-swap='outerHTML' >Del</button>
+       <button class="btn btn-secondary" hx-trigger='click' hx-get='{{ object.get_hx_edit_url }}' hx-target="#subtran-{{ object.id }}">T6 Edit</button>
+
+       <button class="btn btn-secondary" hx-post='{{ object.get_delete_url }}' hx-confirm='delete item?' hx-trigger='click' hx-target='#subtran-{{ object.id }}' hx-swap='outerHTML' >T7 Del</button>
        {{ object.groupedcat }} | {{ object.amount }}
 </div>
-

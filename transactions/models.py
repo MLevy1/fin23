@@ -2,8 +2,6 @@ from django.db import models
 
 from django.urls import reverse
 
-#from django_pandas.managers import DataFrameManager
-
 from fin.models import (
 	Account,
 	Payee,
@@ -21,11 +19,17 @@ class Transaction(models.Model):
 	oldCat = models.CharField(max_length=255, null=True, blank=True)
 	oldPayee = models.CharField(max_length=255, null=True, blank=True)
 
+    #T14
 	def get_absolute_url(self):
 		return reverse("transactions:detail", kwargs={"id": self.id})
 
-	def get_hx_url(self):
-		return reverse("transactions:hx-detail", kwargs={"id": self.id})
+    #T4
+	def get_edit_url(self):
+		return reverse("transactions:update", kwargs={"id": self.id })
+
+    #T5
+	def get_delete_url(self):
+		return reverse("transactions:delete", kwargs={"id": self.id})
 
 	def get_transaction_total(self):
 		tsum = 0
@@ -33,19 +37,11 @@ class Transaction(models.Model):
 			tsum += t.amount
 		return tsum
 
-	def get_edit_url(self):
-		return reverse("transactions:update", kwargs={"id": self.id })
-
-	def get_delete_url(self):
-		return reverse("transactions:delete", kwargs={"id": self.id})
-
 	def get_subtrans_children(self):
 		return self.subtransaction_set.all()
 
 	def __str__(self):
-
 		t = str(self.tdate) + " " + str(self.payee) + "[ " + str(self.tid) + " ]"
-
 		return str(t)
 
 	class Meta:
@@ -58,12 +54,15 @@ class SubTransaction(models.Model):
 	groupedcat = models.ForeignKey(GroupedCat, on_delete=models.PROTECT, null=True, blank=True)
 	note = models.CharField(max_length=255, null=True, blank=True)
 
+    #T14
 	def get_absolute_url(self):
 		return self.trans.get_absolute_url()
 
+    #T7
 	def get_delete_url(self):
 		return reverse("transactions:subtran-delete", kwargs = {"parent_id": self.trans.id, "id": self.id})
 
+    #T6
 	def get_hx_edit_url(self):
 		kwargs = {
 			"parent_id": self.trans.id,
@@ -73,43 +72,3 @@ class SubTransaction(models.Model):
 
 	class Meta:
 		ordering = ["-amount"]
-
-class Paycheck(models.Model):
-    payee = models.ForeignKey(Payee, on_delete=models.PROTECT, null=True, blank=True)
-    note = models.CharField(max_length=255, null=True, blank=True)
-    added = models.DateTimeField(auto_now_add=True)
-    active = models.BooleanField(default=True)
-
-    def get_absolute_url(self):
-        return reverse("transactions:paycheck-detail", kwargs={"id": self.id})
-
-    def get_edit_url(self):
-        return reverse("transactions:paycheck-update", kwargs={"id": self.id})
-
-    def get_net_pay(self):
-        tsum = 0
-        for t in self.paycheckitems_set.all():
-            tsum += t.amount
-        return tsum
-
-    def get_paycheck_children(self):
-        return self.paycheckitems_set.all()
-
-class PaycheckItems(models.Model):
-    paycheck = models.ForeignKey(Paycheck, on_delete=models.PROTECT, null=True, blank=True)
-    groupedcat = models.ForeignKey(GroupedCat, on_delete=models.PROTECT, null=True, blank=True)
-    amount = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2, null=True, blank=True)
-    note = models.CharField(max_length=255, null=True, blank=True)
-
-    def get_absolute_url(self):
-        return self.paycheck.get_absolute_url()
-
-	def get_delete_url(self):
-		return reverse("transactions:subtran-delete", kwargs = {"parent_id": self.trans.id, "id": self.id})
-
-    def get_hx_edit_url(self):
-        kwargs = {
-            "parent_id": self.paycheck.id,
-            "id": self.id
-        }
-        return reverse("transactions:paycheck_item_update_hx", kwargs=kwargs)

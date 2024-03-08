@@ -3,27 +3,7 @@ from django.contrib import admin
 from .models import (
        Transaction,
        SubTransaction,
-       Paycheck,
-       PaycheckItems,
-
 )
-
-class PayCheckItemsInline(admin.StackedInline):
-    model = PaycheckItems
-    extra = 0
-
-
-class PaycheckAdmin(admin.ModelAdmin):
-    inlines = [PayCheckItemsInline]
-    list_display = [
-        'payee',
-        'get_net_pay',
-        'note',
-        'active',
-        ]
-    save_as = True
-
-
 
 class SubTransactionInline(admin.StackedInline):
        model = SubTransaction
@@ -49,4 +29,3 @@ class TransactionAdmin(admin.ModelAdmin):
 # Register your models here.
 
 admin.site.register(Transaction, TransactionAdmin)
-admin.site.register(Paycheck, PaycheckAdmin)

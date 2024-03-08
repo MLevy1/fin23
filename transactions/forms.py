@@ -1,7 +1,5 @@
 from django import forms
 
-from django.forms import ModelForm
-
 from fin.models import (
 	Account,
 	Payee,
@@ -11,39 +9,7 @@ from fin.models import (
 from .models import (
 	Transaction,
 	SubTransaction,
-	Paycheck,
-	PaycheckItems,
 )
-
-class AddTransaction(ModelForm):
-	class Meta:
-		model = Transaction
-		widgets = {
-			'tdate': forms.DateInput(attrs={'format': 'yyyy-mm-dd','type':'date'}),
-		}
-		fields = "__all__"
-
-	def __init__(self, *args, **kwargs):
-			super(AddTransaction, self).__init__(*args, **kwargs)
-
-			# Filter active accounts and payees
-			self.fields['account'].queryset = Account.objects.filter(active=True)
-			self.fields['payee'].queryset = Payee.objects.filter(active=True)
-
-class AddTransactionAll(ModelForm):
-	class Meta:
-		model = Transaction
-		widgets = {
-			'tdate': forms.DateInput(attrs={'format': 'yyyy-mm-dd','type':'date'}),
-		}
-		fields = "__all__"
-
-	def __init__(self, *args, **kwargs):
-			super(AddTransactionAll, self).__init__(*args, **kwargs)
-
-			# Filter active accounts and payees
-			#self.fields['account'].queryset = Account.objects.all()
-			#self.fields['payee'].queryset = Payee.objects.all()
 
 class TransForm(forms.ModelForm):
 	required_css_class = 'required-field'
@@ -106,26 +72,14 @@ class UploadFileForm(forms.Form):
 
 class TransferForm(forms.Form):
     tid = forms.IntegerField()
-    tdate = forms.DateField()
-    acct_out = forms.ModelChoiceField(queryset=Account.objects.filter(active="True"))
-    acct_in = forms.ModelChoiceField(queryset=Account.objects.filter(active="True"))
-    tamt = forms.DecimalField(max_digits=18, decimal_places=2)
+    tdate = forms.DateField(label="Date", widget=forms.DateInput(attrs={'format': 'yyyy-mm-dd', 'type': 'date'}))
+    acct_out = forms.ModelChoiceField(label="From Account", queryset=Account.objects.filter(active="True"))
+    acct_in = forms.ModelChoiceField(label="To Account", queryset=Account.objects.filter(active="True"))
+    tamt = forms.DecimalField(label="Amount", max_digits=18, decimal_places=2)
+    cc = forms.BooleanField(label="Credit Card Payment", required=False)
 
-class CreditCardPaymentForm(forms.Form):
+class FixedForm(forms.Form):
     tid = forms.IntegerField()
-    tdate = forms.DateField()
-    acct_out = forms.ModelChoiceField(queryset=Account.objects.filter(active="True"))
-    acct_in = forms.ModelChoiceField(queryset=Account.objects.filter(active="True"))
-    tamt = forms.DecimalField(max_digits=18, decimal_places=2)
-
-
-class PaycheckForm(forms.ModelForm):
-    class Meta:
-        model = Paycheck
-        fields = ['payee', 'note', 'active']
-
-class PaycheckItemsForm(forms.ModelForm):
-    class Meta:
-        model = PaycheckItems
-        fields = ['groupedcat', 'amount', 'note']
-
+    tdate = forms.DateField(widget=forms.DateInput(attrs={'format': 'yyyy-mm-dd', 'type': 'date'}))
+    pay = forms.ModelChoiceField(queryset=Payee.objects.filter(active="True"))
+    acct = forms.ModelChoiceField(queryset=Account.objects.filter(active="True"))

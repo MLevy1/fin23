@@ -12,28 +12,28 @@
 
        <div class="btn-group">
               <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                     date
+                     T3 date
               </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'tdate' %}">a-z</a></li>
                 <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 '-tdate' %}">z-a</a></li>
               </ul>
               <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                     payee
+                     T3 payee
               </button>
               <ul class="dropdown-menu">
                      <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'payee' %}">a-z</a></li>
                      <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 '-payee' %}">z-a</a></li>
               </ul>
               <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                     amount
+                     T3 amount
               </button>
               <ul class="dropdown-menu">
                      <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'amount' %}">a-z</a></li>
                      <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 '-amount' %}">z-a</a></li>
               </ul>
               <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                     category
+                     T3 category
               </button>
               <ul class="dropdown-menu">
                      <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'category' %}">a-z</a></li>
@@ -42,7 +42,9 @@
        </div>
 
        <h1>Transactions</h1>
-       <p><a class="btn-success btn-large" href="{% url 'transactions:create' %}?next={{ request.path|urlencode }}">New Trans</a></p>
+
+       <p><a class="btn-success btn-large" href="{% url 'transactions:create' %}?next={{ request.path|urlencode }}">T2 New Trans</a></p>
+
        <table class="table table-dark">
 
               <thead>
@@ -57,14 +59,14 @@
 			{% ifchanged %}
               <tr>
                      <td>
-                            <a href="{{ t.get_edit_url }}?{% if request.GET.next %}next={{ request.GET.next }}{% else %}next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}{% endif %}">{{ t.tdate }}</a>
+                            <a href="{{ t.get_edit_url }}?{% if request.GET.next %}next={{ request.GET.next }}{% else %}next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}{% endif %}">T4 {{ t.tdate }}</a>
                      <td>
-                            <a href="{% url 'transactions:tlist' t.account.id 'all' 'all' 'all' 'all' '-tdate' %}"> {{ t.account }}</a>
+                            <a href="{% url 'transactions:tlist' t.account.id 'all' 'all' 'all' 'all' '-tdate' %}">T3 {{ t.account }}</a>
                      </td>
                      <td>
-				<a href="{% url 'transactions:tlist' 'all' 'all' 'all' t.payee.id 'all' 'payee' %}"> {{ t.payee }}</a>
+				<a href="{% url 'transactions:tlist' 'all' 'all' 'all' t.payee.id 'all' 'payee' %}">T3 {{ t.payee }}</a>
 				<br>
-				<a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">edit</a>
+				<a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">24 edit</a>
 				<br>
 				<a href='https://www.google.com/search?q={{ t.payee }}' target='_blank'>info</a>
 			</td>
@@ -90,7 +92,7 @@
 
                      <td> {{ t.cumsum|floatformat:"2g" }} </td>
 
-                     <td><a hx-post="{{ t.get_delete_url }}" hx-confirm="delete item?" hx-trigger='click' href="{{ t.get_delete_url }}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">del</a></td>
+                     <td><a hx-post="{{ t.get_delete_url }}?{% if request.GET.next %}next={{ request.GET.next }}{% else %}next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}{% endif %}" hx-confirm="delete item?" hx-trigger='click' href="{{ t.get_delete_url }}?{% if request.GET.next %}next={{ request.GET.next }}{% else %}next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}{% endif %}">T5 del</a></td>
               </tr>
 			{% endifchanged %}
               {% endfor %}
@@ -103,4 +105,4 @@
 
 {% endif %}
 
-{% endblock %}i
+{% endblock %}

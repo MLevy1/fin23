@@ -30,7 +30,7 @@ Staged Transactions
                     <h4 class="text-success">Imported</h4>
                 {% endif %}
 
-                <a class="link-success" href="{% url 'transactions:add-staged-trans' x.id %}">Add</a>
+                <a class="link-success" href="{% url 'transactions:add-staged-trans' x.id %}">T10 Add</a>
 
                 <h5 class="text">{{ x.account }}</h5>
 
@@ -64,7 +64,7 @@ Staged Transactions
 
 				<h4 class="card-subtitle">
 
-				    <a class="link-warning" href="{% url 'csv:imported-payee-update' x.imported_payee.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">edit payee</a>
+				    <a class="link-warning" href="{% url 'csv:imported-payee-update' x.imported_payee.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">C4 edit payee</a>
 
 				</h4>
             </div>

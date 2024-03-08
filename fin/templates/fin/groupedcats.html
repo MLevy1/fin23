@@ -10,7 +10,7 @@ Grouped Cats
 
 <h1 class="display-4" style="background-color: #151B54">Grouped Cats</h1>
 
-	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-gc' %}">Add Grouped Cat</a>
+	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-gc' %}">12 Add Grouped Cat</a>
 
 	{% for x in object_list %}
 
@@ -20,7 +20,7 @@ Grouped Cats
 
 				<div class="card" style="background-color: #151B54">
 
-					<h5 class="card-title"><a class="link-warning" href="{% url 'update-gc' x.pk %}"> {{ x.groupedcat }} </a></h5>
+					<h5 class="card-title"><a class="link-warning" href="{% url 'update-gc' x.pk %}"> 20 {{ x.groupedcat }} </a></h5>
 
 					{% if x.active == "Yes" %}
 
@@ -28,7 +28,7 @@ Grouped Cats
 
 					{%  else %}
 
-					<p class="text-danger">Not Active h{{ x.active }}</p>
+					<p class="text-danger">Not Active {{ x.active }}</p>
 
 					{% endif %}
 
@@ -36,9 +36,9 @@ Grouped Cats
 
 					<p class="card-text">total: {{ x.trans_total|floatformat:2|intcomma}}</p>
 
-					<p><a href="{% url 'transactions:tlist' 'all' 'all' x.pk 'all' 'all' '-tdate' %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}"> Trans</a></p>
+					<p><a href="{% url 'transactions:tlist' 'all' 'all' x.pk 'all' 'all' '-tdate' %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">T3 Trans</a></p>
 
-                                   <p><a href="{% url 'delete-gc' x.pk %}" class="link-danger btn btn-link">Delete</a></p>
+                    <p><a href="{% url 'delete-gc' x.pk %}" class="link-danger btn btn-link">21 Delete</a></p>
 
 				</div>
 			</div>

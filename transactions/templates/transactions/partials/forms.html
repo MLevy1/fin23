@@ -1,6 +1,13 @@
 <div id ='trans_container'>
+
 <form action="." method="POST" hx-post="." hx-swap='outerHTML' hx-trigger='submit'>
-       {% csrf_token %}
+        {% if title %}
+
+            <h1>{{ title }}</h1>
+
+        {% endif %}
+
+        {% csrf_token %}
 
         {% if message %}
 
@@ -8,12 +15,12 @@
 
         {% endif %}
 
-       {{ form.as_p }}
+        {{ form.as_p }}
 
-       <div class='htmx-indicator'>Loading...</div>
-       <p>{{request.GET.next}}</p>
-       <button class="btn btn-secondary" type="submit">save</button>
-        <a href="{{ request.GET.next }}" class="btn btn-secondary btn" hx-trigger='click' role="button">back</a>
-	    <a href="{% url 'transactions:create' %}" class="btn btn-secondary btn" hx-trigger='click' role="button">new trans</a>
+        <div class='htmx-indicator'>Loading...</div>
+
+        <button class="btn btn-secondary" type="submit">save</button>
+        <a href="{% url 'transactions:tlist' last_acct %}" class="btn btn-secondary btn" hx-trigger='click' role="button">exit</a>
+	    <a href="{% url 'transactions:create' %}?next={{ request.GET.next }}" class="btn btn-secondary btn" hx-trigger='click' role="button">new trans</a>
    </form>
 </div>

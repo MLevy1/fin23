@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'issues',
     'transactions',
     'csv_importer',
+    'fixed',
+    'tax',
 ]
 
 MIDDLEWARE = [

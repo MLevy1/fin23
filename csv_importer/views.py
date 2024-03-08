@@ -3,14 +3,9 @@ from django.shortcuts import (
 	redirect,
 )
 
-from django.http import (
-    HttpResponse,
-)
-
 from django.views.generic import (
     ListView,
     UpdateView,
-    DeleteView,
 )
 
 from django.urls import reverse_lazy
@@ -52,6 +47,7 @@ def chgPncAmt(astr):
     return nstr
 
 # Create your views here.
+#C1
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -111,12 +107,12 @@ def upload_file(request):
     return render(request, 'csv-importer/upload-file.html', {'form': form})
 
 #IMPORTED PAYEE
-
+#C2
 class imported_payee_ListView(ListView):
     model = Imported_Payee
     template_name = "csv-importer/uploaded-payees-list.html"
     ordering = ['imported_payee']
-
+#C4 [imported payee list]
 class imported_payee_UpdateView(UpdateView):
 	model = Imported_Payee
 	template_name = "fin/update.html"
@@ -139,7 +135,7 @@ class imported_payee_UpdateView(UpdateView):
 #NEED CREATE AND DELETE VIEWS FOR IMPORTED PAYEES
 
 #STAGED TRANSACTION
-
+#C3
 class staged_transaction_ListView(ListView):
     model = Staged_Transaction
     template_name = "csv-importer/staged-transactions-list.html"

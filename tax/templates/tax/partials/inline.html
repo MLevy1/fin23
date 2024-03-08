@@ -1,0 +1,10 @@
+<div id="inline-{{ object.id }}">
+
+       <button class="btn btn-secondary" hx-trigger='click' hx-get='{{ object.get_edit_url }}' hx-target="#inline-{{ object.id }}">Edit</button>
+
+       <button class="btn btn-secondary" hx-post='{{ object.get_delete_url }}' hx-confirm='delete item?' hx-trigger='click' hx-target='#inline-{{ object.id }}' hx-swap='outerHTML' >Delete</button>
+
+       {{ object }}
+
+       <button class="btn btn-secondary" hx-trigger='click' hx-get='{{ object.get_view_url }}' hx-target="#inline-{{ object.id }}">Edit</button>
+</div>

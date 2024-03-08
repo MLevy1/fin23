@@ -1,22 +1,23 @@
 {% extends 'fin23/master.html' %}
 {% block title %}
-Update Trans
+Create-Update Fixed Flow
 {% endblock %}
 
 {% block content %}
 
-<h1>Create-Update Paycheck</h1>
+<h1>Create-Update Fixed Flow</h1>
 
 <div style='margin-top:30px;'>
-    {% include 'transactions/partials/paycheck-form.html' %}
+    {% include 'fixed/partials/form.html' %}
 
-    <h3>Paycheck Items</h3>
+    <h3>Flow Items</h3>
 
-    {% for i in object.get_paycheck_children %}
+    {% for i in object.get_flowitem_children %}
 
-        {% include 'transactions/partials/paycheck-item-inline.html' with i=i  %}
+        {% include 'fixed/partials/item-inline.html' with object=i  %}
 
     {% endfor %}
+
     {% if new_item_url %}
 
     <div id='item-create'></div>
@@ -24,6 +25,7 @@ Update Trans
     <button hx-trigger="click" class="btn btn-secondary" hx-get="{{ new_item_url }}" hx-target="#item-create" hx-swap='beforeend'>Add</button>
 
     {% endif %}
+
 </div>
 
 {% endblock content %}

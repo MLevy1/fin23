@@ -1,0 +1,19 @@
+{% extends "fin23/master.html" %}
+
+{% block content %}
+
+{% if object %}
+
+<form method='POST' action='.'>
+
+       {% csrf_token %}
+
+       <p>Delete {{ object.id }}??</p>
+
+       <button type='submit'>Yes</button>
+       <a href="{% url 'tax:tax-return-list' %}">Cancel</a>
+</form>
+
+{% endif %}
+
+{% endblock content %}

@@ -11,12 +11,9 @@ from django.http import HttpResponse
 
 from django.core.paginator import Paginator
 
-from django.contrib import messages
-
 from django.views.generic import (
 	MonthArchiveView,
 	YearArchiveView,
-	DeleteView
 )
 
 from django.db.models import (
@@ -25,21 +22,9 @@ from django.db.models import (
 	Window,
 )
 
-from .forms import (
-	AddTransaction,
-	TransSubTransForm,
-	TransForm,
-	TransferForm,
-	CreditCardPaymentForm,
-	PaycheckForm,
-	PaycheckItemsForm,
-)
-
 from transactions.models import (
 	Transaction,
 	SubTransaction,
-	Paycheck,
-	PaycheckItems,
 )
 
 from fin.models import (
@@ -48,76 +33,73 @@ from fin.models import (
     Account,
 )
 
-from django.urls import (
-	reverse_lazy,
-	reverse
+from fixed.models import (
+    Flow,
 )
-
-from datetime import datetime
 
 from csv_importer.models import (
     Staged_Transaction,
 )
 
-### VIEW ALL TRANS ###
+from .forms import (
+	TransForm,
+	TransSubTransForm,
+	TransferForm,
+	FixedForm,
+)
 
-def transactions(request):
-	transactions = Transaction.objects.all().order_by('tdate')
-	template = loader.get_template('transactions.html')
-	paginator = Paginator(transactions, 50)
+from django.urls import (
+	reverse
+)
 
-	page_number = request.GET.get("page")
-	page_obj = paginator.get_page(page_number)
+from datetime import datetime
 
-	context = {"page_obj": page_obj}
+def get_last_acct():
+	    last_acct = Transaction.objects.all().order_by("-tid").first().account.id
+	    return last_acct
 
-	return HttpResponse(template.render(context, request))
-
-### ARCHIVE VIEWS
-
-class TransYearArchiveView(YearArchiveView):
-	queryset = Transaction.objects.all()
-	date_field = "tdate"
-	make_object_list = True
-	template_name = "transactions/trans_months.html"
-
-class transactionMonthArchiveView(MonthArchiveView):
-
-	queryset = Transaction.objects.all().annotate(cumsum=Window(Sum('subtransaction__amount'), order_by=(F('tdate').asc(), F('tid').asc())))
-
-	date_field = "tdate"
-	template_name = "transactions/trans_monthly.html"
-
-### ADD TRANSACTION ###
-
-def atran(request, dpay=None):
-
-	context = {}
+#T2
+def Transaction_create_view(request):
 
 	lt=Transaction.objects.all().order_by("-tid").first().tid
 
 	nt=lt+1
 
-	if request.method == 'POST':
-		form = AddTransaction(request.POST)
+	ld=Transaction.objects.all().order_by("-tid").first().tdate
 
-		if form.is_valid():
-			form.save()
-			lt=Transaction.objects.all().order_by("-tid").first().tid
-			nt=lt+1
-			la=Transaction.objects.all().order_by("-tid").first().account
-			ld=Transaction.objects.all().order_by("-tid").first().tdate
-			form = AddTransaction(initial={'tid': nt, 'account': la, 'tdate': ld })
+	la = get_last_acct()
 
-	else:
-		form = AddTransaction(initial={'tid': nt, 'payee': dpay })
+	initial_values = {
+		'tid': nt,
+		'tdate': ld,
+		'account': la,
 
-	context['form'] = form
+    	}
 
-	return render(request, "add.html", context)
+	form = TransForm(request.POST or None, initial=initial_values, aAct=True, pAct=True)
 
-### TLIST ###
+	template = "transactions/create-update.html"
 
+	context = {
+		"form": form,
+		"last_acct": get_last_acct(),
+		"title": "Add Transaction",
+	}
+
+	if form.is_valid():
+		obj = form.save()
+		obj.save()
+		if request.htmx:
+			headers = {
+                "HX-Redirect": obj.get_edit_url()
+			}
+			return HttpResponse("Created", headers=headers)
+
+		return redirect(obj.get_edit_url())
+
+	return render(request, template, context)
+
+#T3
 def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-tdate', mindate=None, maxdate=None, **kwargs):
 
 	if maxdate == None:
@@ -183,199 +165,7 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-
 
 	return HttpResponse(template.render(context, request))
 
-### UPDATE TRANSACTION ###
-
-def utran_act(response, t_id):
-
-	tran = Transaction.objects.get(pk=t_id)
-
-	form = AddTransaction(response.POST or None, instance=tran)
-
-	next = response.POST.get('next', '/')
-
-	if form.is_valid():
-		form.save()
-
-		return redirect(next)
-
-	return render(response, 'update.html', {"tran": tran, 'form': form})
-
-def utran(request, t_id):
-
-	obj = Transaction.objects.get(pk=t_id)
-
-	form = TransForm(request.POST or None, instance=obj)
-
-	form2 = TransSubTransForm(request.POST or None)
-
-	subtrans_forms = []
-
-	for subtran_obj in obj.transsubtrans_set.all():
-		subtrans_forms.append(
-			TransSubTransForm(request.POST or None, instance=subtran_obj)
-		)
-
-	context = {
-		'form': form,
-		'subtrans_forms': subtrans_forms,
-		'object': obj,
-	}
-
-	template = "transactions/update.html"
-
-	next = request.POST.get('next', '/')
-
-	my_forms = all([form.is_valid() for form in subtrans_forms])
-
-	if my_forms and form.is_valid():
-		parent = form.save()
-		parent.save()
-		for form2 in subtrans_forms:
-			child = form2.save()
-			child.trans = parent
-			child.save()
-
-		context['message'] = 'saved'
-
-		return redirect(next)
-
-	return render(request, template, context)
-
-
-def Transaction_list_view(request):
-	qs = Transaction.objects.all()
-	template = "transactions/list.html"
-	context = {
-		"object_list": qs
-	}
-	return render(request, template, context)
-
-def Transaction_detail_view(request, id=None):
-	hx_url = reverse("transactions:hx-detail", kwargs={"id": id})
-
-	template = "transactions/detail.html"
-
-	context = {
-		"hx_url": hx_url
-	}
-
-	return render(request, template, context)
-
-def Transaction_detail_hx_view(request, id=None):
-	try:
-		obj = Transaction.objects.get(id=id)
-	except:
-		obj = None
-	if obj is None:
-		return HttpResponse("Not Found")
-	template = "transactions/partials/detail.html"
-
-	context = {
-		"object": obj
-	}
-
-	return render(request, template, context)
-
-def Transaction_delete_view(request, id=None):
-	try:
-		obj = Transaction.objects.get(id=id)
-	except:
-		obj = None
-
-	if obj is None:
-		if request.htmx:
-			return HttpResponse("Not Found")
-		raise Http404
-
-	next = request.POST.get('next', '/')
-
-	success_url = next
-
-	template = "transactions/delete.html"
-
-	if request.method == "POST":
-		obj.delete()
-		if request.htmx:
-			headers = {
-				'HX-Redirect': success_url
-			}
-			return HttpResponse("Deleted", headers=headers)
-		return redirect(next)
-
-	context = {
-		"object": obj
-	}
-
-	return render(request, template, context)
-
-def TransSubTrans_delete_view(request, parent_id=None, id=None):
-	try:
-		obj = SubTransaction.objects.get(id=id, trans_id=parent_id)
-	except:
-		obj = None
-
-	if obj is None:
-		if request.htmx:
-			return HttpResponse("Not Found")
-		raise Http404
-
-	success_url = "/"
-
-	template = "transactions/delete.html"
-
-	if request.method == "POST":
-
-		obj.delete()
-		if request.htmx:
-			headers = {
-				'HX-Redirect': success_url
-			}
-			return HttpResponse("Deleted")
-		return redirect(success_url)
-
-	context = {
-		"object": obj
-	}
-
-	return render(request, template, context)
-
-def Transaction_create_view(request):
-
-	lt=Transaction.objects.all().order_by("-tid").first().tid
-	nt=lt+1
-
-	ld=Transaction.objects.all().order_by("-tid").first().tdate
-
-	la=Transaction.objects.all().order_by("-tid").first().account
-
-	initial_values = {
-		'tid': nt,
-		'tdate': ld,
-		'account': la,
-
-    	}
-
-	form = TransForm(request.POST or None, initial=initial_values)
-
-	template = "transactions/create-update.html"
-
-	context = {
-		"form": form,
-	}
-
-	if form.is_valid():
-		obj = form.save()
-		obj.save()
-		if request.htmx:
-			headers = {
-                "HX-Redirect": obj.get_edit_url()
-			}
-			return HttpResponse("Created", headers=headers)
-
-		return redirect(obj.get_edit_url())
-
-	return render(request, template, context)
-
+#T4
 def Transaction_update_view(request, id=None):
 	obj = get_object_or_404(Transaction, id=id)
 	aAct = obj.account.active
@@ -388,23 +178,61 @@ def Transaction_update_view(request, id=None):
 		"form": form,
 		"object": obj,
 		"new_subtran_url": new_subtran_url,
+		"last_acct": get_last_acct(),
+		"title": "Update Transaction",
 	}
 
 	if form.is_valid():
 		form.save()
 		context['message'] = 'saved'
 
-	if request.htmx:
-		return render(request, "transactions/partials/forms.html", context)
+		if request.htmx:
+		    return render(request, "transactions/partials/forms.html", context)
 
 	return render(request, template, context)
 
-class TransDeleteView(DeleteView):
-	model = Transaction
-	success_url = reverse_lazy('main')
-	template_name = "confirm_delete.html"
+#T5
+def Transaction_delete_view(request, id=None):
 
+    try:
+        obj = Transaction.objects.get(id=id)
+    except:
+        obj = None
 
+    if obj is None:
+        if request.htmx:
+            return HttpResponse("Not Found")
+        raise Http404
+
+    success_url = request.GET.get('next', '/')
+
+    if request.method == "POST":
+
+	    strans = obj.get_subtrans_children()
+
+	    for s in strans:
+	        s.delete()
+
+	    obj.delete()
+
+	    if request.htmx:
+	        headers = {
+				'HX-Redirect': success_url
+			}
+
+	        return HttpResponse("Deleted", headers=headers)
+
+	    return redirect(success_url)
+
+    template = "transactions/delete.html"
+
+    context = {
+		"object": obj
+	}
+
+    return render(request, template, context)
+
+#T6
 def Transaction_subtran_update_hx_view(request, parent_id=None, id=None):
 
 	if not request.htmx:
@@ -453,6 +281,38 @@ def Transaction_subtran_update_hx_view(request, parent_id=None, id=None):
 
 	return render(request, "transactions/partials/subtran-form.html", context)
 
+#T7
+def TransSubTrans_delete_view(request, parent_id=None, id=None):
+	try:
+		obj = SubTransaction.objects.get(id=id, trans_id=parent_id)
+	except:
+		obj = None
+
+	if obj is None:
+		if request.htmx:
+			return HttpResponse("Not Found")
+		raise Http404
+
+	if request.method == "POST":
+		obj.delete()
+		success_url = reverse("transactions:update", kwargs={'id': parent_id })
+
+		if request.htmx:
+			headers = {
+				'HX-Redirect': success_url
+			}
+			return HttpResponse("Deleted", headers=headers)
+		return redirect(success_url)
+
+	template = "transactions/delete.html"
+
+	context = {
+		"object": obj
+	}
+
+	return render(request, template, context)
+
+#T8
 def Transfer_create_view(request):
 
     last_tid =Transaction.objects.all().order_by("-tid").first().tid
@@ -461,7 +321,7 @@ def Transfer_create_view(request):
 
     last_tdate = Transaction.objects.all().order_by("-tid").first().tdate
 
-    last_tacct =Transaction.objects.all().order_by("-tid").first().account
+    last_tacct = get_last_acct()
 
     initial_values = {
         'tid': current_tid,
@@ -476,9 +336,19 @@ def Transfer_create_view(request):
     context = { "form": form, }
 
     if form.is_valid():
-        payee_instance = get_object_or_404(Payee, pk=21)
-        gc_instance = get_object_or_404(GroupedCat, pk=88)
+        cc = form.cleaned_data['cc']
 
+        if cc is False:
+            payee_instance = get_object_or_404(Payee, pk=21)
+            gc_instance = get_object_or_404(GroupedCat, pk=88)
+        else:
+            payee_instance = get_object_or_404(Payee, pk=17)
+            gc_instance = get_object_or_404(GroupedCat, pk=78)
+
+        #get the account the money is being tranfserred into
+        account_instance = get_object_or_404(Account, id=form.cleaned_data['acct_in'].id)
+
+        #create the outbound transaction
         trans = Transaction.objects.create(
             tid = form.cleaned_data['tid'],
             tdate = form.cleaned_data['tdate'],
@@ -487,12 +357,16 @@ def Transfer_create_view(request):
             match = form.cleaned_data['tid']+1
         )
         trans.save()
+
+        #after the outbound transaction is created, sub-transaction data is added
         sub_trans = SubTransaction.objects.create(
             trans = trans,
             amount = -1 * form.cleaned_data['tamt'],
             groupedcat = gc_instance
         )
         sub_trans.save()
+
+        #create the inbound transaction
         trans2 = Transaction.objects.create(
             tid = form.cleaned_data['tid']+1,
             tdate = form.cleaned_data['tdate'],
@@ -501,6 +375,8 @@ def Transfer_create_view(request):
             match = form.cleaned_data['tid']
         )
         trans2.save()
+
+        #add subtransaction details to inbound transaction
         sub_trans2 = SubTransaction.objects.create(
             trans = trans2,
             amount = form.cleaned_data['tamt'],
@@ -508,77 +384,22 @@ def Transfer_create_view(request):
         )
         sub_trans2.save()
 
-        messages.success(request, 'transfer successfully added')
+        success_url = reverse("transactions:tlist", kwargs={"acc":  account_instance.id})
 
         if request.htmx:
-            return render(request, "transactions/partials/form.html", context)
-        #return redirect('transactions:transfer')
+            headers = {
+    			'HX-Redirect': success_url
+    		}
+            return HttpResponse("Added", headers=headers)
+
+        return redirect(success_url)
 
     return render(request, template, context)
 
-def CC_Pmt_create_view(request):
 
-    last_tid =Transaction.objects.all().order_by("-tid").first().tid
 
-    current_tid = last_tid + 1
 
-    last_tdate = Transaction.objects.all().order_by("-tid").first().tdate
-
-    def_tacct = get_object_or_404(Account, pk=24)
-
-    initial_values = {
-        'tid': current_tid,
-		'tdate': last_tdate,
-		'acct_out': def_tacct.id,
-    }
-
-    form = CreditCardPaymentForm(request.POST or None, initial=initial_values)
-
-    template = "transactions/create-transfer.html"
-
-    context = { "form": form, }
-
-    if form.is_valid():
-        payee_instance = get_object_or_404(Payee, pk=17)
-        gc_instance = get_object_or_404(GroupedCat, pk=78)
-
-        trans = Transaction.objects.create(
-            tid = form.cleaned_data['tid'],
-            tdate = form.cleaned_data['tdate'],
-            account = form.cleaned_data['acct_out'],
-            payee = payee_instance,
-            match = form.cleaned_data['tid']+1
-        )
-        trans.save()
-        sub_trans = SubTransaction.objects.create(
-            trans = trans,
-            amount = -1 * form.cleaned_data['tamt'],
-            groupedcat = gc_instance
-        )
-        sub_trans.save()
-        trans2 = Transaction.objects.create(
-            tid = form.cleaned_data['tid']+1,
-            tdate = form.cleaned_data['tdate'],
-            account = form.cleaned_data['acct_in'],
-            payee = payee_instance,
-            match = form.cleaned_data['tid']
-        )
-        trans2.save()
-        sub_trans2 = SubTransaction.objects.create(
-            trans = trans2,
-            amount = form.cleaned_data['tamt'],
-            groupedcat = gc_instance
-        )
-        sub_trans2.save()
-
-        messages.success(request, 'credit card payment successfully added')
-
-        if request.htmx:
-            return render(request, "transactions/partials/form.html", context)
-        #return redirect('transactions:cc-pmt')
-
-    return render(request, template, context)
-
+#T10
 def add_staged_trans(request, st):
 
     st = Staged_Transaction.objects.get(pk=st)
@@ -597,7 +418,7 @@ def add_staged_trans(request, st):
     st_amt = st.amount * -1
 
     #Create a subtransaction
-    strans = SubTransaction.objects.create(
+    SubTransaction.objects.create(
         trans = trans,
 	    groupedcat = st.imported_payee.payee.def_gcat,
 	    amount = st_amt
@@ -610,131 +431,98 @@ def add_staged_trans(request, st):
 
     return redirect(rurl)
 
+#T11
+def add_fixed(request, flow=None):
 
-def paycheck_list_view(request):
-    qs = Paycheck.objects.all()
-    context = {
-        "object_list": qs
-    }
-    return render(request, "transactions/paycheck-list.html", context)
+    flow_instance = get_object_or_404(Flow, id=flow)
 
-def paycheck_detail_view(request, id=None):
-    obj = get_object_or_404(Paycheck, id=id)
-    context = {
-        "object": obj
-    }
-    return render(request, "transactions/paycheck-detail.html", context)
+    flow_items = flow_instance.get_flowitem_children()
 
-def paycheck_create_view(request):
-    form = PaycheckForm(request.POST or None)
-    context = {
-        "form": form
-    }
-    if form.is_valid():
-        obj = form.save()
-        return redirect(obj.get_absolute_url())
-    return render(request, "transactions/paycheck-create-update.html", context)
+    flow_payee_id = flow_instance.payee.id
 
-def paycheck_update_view(request, id=None):
-    obj = get_object_or_404(Paycheck, id=id)
-    form = PaycheckForm(request.POST or None, instance=obj)
-    new_item_url = reverse("transactions:paycheck_item_create_hx", kwargs={"parent_id": obj.id})
-    context = {
-        "form": form,
-        "object": obj,
-        "new_item_url": new_item_url,
-    }
-    if form.is_valid():
-        form.save()
-        context['message'] = "Data Saved."
+    flow_account_id = flow_instance.account.id
 
-    if request.htmx:
-        return render(request, "transactions/partials/paycheck-form.html", context)
+    lt=Transaction.objects.all().order_by("-tid").first().tid
 
-    return render(request, "transactions/paycheck-create-update.html", context)
+    nt=lt+1
 
+    ld=Transaction.objects.all().order_by("-tid").first().tdate
 
-def paycheck_item_update_hx_view(request, parent_id=None, id=None):
+    payee_instance = get_object_or_404(Payee, id=flow_payee_id)
 
-    #if the request is not an htmx request, it's unauthorized > end of view
-    if not request.htmx:
-        raise Http404
+    account_instance = get_object_or_404(Account, id=flow_account_id)
 
-    #this block ensures that a parent object (the paycheck that the paycheck line items will be attached to exists. if it doesn't > end of view
-
-    try:
-        parent_obj = Paycheck.objects.get(id=parent_id)
-    except:
-        parent_obj = None
-    if parent_obj is None:
-        return HttpResponse("Not Found")
-
-    #at this point, it has been confirmed that a parent_object exists
-
-    #instance is set to "none" assuming that no instances exist
-    instance = None
-
-    #if an id has been passed to the view it means that an instance does exist and can be retrieved
-    if id is not None:
-        try:
-            instance = PaycheckItems.objects.get(paycheck=parent_id, id=id)
-        except:
-            instance = None
-
-    #this will return an empty form if a paycheck item that doesn't exist is passed to the view
-
-    form = PaycheckItemsForm(request.POST or None, instance=instance)
-
-    url = instance.get_hx_edit_url() if instance else reverse("transactions:paycheck_item_create_hx", kwargs={"parent_id": parent_obj.id})
-
-    context = {
-        "url": url,
-        "form": form,
-        "object": instance,
+    initial_values = {
+        'tid': nt,
+		'tdate': ld,
+		'pay': payee_instance.id,
+		'acct': account_instance.id,
     }
 
+    form = FixedForm(request.POST or None, initial=initial_values)
+
+    template = "transactions/add-fixed.html"
+
+    context = { "form": form, }
 
     if form.is_valid():
 
-        #the form is saved without committing in case there is no instance
-        new_obj = form.save(commit=False)
+        trans = Transaction.objects.create(
+            tid = form.cleaned_data['tid'],
+            tdate = form.cleaned_data['tdate'],
+            account = form.cleaned_data['acct'],
+            payee = form.cleaned_data['pay'],
+        )
+        trans.save()
 
-        #if there is no instance, the paycheck is set to the parent_object
-        if instance is None:
-            new_obj.paycheck = parent_obj
+        for i in flow_items:
 
-        #then the form is saved with committing
-        new_obj.save()
-        context['i'] = new_obj
-        return render(request, "transactions/partials/paycheck-item-inline.html", context)
+            gc_instance = get_object_or_404(GroupedCat, id=i.groupedcat.id)
 
-    return render(request, "transactions/partials/paycheck-item-form.html", context)
+            print(i.amount)
+            print(gc_instance)
 
+            sub_trans = SubTransaction.objects.create(
+                trans = trans,
+                amount = i.amount,
+                groupedcat = gc_instance,
+            )
+            sub_trans.save()
 
-def paycheck_item_del_view(request, parent_id=None, id=None):
-    try:
-        obj = PaycheckItems.objects.get(id=id, parent_id=parent_id)
-    except:
-        obj = None
+        success_url = reverse("transactions:tlist", kwargs={"acc":  account_instance.id})
 
-    if obj is None:
-        return HttpResponse("Not Found")
-
-    success_url = reverse("transactions:paycheck-detail", kwargs={'parent_id': parent_id })
-
-    template = "transactions/delete.html"
-
-    if request.method == "POST":
-        obj.delete()
         if request.htmx:
             headers = {
-                'HX-Redirect': success_url
-            }
-            return HttpResponse("Deleted!")
+    			'HX-Redirect': success_url
+    		}
+            return HttpResponse("Added", headers=headers)
+
         return redirect(success_url)
 
-    context = {
-        "object": object
-    }
-
     return render(request, template, context)
+
+#T12
+class transactionMonthArchiveView(MonthArchiveView):
+	queryset = Transaction.objects.all().annotate(cumsum=Window(Sum('subtransaction__amount'), order_by=(F('tdate').asc(), F('tid').asc())))
+	date_field = "tdate"
+	template_name = "transactions/trans_monthly.html"
+
+#T13
+class TransYearArchiveView(YearArchiveView):
+	queryset = Transaction.objects.all()
+	date_field = "tdate"
+	make_object_list = True
+	template_name = "transactions/trans_months.html"
+
+#T14
+def Transaction_detail_view(request, id=None):
+	hx_url = reverse("transactions:hx-detail", kwargs={"id": id})
+
+	template = "transactions/detail.html"
+
+	context = {
+		"hx_url": hx_url
+	}
+
+	return render(request, template, context)
+

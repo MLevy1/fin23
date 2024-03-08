@@ -6,29 +6,20 @@
 {% endblock %}
 
 {% block content %}
-{% for i in view.kwargs %}
-
-{% endfor %}
 
 <h1>{{ object.payee }}</h1>
 
 <h6 class="card-subtitle mb-2 text-body-secondary">
-       <a class="link-warning" href="{% url 'update-payee' object.pk %}?next={{ next }}">edit</a>
+       <a class="link-warning" href="{% url 'update-payee' object.pk %}?next={{ next }}">25 edit</a>
 </h6>
 
 <ul class = "list-group">
 
-       <li class="list-group-item"><a href="{% url 'delete-payee' object.pk %}" class="link-danger btn btn-link">Delete</a></li>
+       <li class="list-group-item"><a href="{% url 'delete-payee' object.pk %}" class="link-danger btn btn-link">26 Delete</a></li>
 
-       <li class="list-group-item"><a href="{% url 'make-payee-inactive' object.pk %}" class="link-danger btn btn-link">Inact.</a></li>
+       <li class="list-group-item"><a href="{% url 'make-payee-inactive' object.pk %}" class="link-danger btn btn-link">27 Inact.</a></li>
 
-       <li class="list-group-item"><a href="{% url 'merge' object.pk %}?next={{ next }}" class="link-danger btn btn-link">Merge</a></li>
-
-       <li class="list-group-item"><a href="{% url 'transactions:tlist' 'all' 'all' 'all' object.id %}" class="link-success btn btn-link">View Trans</a></li>
-
-       <li class="list-group-item"><a href="{% url 'payee-gc-update-all' object.pk %}?next={{ next }}&dcat={{ dcat }}" class="link-success btn btn-link">Change Group</a></li>
-
-       <li class="list-group-item"><a href="{% url 'payee-category-update-all' object.pk %}?next={{ next }}&dcat={{ dcat }}" class="link-success btn btn-link">Change Cat</a></li>
+       <li class="list-group-item"><a href="{% url 'transactions:tlist' 'all' 'all' 'all' object.id %}" class="link-success btn btn-link">T3 View Trans</a></li>
 
 </ul>
 {% endblock %}
