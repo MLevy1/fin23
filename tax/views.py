@@ -18,6 +18,8 @@ from .forms import (
 
 from .models import (
     Tax_Return,
+    Tax_Return_Form,
+    Tax_Return_Form_Line,
 )
 
 def index(request):
@@ -67,20 +69,12 @@ def TaxReturn_detail_view(request, id=None):
 
     obj = get_object_or_404(Tax_Return, id=id)
 
-    new_item_url = reverse('tax:tax-return-form-list', kwargs={"parent_id": obj.id})
-
     template = "tax/detail.html"
-
-    #partial = "tax/partials/inline.html"
 
     context = {
 		"object": obj,
 		"title": "View TaxReturn",
-		"new_item_url": new_item_url,
 	}
-
-    #if request.htmx:
-	    #return render(request, partial, context)
 
     return render(request, template, context)
 
@@ -164,6 +158,7 @@ def TaxReturnForm_create_view(request, parent_id=None):
 
     context = {
 		"form": form,
+		"title": "New Tax Return Form",
 	}
 
     if form.is_valid():
@@ -177,34 +172,36 @@ def TaxReturnForm_create_view(request, parent_id=None):
 
     return render(request, template, context)
 
-def TaxReturnForm_list_view(request, parent_id=None):
+def TaxReturnForm_update_view(request, id=None):
+    obj = get_object_or_404(Tax_Return_Form, id=id)
 
-    try:
-        qs = TaxReturnFormForm.objects.filter(taxreturn=parent_id)
-    except:
-        qs = None
+    form = TaxReturnFormForm(request.POST or None, instance=obj)
 
-    if qs is None:
-        if request.htmx:
-            return HttpResponse("not found")
-        raise Http404
+    #new_item_url = reverse('tax:tax-return-form-line-create', kwargs={"parent_id": obj.id})
 
-    template = "tax/list.html"
+    template = "tax/create-update.html"
 
-    new_url = reverse("tax:tax-return-form-create")
+    partial = "tax/partials/forms.html"
 
     context = {
-        "object_list": qs,
-        "title": "Tax Return Forms List",
-        "new_url": new_url,
-    }
+		"form": form,
+		"object": obj,
+		#"new_item_url": new_item_url,
+		"title": "Update TaxReturn",
+	}
+
+    if form.is_valid():
+	    form.save()
+	    context['message'] = "saved"
+
+	    if request.htmx:
+	        return render(request, partial, context)
 
     return render(request, template, context)
 
-def TaxReturnForm_update_view(request):
     return
 
-def TaxReturnForm_delete_view(request):
+def TaxReturnForm_delete_view(request, id=None):
     return
 
 
@@ -217,13 +214,41 @@ def TaxReturnForm_delete_view(request):
     #line = models.CharField(max_length=255, null=True, blank=True)
     #instructions = models.CharField(max_length=255, null=True, blank=True)
 
-def TaxReturnFormLine_create_view(request):
-    form = TaxReturnFormLineForm(request.POST or None)
+#Form needs to be selected
+
+def TaxReturnFormLine_create_view(request, parent_id=None):
+
+    if not request.htmx:
+        raise Http404
+
+    try:
+        parent_obj = Tax_Return_Form.objects.get(id=parent_id)
+    except:
+        parent_obj = None
+
+    if parent_obj is None:
+        return HttpResponse("Not Found")
+
+    form = TaxReturnFormLineInputForm(request.POST or None)
+
     template = "tax/create-update.html"
+
+    partial = "tax/partials/inline.html"
 
     context = {
 		"form": form,
+		"title": "New Tax Return Form Line",
 	}
+
+    if form.is_valid():
+	    new_obj = form.save(commit=False)
+	    new_obj.tax_return_form = parent_obj
+	    new_obj.save()
+
+	    context['object'] = new_obj
+
+	    return render(request, partial, context)
+
     return render(request, template, context)
 
 def TaxReturnFormLine_update_view(request):
@@ -238,13 +263,43 @@ def TaxReturnFormLine_delete_view(request):
     #taxreturnoutboundformline = models.ForeignKey(TaxReturnOutboundFormLine, on_delete=models.PROTECT, null=True, blank=True)
     #amount = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2, null=True, blank=True)
 
-def TaxReturnFormLineInput_create_view(request):
+#Form line needs to be selected
+
+def TaxReturnFormLineInput_create_view(request, parent_id=None):
     form = TaxReturnFormLineInputForm(request.POST or None)
     template = "tax/create-update.html"
 
+    if not request.htmx:
+        raise Http404
+
+    try:
+        parent_obj = Tax_Return_Form_Line.objects.get(id=parent_id)
+    except:
+        parent_obj = None
+
+    if parent_obj is None:
+        return HttpResponse("Not Found")
+
+    form = TaxReturnFormLineForm(request.POST or None)
+
+    template = "tax/create-update.html"
+
+    partial = "tax/partials/inline.html"
+
     context = {
 		"form": form,
+		"title": "New Tax Return Line Input",
 	}
+
+    if form.is_valid():
+	    new_obj = form.save(commit=False)
+	    new_obj.tax_return_form_line = parent_obj
+	    new_obj.save()
+
+	    context['object'] = new_obj
+
+	    return render(request, partial, context)
+
     return render(request, template, context)
 
 def TaxReturnFormLineInput_update_view(request):

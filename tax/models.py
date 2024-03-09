@@ -8,7 +8,7 @@ from fin.models import (
 
 # Create your models here.
 class Tax_Return(models.Model):
-    payee = models.ForeignKey(Payee, on_delete=models.PROTECT, null=True, blank=True)
+    #payee = models.ForeignKey(Payee, on_delete=models.PROTECT, null=True, blank=True)
     year = models.IntegerField(null=True, blank=True)
 
     def get_absolute_url(self):
@@ -36,13 +36,55 @@ class Tax_Return_Form(models.Model):
     desc = models.CharField(max_length=255, null=True, blank=True)
     outbound = models.BooleanField(null=True, blank=True, default=True)
 
+    def get_absolute_url(self):
+        return reverse("tax:tax-return-detail", kwargs={"id": self.tax_return.id})
+
+    def get_edit_url(self):
+        return reverse("tax:tax-return-form-update", kwargs={"id": self.id })
+
+    def get_delete_url(self):
+        return reverse("tax:tax-return-form-delete", kwargs={"id": self.id})
+
+    def get_children(self):
+        return self.tax_return_form_line_set.all()
+
+    def __str__(self):
+        return str(self.tax_return) + ">" + str(self.name)
+
 class Tax_Return_Form_Line(models.Model):
     tax_return_form = models.ForeignKey(Tax_Return_Form, on_delete=models.PROTECT, null=True, blank=True)
     number = models.CharField(max_length=255, null=True, blank=True)
     line = models.CharField(max_length=255, null=True, blank=True)
     instructions = models.CharField(max_length=255, null=True, blank=True)
 
+    def get_absolute_url(self):
+        return self.tax_return_form.get_absolute_url()
+
+    def get_edit_url(self):
+        return reverse("tax:tax-return-form-line-update", kwargs={"id": self.id })
+
+    def get_delete_url(self):
+        return reverse("tax:tax-return-form-line-delete", kwargs={"id": self.id})
+
+    def get_children(self):
+        return self.tax_return_form_line_input_set.all()
+
+    def __str__(self):
+        return str(self.tax_return) + ">" + str(self.number) + ">" + str(self.line)
+
 class Tax_Return_Form_Line_Input(models.Model):
     tax_return_form_line = models.ForeignKey(Tax_Return_Form_Line, on_delete=models.PROTECT, null=True, blank=True)
     amount = models.DecimalField(verbose_name='Amount', max_digits=18, decimal_places=2, default=0.00, null=True, blank=True)
     text = models.CharField(max_length=255, null=True, blank=True)
+
+    def get_absolute_url(self):
+        return self.tax_return_form_line.tax_return_form.get_absolute_url()
+
+    def get_edit_url(self):
+        return reverse("tax:tax-return-form-line-input-update", kwargs={"id": self.id })
+
+    def get_delete_url(self):
+        return reverse("tax:tax-return-form-line-input-delete", kwargs={"id": self.id})
+
+    def __str__(self):
+        return str(self.tax_return_form_line) + ">" + str(self.text) > ">" + str(self.amount)

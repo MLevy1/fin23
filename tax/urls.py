@@ -10,6 +10,8 @@ from .views import (
     TaxReturn_delete_view,
     TaxReturn_detail_view,
     TaxReturnForm_create_view,
+    TaxReturnForm_update_view,
+    TaxReturnForm_delete_view,
 
 )
 
@@ -23,7 +25,8 @@ urlpatterns = [
     path("TaxReturn/detail/<id>/", TaxReturn_detail_view, name="tax-return-detail"),
     path("TaxReturn/delete/<id>/", TaxReturn_delete_view, name="tax-return-delete"),
     path("TaxReturn/Form/create/<parent_id>/", TaxReturnForm_create_view, name="tax-return-form-create"),
-    path("TaxReturn/Form/list/<parent_id>/", TaxReturn_list_view, name="tax-return-form-list"),
+    path("TaxReturn/Form/update/<id>/", TaxReturnForm_update_view, name="tax-return-form-update"),
+    path("TaxReturn/Form/delete/<id>/", TaxReturnForm_delete_view, name="tax-return-form-delete"),
 
 
 ]

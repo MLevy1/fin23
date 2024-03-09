@@ -10,10 +10,14 @@
 
 <h2>{{ object.year }}: {{ object.payee }}</h2>
 
+    {{ object.get_children|length }}
+
     {% for c in object.get_children %}
 
 	    {% include 'tax/partials/inline.html' with object=c %}
 
     {% endfor %}
 
+
 {% endblock content %}
+
