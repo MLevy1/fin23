@@ -1,0 +1,24 @@
+how to use github correctly
+
+the repository must by synced on both ends before making any changes
+
+assuming changes have been made on the pythonanywhere server side, sync it first:
+
+1. open the console
+2. git add .
+3. git commit -m 'message'
+4. git push -u origin master
+
+this will update the master to match the pythonanywhere server side
+
+on the local pc side:
+
+1. fetch
+2. merge
+
+
+if there are changes on the local side that are not on the server side
+
+use vs code to commit and push
+
+then open the pythonanywhere console and use fetch / merge
