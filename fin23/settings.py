@@ -35,7 +35,7 @@ SECRET_KEY = 'django-insecure-3=e4t@hqv)j1=w5_h+_3il34(z6+6%rs0g@ko_c1&w51%&7-im
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.164', 'localhost', '127.0.0.1', '71.187.156.9']
+ALLOWED_HOSTS = ['mslevy35.pythonanywhere.com', '192.168.1.164', 'localhost', '127.0.0.1', '71.187.156.9']
 
 
 # Application definition
@@ -49,25 +49,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django_htmx',
-    'simple_history',
-    'django_select2',
-    'tagging',
     'bootstrap5',
-    'slick_reporting',
-    'crispy_forms', 
-    'crispy_bootstrap4',
-    'django_pandas',
-    'matplotlib',
-    'mpld3',
-    'fin', 
-    'projections',
-    'moving',
+    'fin',
     'issues',
-    'reports',
-    'recipes',
-    'jobs',
-    'locations',
     'transactions',
+    'csv_importer',
+    'fixed',
+    'tax',
+    'proj_1',
+    'reports_1',
 ]
 
 MIDDLEWARE = [
@@ -78,8 +68,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'simple_history.middleware.HistoryRequestMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
 
 ]
@@ -154,19 +142,17 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'mystaticfiles'
+    os.path.join(BASE_DIR, 'mystaticfiles')
 ]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, '/home/mslevy35/fin23/fin23/media/')
+
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
-
-FORCE_LOWERCASE_TAGS = True
-
-CRISPY_TEMPLATE_PACK = "bootstrap4"

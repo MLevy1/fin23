@@ -1,0 +1,38 @@
+{% extends "fin23/master.html" %}
+
+{% block content %}
+
+<h1>Fixed Flows</h1>
+
+<a href='{% url "fixed:create" %}'>#F2 Add Flow</a>
+
+<table>
+{% for x in object_list %}
+<tr>
+    <td>
+        <a href="{{ x.get_edit_url }}">#F3 edit</a>
+    </td>
+    <td>
+        <a href="{{ x.get_delete_url }}">#F5 del</a>
+    </td>
+    <td>
+        {{ x.desc }}
+    </td>
+    <td>
+        {{ x.payee }}
+    </td>
+    <td>
+        {{ x.account }}
+    </td>
+    <td>
+        {{ x.get_flow_total }}
+    </td>
+    <td>
+        <a href='{% url "transactions:add-fixed" x.id %}'>#T11 add</a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+
+{% endblock content %}

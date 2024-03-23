@@ -1,0 +1,24 @@
+{% extends 'fin23/master.html' %}
+{% block title %}
+Transfer
+{% endblock %}
+
+{% block content %}
+
+<h1>Transfer</h1>
+
+{% if message %}
+
+       <p>{{ message }}</p>
+
+{% endif %}
+
+<div>
+
+       {% include 'transactions/partials/forms.html' %}
+
+
+</div>
+
+
+{% endblock content %}

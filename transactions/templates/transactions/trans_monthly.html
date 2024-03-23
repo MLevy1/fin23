@@ -1,4 +1,4 @@
-{% extends "master.html" %}
+{% extends "fin23/master.html" %}
 
 {% load humanize %}
 
@@ -21,23 +21,23 @@ Transaction Archive - Monthly
 			<th scope="col">Account</th>
 			<th scope="col">Payee</th>
 			<th scope="col">Category</th>
-			<th scope="col">Subtrans</th>		
+			<th scope="col">Subtrans</th>
 		</thead>
 
               {% for t in object_list %}
 
                      <tr>
-                            <td><a href="{{ t.get_edit_url }}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">{{ t.tdate }}</a></td>
-                            <td><a href="{% url 'transactions:tlist'  t.account.id 'all' 'all' 'all' %}"> {{ t.account }}</a></td>
-                            <td><a href="{% url 'transactions:tlist' 'all' 'all' 'all' t.payee.id %}"> {{ t.payee }}</a> <a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}">edit</a> </td>
+                            <td><a href="{{ t.get_edit_url }}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">T4 {{ t.tdate }}</a></td>
+                            <td><a href="{% url 'transactions:tlist' t.account.id 'all' 'all' 'all' %}">T3 {{ t.account }}</a></td>
+                            <td><a href="{% url 'transactions:tlist' 'all' 'all' 'all' t.payee.id %}">T3 {{ t.payee }}</a> <a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}">24 edit</a> </td>
                             <td>
                                    {% for st in t.get_subtrans_children %}
                                        <p> {{ st.groupedcat }} </p>
 				<p style="color:{% if st.amount < 0 %} pink {% else %} lightGreen {% endif %}">{{ st.amount }} </p>
                                    {% endfor %}
-                            </td>      
+                            </td>
                             <td>
-                                   <a hx-post="{{ t.get_delete_url }}" hx-confirm="delete item?" hx-trigger='click' href="{{ t.get_delete_url }}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">del</a>
+                                   <a hx-post="{{ t.get_delete_url }}" hx-confirm="delete item?" hx-trigger='click' href="{{ t.get_delete_url }}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">T5 del</a>
                             </td>
 			</tr>
 		{% endfor %}
@@ -45,10 +45,10 @@ Transaction Archive - Monthly
 
 	<div class="container text-center">
 		{% if previous_month %}
-		<a href='/trans/tmonth/{{previous_month|date:"Y/m"}}'>{{ previous_month|date:"F Y" }}</a>
+		<a href='/trans/tmonth/{{previous_month|date:"Y/m"}}'>T12 {{ previous_month|date:"F Y" }}</a>
 		{% endif %}
 		{% if next_month %}
-		<a href='/trans/tmonth/{{next_month|date:"Y/m"}}'>{{ next_month|date:"F Y" }}</a>
+		<a href='/trans/tmonth/{{next_month|date:"Y/m"}}'>T12 {{ next_month|date:"F Y" }}</a>
 		{% endif %}
 	</div>
 

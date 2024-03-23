@@ -1,0 +1,89 @@
+{% extends "fin23/master.html" %}
+{% load humanize %}
+{% block title %}
+
+Account List
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container text-center">
+
+	<nav class="navbar navbar-dark" style="background-color: #151B54">
+
+              <div class="container-fluid">
+
+                     <a class="navbar-brand" href="#">Accounts</a>
+
+                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
+
+                            <span class="navbar-toggler-icon"> </span>
+
+                     </button>
+
+                     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+                            <div class="navbar-nav">
+
+                                   <a class="nav-link active" href="{% url 'add-account' %}">3 Add</a>
+
+                                   <div class="nav-item dropdown">
+
+                                          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">View</a>
+
+                                          <ul class="dropdown-menu text-center" style="background-color: #191970">
+
+                                                 <li><a class="dropdown-item" style="color: #707019" href="{% url 'list-accounts' 'act' %}">2 Active</a></li>
+
+                                                 <li><a class="dropdown-item" style="color: #707019" href="{% url 'list-accounts' 'all' %}">2 All</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+</div>
+
+<div class="container text-center">
+
+    <h3>{{ tsum }}</h3>
+
+	{% for x in accounts %}
+
+	<div class="d-flex justify-content-center align-items-center my-4">
+
+		<div class="col-8">
+
+			<div class="card" style="background-color: #151B54">
+
+				<h5 class="card-title">{{ x.account }}</h5>
+
+				<h6 class="card-subtitle mb-2 text-body-secondary">
+
+					<a href="{% url 'update-account' x.id %}">4 edit</a>
+
+				</h6>
+
+				<p class="card-text">total: ${{ x.balance|floatformat:"2g"  }}</p>
+
+				<p class="card-text">most recent: {{ x.most_recent_transaction }}</p>
+
+				<div class="btn-group">
+
+					<a href="{% url 'transactions:tlist' x.id 'all' 'all' 'all' %}" class="btn btn-link">T3 trans</a>
+
+				</div>
+
+
+			</div>
+
+		</div>
+
+	</div>
+
+	{% endfor %}
+
+</div>
+
+{% endblock %}

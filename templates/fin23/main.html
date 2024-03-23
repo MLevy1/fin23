@@ -1,0 +1,72 @@
+{% extends "fin23/master.html" %}
+
+{% block title %}
+  PFIN 23
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container text-center">
+
+	<h1 class="display-1" style="background-color: #151B54">PFIN 23</h1>
+
+	<h3 class="display-4" style="background-color: #151B54">Accounts</h3>
+
+	<div class="list-group">
+
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-accounts' 'act' %}">2 Accounts</a>
+
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-account' %}">3 Add Account</a>
+
+       </div>
+
+	<h3 class="display-4" style="background-color: #151B54">Categories</h3>
+
+       <div class="list-group">
+
+    		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-categories' %}">5 Categories</a>
+
+    		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-category' %}">6 Add Category</a>
+
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-l1groups' %}">9 L1 Groups</a>
+
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-l1group' %}">22 Add L1 Group</a>
+
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-gc' %}">19 Grouped Categories</a>
+
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-gc' %}">12 Add Grouped Category</a>
+
+        </div>
+
+    <h3 class="display-4" style="background-color: #151B54">Payees</h3>
+
+        <div class="list-group">
+
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-payees' 'all' '-trans_count' %}">13 Payees</a>
+
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-payee' %}">23 Add Payee</a>
+
+        </div>
+
+    <h3 class="display-4" style="background-color: #151B54">Transactions</h3>
+
+        <div class="list-group">
+
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'transactions:list' %}">T1 Transactions</a>
+
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'transactions:create' %}">T2 Add Transaction</a>
+
+        </div>
+
+    <h3 class="display-4" style="background-color: #151B54">Issues</h3>
+
+        <div class="list-group">
+
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="issues/">Issues</a>
+
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="aissue/">Add Issue</a>
+
+        </div>
+
+{% endblock %}

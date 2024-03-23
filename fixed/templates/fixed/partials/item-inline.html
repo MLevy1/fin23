@@ -1,0 +1,6 @@
+<div id="item-{{ object.id }}">
+    {{ object.groupedcat }}: {{ object.amount }} {% if object.note %} | {{ object.note }} {% endif %}
+    <button hx-trigger="click" class="btn btn-secondary" hx-get="{{ object.get_hx_edit_url }}" hx-target="#item-{{ object.id }}">#F5 Edit</button>
+    <button class="btn btn-secondary" hx-post='{{ object.get_delete_url }}' hx-confirm='delete item?' hx-trigger='click' hx-target='#item-{{ object.id }}' hx-swap='outerHTML' >#F8 Del</button>
+
+</div>

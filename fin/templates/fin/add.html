@@ -1,0 +1,28 @@
+{% extends 'fin23/master.html' %}
+{% block title %}
+Add
+{% endblock %}
+
+{% block content %}
+
+<h2>Add</h2>
+
+</div>
+
+<div class='contanier text-left'>
+
+       <form method='post' class='dflex align-items-left' action=''>
+
+              {% csrf_token %}
+
+              <table class="text-left">
+
+                     {{ form.as_table }}
+
+              </table>
+
+              <button type='submit' name='save'>Add</button>
+
+       </form>
+</div>
+{% endblock %}

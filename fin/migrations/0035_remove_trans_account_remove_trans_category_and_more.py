@@ -26,9 +26,9 @@ class Migration(migrations.Migration):
             model_name='trans',
             name='payee',
         ),
-        migrations.DeleteModel(
-            name='HistoricalTrans',
-        ),
+        #migrations.DeleteModel(
+        #    name='HistoricalTrans',
+        #),
         migrations.DeleteModel(
             name='Trans',
         ),

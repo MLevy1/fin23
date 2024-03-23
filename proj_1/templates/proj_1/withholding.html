@@ -1,0 +1,395 @@
+{% extends "fin23/master.html" %}
+{% load humanize %}
+{% block content %}
+
+<h1>Withholding</h1>
+<hr>
+<table width=50%>
+    <tr>
+        <td>Annual Salary</td>
+        <td>{{ a_salary|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td>Pre Tax 401k %</td>
+        <td>{{ t_401k_pct }}</td>
+    </tr><tr>
+        <td>Post Tax 401k %</td>
+        <td>{{ r_401k_pct }}</td>
+    </tr>
+</table>
+<hr>
+<h3>Pre-Tax Deductions</h3>
+<table width=100%>
+    <thead>
+        <th>Item</th>
+        <th>Medicare</th>
+        <th>Social Sec</th>
+        <th>Federal</th>
+        <th>NY</th>
+        <th>NJ</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Biweekly Salary</td>
+        <td>{{ b_salary|floatformat:"2g" }}</td>
+        <td>{{ b_salary|floatformat:"2g" }}</td>
+        <td>{{ b_salary|floatformat:"2g" }}</td>
+        <td>{{ b_salary|floatformat:"2g" }}</td>
+        <td>{{ b_salary|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td>Pre-Tax 401k</td>
+        <td></td>
+        <td></td>
+        <td>{{ b_trad_401k|floatformat:"2g" }}</td>
+        <td>{{ b_trad_401k|floatformat:"2g" }}</td>
+        <td>{{ b_trad_401k|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td>Salary after Pre-Tax 401k</td>
+        <td>{{ b_salary|floatformat:"2g" }}</td>
+        <td>{{ b_salary|floatformat:"2g" }}</td>
+        <td>{{ b_post_t401k|floatformat:"2g" }}</td>
+        <td>{{ b_post_t401k|floatformat:"2g" }}</td>
+        <td>{{ b_post_t401k|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td>Medical</td>
+        <td>{{ b_med|floatformat:"2g" }}</td>
+        <td>{{ b_med|floatformat:"2g" }}</td>
+        <td>{{ b_med|floatformat:"2g" }}</td>
+        <td>{{ b_med|floatformat:"2g" }}</td>
+        <td></td>
+    </tr><tr>
+        <td>Dental</td>
+        <td>{{ b_dental|floatformat:"2g" }}</td>
+        <td>{{ b_dental|floatformat:"2g" }}</td>
+        <td>{{ b_dental|floatformat:"2g" }}</td>
+        <td>{{ b_dental|floatformat:"2g" }}</td>
+        <td></td>
+    </tr><tr>
+        <td>Vision</td>
+        <td>{{ b_vision|floatformat:"2g" }}</td>
+        <td>{{ b_vision|floatformat:"2g" }}</td>
+        <td>{{ b_vision|floatformat:"2g" }}</td>
+        <td>{{ b_vision|floatformat:"2g" }}</td>
+        <td></td>
+    </tr><tr>
+        <td>Pre-Tax Expenses</td>
+        <td>{{ pre_tax_exp|floatformat:"2g" }}</td>
+        <td>{{ pre_tax_exp|floatformat:"2g" }}</td>
+        <td>{{ pre_tax_exp|floatformat:"2g" }}</td>
+        <td>{{ pre_tax_exp|floatformat:"2g" }}</td>
+        <td></td>
+    </tr><tr>
+        <td>Pre-Transit Taxable</td>
+        <td>{{ b_med_taxable|floatformat:"2g" }}</td>
+        <td>{{ b_med_taxable|floatformat:"2g" }}</td>
+        <td>{{ b_fed_taxable|floatformat:"2g" }}</td>
+        <td>{{ b_fed_taxable|floatformat:"2g" }}</td>
+        <td>{{ b_post_t401k|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td>Transit</td>
+        <td>{{ m_transit|floatformat:"2g" }}</td>
+        <td>{{ m_transit|floatformat:"2g" }}</td>
+        <td>{{ m_transit|floatformat:"2g" }}</td>
+        <td>{{ m_transit|floatformat:"2g" }}</td>
+        <td>{{ m_transit|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td>Post-Transit Taxable</td>
+        <td>{{ b_med_taxable_t|floatformat:"2g" }}</td>
+        <td>{{ b_med_taxable_t|floatformat:"2g" }}</td>
+        <td>{{ b_fed_taxable_t|floatformat:"2g" }}</td>
+        <td>{{ b_fed_taxable_t|floatformat:"2g" }}</td>
+        <td>{{ b_nj_taxable_t|floatformat:"2g" }}</td>
+    </tr></tbody>
+</table>
+<hr>
+<h3>Taxes</h3>
+<ol>
+    <li>No Transit</li>
+<table width=100%>
+    <thead>
+        <th>Item</th>
+        <th>Amount</th>
+        <th>Rate</th>
+        <th>Tax</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                Medicare Taxable
+            </td>
+            <td>
+                {{ b_med_taxable|floatformat:"2g" }}
+            </td>
+            <td>{{ med_rate }}</td>
+            <td>{{ med_tax|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+            <td>
+                Social Security Taxable (on first $168,600 of taxable income)
+            </td>
+            <td>
+                {{ b_med_taxable|floatformat:"2g" }}
+            </td>
+            <td>{{ ss_tax_rate }}</td>
+            <td>{{ ss_tax|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+            <td>
+                Federal Withholding
+            </td>
+            <td>
+                {{ b_fed_taxable|floatformat:"2g" }}
+            </td>
+            <td>{{ fed_tax_rate }}</td>
+            <td>{{ b_fed_wh|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+            <td>
+                New York Withholding
+            </td>
+            <td>
+                {{ b_fed_taxable|floatformat:"2g" }}
+            </td>
+            <td>{{ ny_tax_rate }}</td>
+            <td>{{ b_ny_wh|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+            <td>
+                New York SDI Withholding
+            </td>
+            <td></td>
+            <td></td>
+            <td>{{ ny_sdi_wh|floatformat:"2g" }}</td>
+        </tr>
+
+
+        <tr>
+            <td>
+                New Jersey Withholding
+            </td>
+            <td>
+                {{ b_post_t401k|floatformat:"2g" }}
+            </td>
+            <td>{{ nj_tax_rate }}</td>
+            <td>{{ b_nj_wh|floatformat:"2g" }}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <td>Total Taxes</td>
+        <td></td>
+        <td></td>
+        <td>{{ b_taxes|floatformat:"2g" }}</td>
+    </tfoot>
+</table>
+    <li>With Transit</li>
+<table width=100%>
+    <thead>
+        <th>Item</th>
+        <th>Amount</th>
+        <th>Rate</th>
+        <th>Tax</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                Medicare Taxable
+            </td>
+            <td>
+                {{ b_med_taxable_t|floatformat:"2g" }}
+            </td>
+            <td>{{ med_rate }}</td>
+            <td>{{ med_tax_t|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+            <td>
+                Social Security Taxable (on first $168,600 of taxable income)
+            </td>
+            <td>
+                {{ b_med_taxable_t|floatformat:"2g" }}
+            </td>
+            <td>{{ ss_tax_rate }}</td>
+            <td>{{ ss_tax_t|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+            <td>
+                Federal Withholding
+            </td>
+            <td>
+                {{ b_fed_taxable_t|floatformat:"2g" }}
+            </td>
+            <td>{{ fed_tax_rate_t }}</td>
+            <td>{{ b_fed_wh_t|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+            <td>
+                New York Withholding
+            </td>
+            <td>
+                {{ b_fed_taxable_t|floatformat:"2g" }}
+            </td>
+            <td>{{ ny_tax_rate_t }}</td>
+            <td>{{ b_ny_wh_t|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+            <td>
+                New York SDI Withholding
+            </td>
+            <td></td>
+            <td></td>
+            <td>{{ ny_sdi_wh|floatformat:"2g" }}</td>
+        </tr>
+        <tr>
+            <td>
+                New Jersey Withholding
+            </td>
+            <td>
+                {{ b_nj_taxable_t|floatformat:"2g" }}
+            </td>
+            <td>{{ nj_tax_rate_t }}</td>
+            <td>{{ b_nj_wh_t|floatformat:"2g" }}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <td>Total Taxes</td>
+        <td></td>
+        <td></td>
+        <td>{{ b_taxes_t|floatformat:"2g" }}</td>
+    </tfoot>
+</table>
+</ol>
+<hr>
+<h3>Post Tax Deductions</h3>
+<table width=100%>
+    <thead>
+        <th>Item</th>
+        <th>Amount</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                Post Tax 401k
+            </td>
+            <td>
+                {{ b_r_401k|floatformat:"2g" }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Term Life
+            </td>
+            <td>
+                {{ b_life|floatformat:"2g" }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Legal Services
+            </td>
+            <td>
+                {{ b_legal|floatformat:"2g" }}
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <td>Total</td>
+        <td>{{ post_tax|floatformat:"2g" }}</td>
+    </tfoot>
+</table>
+<hr>
+<h4>Simple Net Pay</h4>
+<table width=100%>
+    <thead>
+        <th>Type</th>
+        <th>Daily</th>
+        <th>Weekly</th>
+        <th>Bi-Weekly</th>
+        <th>Monthly</th>
+        <th>Annual</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>No Transit</td>
+            <td>{{ d_net_pay|floatformat:"2g" }}</td>
+            <td>{{ w_net_pay|floatformat:"2g" }}</td>
+            <td>{{ b_net_pay|floatformat:"2g" }}</td>
+            <td>{{ m_net_pay|floatformat:"2g" }}</td>
+            <td>{{ a_net_pay|floatformat:"2g" }}</td>
+        </tr><tr>
+            <td>No Transit</td>
+            <td>{{ d_net_pay_t|floatformat:"2g" }}</td>
+            <td>{{ w_net_pay_t|floatformat:"2g" }}</td>
+            <td>{{ b_net_pay_t|floatformat:"2g" }}</td>
+            <td>{{ m_net_pay_t|floatformat:"2g" }}</td>
+            <td>{{ a_net_pay_t|floatformat:"2g" }}</td>
+        </tr>
+    </tbody>
+</table>
+<hr>
+<h3>True Net Pay</h3>
+<table width=100%>
+    <tr>
+        <td align="left">Annual Salary</td>
+        <td align="right">{{ a_salary|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Post Tax 401k %</td>
+        <td align="right">{{ r_401k_pct }}</td>
+    </tr><tr>
+        <td align="left">Annual Cash Bonus</td>
+        <td align="right">{{ a_bonus|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Total Annual Gross Income</td>
+        <td align="right">{{ a_gross|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Total Post Tax 401k</td>
+        <td align="right">{{ a_r_401k|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Total Pre Tax 401k</td>
+        <td align="right">{{ a_t_401k|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Medical</td>
+        <td align="right">{{ a_med|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Dental</td>
+        <td align="right">{{ a_den|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Vision</td>
+        <td align="right">{{ a_vis|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Transit</td>
+        <td align="right">{{ a_transit|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Pre Tax Expenses</td>
+        <td align="right">{{ a_pre_tax_exp|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Taxable Income</td>
+        <td align="right">{{ a_taxable|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Soc Sec Tax</td>
+        <td align="right">{{ a_ss|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Medicare Tax</td>
+        <td align="right">{{ a_med_tax|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Federal Tax</td>
+        <td align="right">{{ a_fed_tax|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual NY Tax</td>
+        <td align="right">{{ a_ny_tax|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual NY PFL</td>
+        <td align="right">{{ a_ny_pfl|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Term Life</td>
+        <td align="right">{{ a_life|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Legal</td>
+        <td align="right">{{ a_legal|floatformat:"2g" }}</td>
+    </tr><tr>
+        <td align="left">Annual Net Salary</td>
+        <td align="right">{{ a_net|floatformat:"2g" }}</td>
+    </tr>
+
+</table>
+
+{% endblock content %}
+
+

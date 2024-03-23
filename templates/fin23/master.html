@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+              <script src="https://unpkg.com/htmx.org@1.5.0"></script>
+
+              <style>
+                     .htmx-indicator {
+                            display: none;
+                     }
+
+                     .htmx-request .htmx-indicator {
+                            display: inline;
+                     }
+
+                     .htmx-inverted-indicator {
+                            display: inline;
+                     }
+
+                     .htmx-request .htmx-inverted-indicator {
+                            display: none;
+                     }
+              </style>
+
+		<meta charset="UTF-8">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<title>
+		    {% block title %}
+		    {% endblock %}
+		</title>
+		{% load humanize %}
+		{% load bootstrap5 %}
+		{% bootstrap_css %}
+		{% bootstrap_javascript %}
+
+	</head>
+
+
+	<body style="padding-top: 60px"class="bg-dark text-white">
+
+		<div class="container text-center">
+			<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="/">PFIN</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+
+					<div class="collapse navbar-collapse" id="navbarNavDropdown">
+						<ul class="navbar-nav">
+							<li class="nav-item">
+								<a class="nav-link" href="{% url 'main' %}">1 Home</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/admin/">Admin</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{% url 'issues:view-issues' %}">Issues</a>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Accounts
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+									<li><a class="dropdown-item" href="{% url 'list-accounts' 'act' %}">2 View</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-account' %}">3 Add New</a></li>
+								</ul>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Categories
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+									<li><a class="dropdown-item" href="{% url 'list-categories' %}">5 View</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-category' %}">6 Add New</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'list-l1groups' %}">9 View L1 Groups</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'add-l1group' %}">22 Add L1 Group</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'list-gc' %}">19 View Grouped Cats</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'add-gc' %}">12 Add Grouped Cat</a></li>
+
+								</ul>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Payees
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+									<li><a class="dropdown-item" href="{% url 'list-payees' 'act' '-trans_count' %}" >13 View</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-payee' %}">23 Add New</a></li>
+
+								</ul>
+
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Transactions
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+									<li><a class="dropdown-item" href="{% url 'transactions:list' %}">T1 View</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:create' %}">T2 Add New</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:transfer' %}">T8 Add Transfer</a></li>
+								</ul>
+							</li>
+							<li class="nav-item dropdown">
+							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
+							        CSV Uploader
+							    </a>
+								<ul class="dropdown-menu">
+								    <li><a class="dropdown-item" href="{% url 'csv:upload-file' %}">New Upload</a></li>
+								    <li><a class="dropdown-item" href="{% url 'csv:imported-payees-list' %}">Uploaded Payees</a></li>
+								    <li><a class="dropdown-item" href="{% url 'csv:staged-transactions-list' %}">Staged Transactions</a></li>
+								</ul>
+							</li>
+							<li class="nav-item dropdown">
+							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
+							        Fixed Flows
+							    </a>
+							    <ul class="dropdown-menu">
+							        <li><a class="dropdown-item" href="{% url 'fixed:list' %}">F1 List</a></li>
+							    </ul>
+							</li>
+							<li class="nav-item dropdown">
+							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
+							        Taxes
+							    </a>
+							    <ul class="dropdown-menu">
+							        <li><a class="dropdown-item" href="{% url 'tax:tax-return-list' %}">Tax Returns</a></li>
+							        <li><a class="dropdown-item" href="{% url 'tax:datasource-list' %}">Data Source</a></li>
+							    </ul>
+							</li>
+							<li class="nav-item dropdown">
+							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
+							        Projections
+							    </a>
+							    <ul class="dropdown-menu">
+							        <li><a class="dropdown-item" href="{% url 'proj:list' %}">List</a></li>
+							        <li><a class="dropdown-item" href="{% url 'proj:withholding' %}">Withholding</a></li>
+							    </ul>
+							</li>
+							<li class="nav-item dropdown">
+							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
+							        Reports
+							    </a>
+							    <ul class="dropdown-menu">
+							        <li><a class="dropdown-item" href="{% url 'reports_1:tform' %}">Transaction Query</a></li>
+							    </ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+                     <div class="container text-center">
+                            {% block content %}
+		              {% endblock %}
+                     </div>
+		</div>
+              <script>
+                     document.body.addEventListener("htmx:configRequest", (event)=>{
+                            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}'
+                     })
+              </script>
+	</body>
+</html>

@@ -1,0 +1,22 @@
+{% extends "fin23/master.html" %}
+
+{% block content %}
+
+<h1>Future Cash Flow Detail</h1>
+
+<hr>
+
+<h2>{{ object.desc }}</h2>
+
+<hr>
+
+<ul>
+    <li>
+        <a href="{% url 'proj:update' object.pk %}">update</a>
+    </li>
+    <li>
+        <a href="{% url 'proj:delete' object.pk %}">delete</a>
+    </li>
+</ul>
+
+{% endblock content %}

@@ -1,9 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
 from .models import (
        Transaction,
-       SubTransaction
+       SubTransaction,
 )
 
 class SubTransactionInline(admin.StackedInline):
@@ -11,15 +10,22 @@ class SubTransactionInline(admin.StackedInline):
        extra = 0
 
 class TransactionAdmin(admin.ModelAdmin):
-       inlines = [SubTransactionInline]
-       list_display=[
-              'tid',
-              'tdate',
-              'payee',
-              'match',
-              'note',
-              'oldCat',
-              'oldPayee'
-       ]
+        inlines = [SubTransactionInline]
+        list_display=[
+            'tid',
+            'tdate',
+            'account',
+            'payee',
+            'get_transaction_total',
+            'match',
+            'note',
+        ]
+
+        list_filter = [
+		    'account',
+		    'payee',
+	    ]
+
+# Register your models here.
 
 admin.site.register(Transaction, TransactionAdmin)

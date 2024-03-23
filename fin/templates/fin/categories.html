@@ -1,0 +1,60 @@
+{% extends "fin23/masterp.html" %}
+{% load humanize %}
+{% block title %}
+
+Categories
+
+{% endblock %}
+
+{% block page_content %}
+
+<div class="container text-center">
+    <nav class="navbar navbar-dark" style="background-color: #151B54">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Categories {{ ccount }}</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
+                    <span class="navbar-toggler-icon"> </span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <form class="d-flex justify-content-center" method="GET" action="{% url 'results-category' %}">
+                            <input class="form-control-sm me-2" type="search" name="q" placeholder="Search">
+                            <button class="btn btn-outline-success" type="submit">8 Search</button>
+                        </form>
+                        <a class="nav-link active" href="{% url 'add-category' %}">6 Add</a>
+                    </div>
+                <div class="navbar-nav">
+                    <a class="nav-link active" href="{% url 'list-l1groups' %}">9 View L1 Groups</a>
+                </div>
+                <div class="navbar-nav">
+                    <a class="nav-link active" href="{% url 'add-l1group' %}">22 Add L1 Group</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container text-center">
+    {% for x in page_obj  %}
+        <div class="d-flex justify-content-center align-items-center my-4">
+            <div class="col-8">
+                <div class="card" style="background-color: #151B54">
+                    <h5 class="card-title">{{ x.category }}</h5>
+					<h6 class="card-subtitle mb-2 text-body-secondary">
+                        <a href="{% url 'update-category' x.pk %}">7 edit</a>
+                    </h6>
+					{% if x.active %}
+                    <p class="text-success">active</p>
+					{% else %}
+                    <p class="text-danger">inactive</p>
+					{% endif %}
+					<p class="card-text"># of trans: {{ x.trans_count|intcomma }}</p>
+					<p class="card-text">total: ${{ x.trans_total|floatformat:"2g" }}</p>
+					<div class="btn-group">
+                        <a href="{% url 'transactions:tlist' 'all' x.pk 'all' 'all' 'all' '-tdate' %}" class="btn btn-link">T3 trans</a>
+					</div>
+				</div>
+			</div>
+		</div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

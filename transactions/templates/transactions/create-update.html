@@ -1,11 +1,9 @@
-{% extends 'master.html' %}
+{% extends 'fin23/master.html' %}
 {% block title %}
 Update Trans
 {% endblock %}
 
 {% block content %}
-
-<h1>Create-Update Trans</h1>
 
 {% if message %}
 
@@ -30,7 +28,7 @@ Update Trans
        {% if new_subtran_url %}
 
               <div id='subtran-create'>
-                    
+
               </div>
 		<br>
               <button class="btn btn-secondary" hx-get="{{ new_subtran_url }}" hx-trigger='click' hx-target='#subtran-create' hx-swap='beforeend'>Add Subtran</button>

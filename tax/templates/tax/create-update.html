@@ -1,0 +1,37 @@
+{% extends 'fin23/master.html' %}
+{% block title %}
+Create - Update
+{% endblock %}
+
+{% block content %}
+
+{% if message %}
+
+       <p>{{ message }}</p>
+
+{% endif %}
+
+<div>
+
+        {% include 'tax/partials/forms.html' %}
+
+        {% for c in object.get_children %}
+
+			{% include 'tax/partials/inline.html' with object=c %}
+
+       	{% endfor %}
+
+       {% if new_item_url %}
+
+            <div id='sub-create'></div>
+
+            <br>
+
+            <button class="btn btn-secondary" hx-get="{{ new_item_url }}" hx-trigger='click' hx-target='#sub-create' hx-swap='beforeend'>Add</button>
+
+
+       {% endif %}
+
+</div>
+
+{% endblock content %}

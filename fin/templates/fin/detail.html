@@ -1,0 +1,25 @@
+{% extends "fin23/master.html" %}
+
+{% load humanize %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ object.payee }}</h1>
+
+<h6 class="card-subtitle mb-2 text-body-secondary">
+       <a class="link-warning" href="{% url 'update-payee' object.pk %}?next={{ next }}">25 edit</a>
+</h6>
+
+<ul class = "list-group">
+
+       <li class="list-group-item"><a href="{% url 'delete-payee' object.pk %}" class="link-danger btn btn-link">26 Delete</a></li>
+
+       <li class="list-group-item"><a href="{% url 'make-payee-inactive' object.pk %}" class="link-danger btn btn-link">27 Inact.</a></li>
+
+       <li class="list-group-item"><a href="{% url 'transactions:tlist' 'all' 'all' 'all' object.id %}" class="link-success btn btn-link">T3 View Trans</a></li>
+
+</ul>
+{% endblock %}

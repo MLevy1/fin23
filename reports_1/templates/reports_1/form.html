@@ -1,0 +1,14 @@
+{% extends 'fin23/master.html' %}
+
+{% block content %}
+
+<h2>{{ title }} Form</h2>
+<a href="{% url 'reports_1:tform' 'False' %}">All Payees & Accounts</a>
+<br>
+<a href="{% url 'reports_1:tform' 'True' %}">Active Payees & Accounts</a>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type='submit'>Ok</button>
+</form>
+{% endblock content %}

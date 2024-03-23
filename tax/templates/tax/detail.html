@@ -1,0 +1,40 @@
+{% extends 'fin23/master.html' %}
+{% block title %}
+Detail
+{% endblock %}
+
+{% block content %}
+
+{% if message %}
+
+       <p>{{ message }}</p>
+
+{% endif %}
+
+<div>
+    object:
+        {{ object }}
+        <br>
+        {% for c in object.get_children %}
+        child:
+
+			{% include 'tax/partials/tax_return_form_inline.html' with object=c %}
+
+       	{% endfor %}
+
+       	<a href="{% url 'tax:tax-return-list' %}">back</a>
+
+       	{% if new_item_url %}
+
+            <div id='sub-create'></div>
+
+            <br>
+
+            <button class="btn btn-secondary" hx-get="{{ new_item_url }}" hx-trigger='click' hx-target='#sub-create' hx-swap='beforeend'>Add</button>
+
+
+       {% endif %}
+
+</div>
+
+{% endblock content %}

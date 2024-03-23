@@ -1,4 +1,4 @@
-{% extends "master.html" %}
+{% extends "fin23/master.html" %}
 
 {% block title %}
 
@@ -13,13 +13,13 @@ Transaction Archive - Months
 	<h1 class="display-4" style="background-color: #151B54">Transactions</h1>
 
 	<div class="list-group">
-		
+
 		{% for date in date_list %}
-   
-			<a class="list-group-item list-group-item-action list-group-item-primary" href="/trans/tmonth/{{ date|date:'Y'}}/{{ date|date:'m'}}">{{ date|date:"M Y" }}</a>
-		
+
+			<a class="list-group-item list-group-item-action list-group-item-primary" href="/trans/tmonth/{{ date|date:'Y'}}/{{ date|date:'m'}}">T12 {{ date|date:"M Y" }}</a>
+
 		{% endfor %}
-		
+
 	</div>
 
 </div>
@@ -27,10 +27,10 @@ Transaction Archive - Months
 
 <div class="container text-center">
 	{% if previous_year %}
-		Prior: <a href="/{{ previous_year|date:'Y'}}">{{ previous_year|date:"Y" }}</a>
+		Prior: <a href="/{{ previous_year|date:'Y'}}">T13 {{ previous_year|date:"Y" }}</a>
 	{% endif %}
 	{% if next_year %}
-		Next: <a href="/{{ next_year|date:'Y'}}">{{ next_year|date:"Y" }}</a>
+		Next: <a href="/{{ next_year|date:'Y'}}">T13 {{ next_year|date:"Y" }}</a>
 	{% endif %}
 </div>
 

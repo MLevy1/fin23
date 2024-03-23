@@ -1,0 +1,47 @@
+{% extends "fin23/master.html" %}
+{% load humanize %}
+{% block title %}
+
+Uploaded Payees
+
+{% endblock %}
+
+{% block content %}
+
+<h1 class="display-4" style="background-color: #151B54">Uploaded Payees</h1>
+
+	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'csv:upload-file' %}">New Upload</a>
+
+	{% for x in object_list %}
+
+	<div class="d-flex justify-content-center align-items-center my-4">
+
+        <div class="col-8">
+
+            <div class="card" style="background-color: #151B54">
+
+                {% if x.payee is None %}
+
+                	<h3 class="card-title text-danger">{{ x.imported_payee }}</h3>
+
+                    <h4 class="card-subtitle text-danger">{{ x.payee }}</h4>
+
+                {% else %}
+
+                   	<h4 class="card-title">{{ x.imported_payee }}</h4>
+
+                    <h5 class="card-subtitle">{{ x.payee }}</h5>
+
+                {% endif %}
+
+				<h4 class="card-subtitle">
+
+				    <a class="link-warning" href="{% url 'csv:imported-payee-update' x.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">C4 edit</a>
+
+				</h4>
+            </div>
+        </div>
+    </div>
+	{% endfor %}
+
+{% endblock content %}

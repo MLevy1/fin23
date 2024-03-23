@@ -1,0 +1,33 @@
+{% extends 'fin23/master.html' %}
+
+{% block title %}
+proj list
+{% endblock title %}
+
+{% block content %}
+
+<h1>Future Cash Flows</h1>
+
+<hr>
+
+<table width=100%>
+    <thead>
+        <th>desc</th>
+        <th>per yr</th>
+        <th>amt</th>
+        <th>ann exp</th>
+    </thead>
+{% for o in object_list %}
+
+<tr><td><a href="{% url 'proj:detail' o.pk %}">{{ o.desc }}</a></td><td>{{o.ann_freq}}</td><td>{{o.amount|floatformat:"2g"}}</td><td>{{ o.get_ann_amt|floatformat:"2g"}}</td></tr>
+
+{% endfor %}
+</table>
+<hr>
+<a href="{% url 'proj:create' %}">New</a>
+<p>Annual: {{ t_a|floatformat:"2g" }}</p>
+<p>Monthly: {{ t_m|floatformat:"2g" }}</p>
+<p>Bi-Weekly: {{ t_b|floatformat:"2g" }}</p>
+<p>Weekly: {{ t_w }}</p>
+<p>Daily: {{ t_d }}</p>
+{% endblock content %}

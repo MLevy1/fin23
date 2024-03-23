@@ -1,0 +1,23 @@
+{% extends 'fin23/master.html' %}
+{% block title %}
+Add Fixed
+{% endblock %}
+
+{% block content %}
+
+<h1>Add Fixed</h1>
+
+{% if message %}
+
+       <p>{{ message }}</p>
+
+{% endif %}
+
+<div>
+
+       {% include 'transactions/partials/add-fixed-form.html' %}
+
+
+</div>
+
+{% endblock content %}

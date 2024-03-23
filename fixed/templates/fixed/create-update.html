@@ -1,0 +1,31 @@
+{% extends 'fin23/master.html' %}
+{% block title %}
+Create-Update Fixed Flow
+{% endblock %}
+
+{% block content %}
+
+<h1>Create-Update Fixed Flow</h1>
+
+<div style='margin-top:30px;'>
+    {% include 'fixed/partials/form.html' %}
+
+    <h3>Flow Items</h3>
+
+    {% for i in object.get_flowitem_children %}
+
+        {% include 'fixed/partials/item-inline.html' with object=i  %}
+
+    {% endfor %}
+
+    {% if new_item_url %}
+
+    <div id='item-create'></div>
+
+    <button hx-trigger="click" class="btn btn-secondary" hx-get="{{ new_item_url }}" hx-target="#item-create" hx-swap='beforeend'>Add</button>
+
+    {% endif %}
+
+</div>
+
+{% endblock content %}

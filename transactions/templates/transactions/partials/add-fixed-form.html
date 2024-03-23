@@ -1,0 +1,18 @@
+<div id ='trans_container'>
+<form action="." method="POST" hx-post="." hx-swap='outerHTML' hx-trigger='submit'>
+        {% csrf_token %}
+
+        {% if message %}
+
+            <p>{{ message }}</p>
+
+        {% endif %}
+
+        {{ form.as_p }}
+
+        <div class='htmx-indicator'>Loading...</div>
+        <p>{{request.GET.next}}</p>
+        <button class="btn btn-secondary" type="submit">save</button>
+        <a class="btn btn-secondary" href={% url "fixed:list" %}>exit</a>
+   </form>
+</div>

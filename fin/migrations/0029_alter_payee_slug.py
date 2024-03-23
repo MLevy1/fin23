@@ -10,9 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='payee',
-            name='slug',
-            field=models.SlugField(blank=True, null=True, unique=True),
-        ),
+        #migrations.AlterField(
+        #    model_name='payee',
+        #    name='slug',
+        #    field=models.SlugField(blank=True, null=True, unique=True),
+        #),
     ]

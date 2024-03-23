@@ -1,0 +1,82 @@
+{% extends "fin23/masterp.html" %}
+{% load humanize %}
+{% block title %}
+    Payees List
+{% endblock %}
+{% block page_content %}
+<div class="contanier text-center">
+	<nav class="navbar fixed navbar-dark" style="background-color: #151B54">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Payees {{ tcount }}</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
+                <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+                    <form class="d-flex justify-content-center" method="GET" action="{% url 'results' %}">
+                        <input class="form-control-sm me-2" type="search" name="q" placeholder="Search">
+                        <button class="btn btn-outline-success" type="submit">28 Search</button>
+                   </form>
+                    <a class="nav-link active" href="{% url 'add-payee' %}">23 Add</a>
+
+				<div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">13 Active</a>
+                    <ul class="dropdown-menu text-center" style="background-color: #191970">
+                        <li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'act' 'payee' %}">A-Z</a></li>
+    					<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'act' '-payee' %}">Z-A</a></li>
+    					<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'act' '-trans_count' %}">Usage: Dsc </a></li>
+    					<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'act' 'trans_count' %}">Usage: Asc </a></li>
+    					<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'act' '-most_recent_transaction' %}">Last: Dsc </a></li>
+    					<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'act' 'most_recent_transaction' %}">Last: Asc </a></li>
+    				</ul>
+				</div>
+				<div class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">13 All</a>
+					<ul class="dropdown-menu text-center" style="background-color: #191970">
+						<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'all' 'payee' %}">A-Z</a></li>
+						<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'all' '-payee' %}">Z-A</a></li>
+						<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'all' '-trans_count' %}">Usage: Dsc </a></li>
+						<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'all' 'trans_count' %}">Usage: Asc </a></li>
+						<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'all' '-most_recent_transaction' %}">Last: Dsc </a></li>
+						<li><a class="dropdown-item" style="color: #707019" href="{% url 'list-payees' 'all' 'most_recent_transaction' %}">Last: Asc </a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>
+    </br>
+	<div class="container text-center justify-content-center">
+    {% for p in page_obj %}
+        <div class="d-flex justify-content-center align-items-center my-4">
+            <div class="col-10">
+                <div class="card" style="background-color: #151B54">
+                    <h5 class="card-title">{{ p.payee }}</h5>
+                    <h6 class="card-subtitle mb-2 text-body-warning">
+                        {{ p.def_gcat }}
+                    </h6>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">
+                        {% if request.path|urlencode == "/search/" %}
+    						<a class="link-warning" href="{% url 'update-payee' p.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">25 edit</a>
+                        {% else %}
+                            <a class="link-warning" href="{% url 'update-payee' p.id %}">25 edit</a>
+                        {% endif %}
+					</h6>
+					<p class="card-text"># of trans: {{ p.trans_count|intcomma }}</p>
+					<p class="card-text">total:
+                        ${{ p.total_transactions|floatformat:"2g"  }}
+				    </p>
+					<p class="card-text">most recent: {{ p.most_recent_transaction }}</p>
+					<div class="btn-group">
+                        <a href="{% url 'delete-payee' p.pk %}" class="link-danger btn btn-link">26 Delete</a>
+                        <a href="{% url 'make-payee-inactive' p.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-danger btn btn-link">27 Inactivate</a>
+                    </div>
+                    <div class="btn-group">
+                        <a href="{% url 'transactions:tlist' 'all' 'all' 'all' p.id 'all' '-tdate' %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}" class="link-success btn btn-link">T3 Trans</a>
+                    </div>
+                </div>
+			</div>
+		</div>
+	{% endfor %}
+	</div>
+</div>
+{% endblock %}

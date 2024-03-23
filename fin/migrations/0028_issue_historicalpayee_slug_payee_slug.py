@@ -22,14 +22,15 @@ class Migration(migrations.Migration):
                 ('closedate', models.DateTimeField(blank=True, null=True, verbose_name='Closed Date')),
             ],
         ),
-        migrations.AddField(
-            model_name='historicalpayee',
-            name='slug',
-            field=models.SlugField(blank=True, null=True),
-        ),
-        migrations.AddField(
-            model_name='payee',
-            name='slug',
-            field=models.SlugField(blank=True, null=True),
-        ),
+
+        #migrations.AddField(
+            #model_name='historicalpayee',
+            #name='slug',
+            #field=models.SlugField(blank=True, null=True),
+        #),
+        #migrations.AddField(
+            #model_name='payee',
+            #name='slug',
+            #field=models.SlugField(blank=True, null=True),
+        #),
     ]

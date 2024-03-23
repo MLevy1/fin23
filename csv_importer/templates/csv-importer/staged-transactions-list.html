@@ -1,0 +1,75 @@
+{% extends "fin23/master.html" %}
+{% load humanize %}
+{% block title %}
+
+Staged Transactions
+
+{% endblock %}
+
+{% block content %}
+
+<h1 class="display-4" style="background-color: #151B54">Staged Transactions</h1>
+
+<p>
+    <a class='link-info' href="{% url 'csv:staged-transactions-list' %}?filter=False">not imported</a>
+    <a class='link-info' href="{% url 'csv:staged-transactions-list' %}?filter=True">imported</a>
+</p>
+	<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'csv:upload-file' %}">New Upload</a>
+
+	{% for x in object_list %}
+
+	<div class="d-flex justify-content-center align-items-center my-4">
+
+        <div class="col-8">
+
+            <div class="card" style="background-color: #151B54">
+
+                {% if x.imported is False %}
+                    <h4 class="text-danger">Not Imported</h4>
+                {% else %}
+                    <h4 class="text-success">Imported</h4>
+                {% endif %}
+
+                <a class="link-success" href="{% url 'transactions:add-staged-trans' x.id %}">T10 Add</a>
+
+                <h5 class="text">{{ x.account }}</h5>
+
+                <h4 class="text">{{ x.tdate }}</h4>
+
+                <h4 class="text">{{ x.amount }}</h4>
+
+                {% if x.imported_payee.payee.def_gcat is None %}
+
+                    <h4 class="text-danger">{{ x.imported_payee.payee.def_gcat }}</h4>
+
+                {% else %}
+
+                    <h4 class="text">{{ x.imported_payee.payee.def_gcat }}</h4>
+
+                {% endif %}
+
+                {% if x.imported_payee.payee is None %}
+
+                    <h4 class="card-subtitle text-danger">{{ x.imported_payee.payee }}</h4>
+
+                	<h5 class="card-title text-danger">{{ x.imported_payee }}</h5>
+
+                {% else %}
+
+                   	<h4 class="card-subtitle">{{ x.imported_payee.payee }}</h4>
+
+                   	<h5 class="card-title">{{ x.imported_payee }}</h5>
+
+                {% endif %}
+
+				<h4 class="card-subtitle">
+
+				    <a class="link-warning" href="{% url 'csv:imported-payee-update' x.imported_payee.pk %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">C4 edit payee</a>
+
+				</h4>
+            </div>
+        </div>
+    </div>
+	{% endfor %}
+
+{% endblock content %}
