@@ -144,22 +144,10 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-
 
 	a = trans_query.aggregate(Avg('subtransaction__amount'))
 	s = trans_query.aggregate(Sum('subtransaction__amount'))
-	mnd = trans_query.aggregate(Min('tdate'))
-	mxd = trans_query.aggregate(Max('tdate'))
-	mxd = mxd['tdate__max']
-	mnd = mnd['tdate__min']
-	dr = mxd-mnd
-	pd = s['subtransaction__amount__sum'] / dr.days
-	pw = pd*7
-	py = pd*365
-	pm =py/12
-
 
 	trans_list = list(trans_query)
 
-	listCnt = len(trans_list)
-
-	template = loader.get_template('transactions/tlist.html')
+	template = 'transactions/tlist.html'
 
 	paginator = Paginator(trans_list, 50)
 
@@ -176,19 +164,13 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-
 		"pay": pay,
 		"l1": l1,
 		"ord": ord,
-		"listCnt": listCnt,
 		"tqcnt": tqcnt,
 		"a": a['subtransaction__amount__avg'],
 		"s": s['subtransaction__amount__sum'],
-		"dr": dr.days,
-		"pd": pd,
-		"pw": pw,
-		"pm": pm,
-		"py": py,
 
 	}
 
-	return HttpResponse(template.render(context, request))
+	return render(request, template, context)
 
 #T4
 def Transaction_update_view(request, id=None):
