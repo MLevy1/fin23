@@ -75,6 +75,9 @@ def tform(request, act=True):
             if form.cleaned_data['i_max_tdate']:
                 kwargs["maxdate"] = form.cleaned_data['i_max_tdate']
 
+            if form.cleaned_data['i_template']:
+                kwargs["tem"] = form.cleaned_data['i_template']
+
             template = 'reports_1/treport.html'
 
             return HttpResponseRedirect(reverse_lazy('reports_1:treport', kwargs=kwargs))
@@ -82,7 +85,7 @@ def tform(request, act=True):
     return render(request, template, context)
 
 
-def treport(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-tdate', mindate=None, maxdate=None, **kwargs):
+def treport(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-tdate', mindate=None, maxdate=None, tem='list', **kwargs):
 
 	if maxdate == None:
 		maxdate = datetime.today().strftime('%Y-%m-%d')
@@ -133,7 +136,10 @@ def treport(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord=
 	py = pd*365
 	pm =py/12
 
-	template="reports_1/treport.html"
+	if tem == "list":
+		template="reports_1/treport.html"
+	else:
+		template="reports_1/tsummary.html"
 
 	trans_list = list(trans_query)
 
