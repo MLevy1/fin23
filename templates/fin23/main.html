@@ -15,9 +15,9 @@
 
 	<div class="list-group">
 
-        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-accounts' 'act' %}">2 Accounts</a>
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-accounts' 'act' %}">Accounts</a>
 
-		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-account' %}">3 Add Account</a>
+		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-account' %}">Add Account</a>
 
        </div>
 
@@ -25,17 +25,17 @@
 
        <div class="list-group">
 
-    		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-categories' %}">5 Categories</a>
+    		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-categories' %}">Categories</a>
 
-    		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-category' %}">6 Add Category</a>
+    		<a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-category' %}">Add Category</a>
 
-            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-l1groups' %}">9 L1 Groups</a>
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-l1groups' %}">L1 Groups</a>
 
-            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-l1group' %}">22 Add L1 Group</a>
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-l1group' %}">Add L1 Group</a>
 
-            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-gc' %}">19 Grouped Categories</a>
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-gc' %}">Grouped Categories</a>
 
-            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-gc' %}">12 Add Grouped Category</a>
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-gc' %}">Add Grouped Category</a>
 
         </div>
 
@@ -43,9 +43,9 @@
 
         <div class="list-group">
 
-            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-payees' 'all' '-trans_count' %}">13 Payees</a>
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'list-payees' 'all' '-trans_count' %}">Payees</a>
 
-            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-payee' %}">23 Add Payee</a>
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'add-payee' %}">Add Payee</a>
 
         </div>
 
@@ -53,9 +53,9 @@
 
         <div class="list-group">
 
-            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'transactions:list' %}">T1 Transactions</a>
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'transactions:list' %}">Transactions</a>
 
-            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'transactions:create' %}">T2 Add Transaction</a>
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'transactions:create' %}">Add Transaction</a>
 
         </div>
 
@@ -63,10 +63,55 @@
 
         <div class="list-group">
 
-            <a class="list-group-item list-group-item-action list-group-item-primary" href="issues/">Issues</a>
-
-            <a class="list-group-item list-group-item-action list-group-item-primary" href="aissue/">Add Issue</a>
+            <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'issues:view-issues' %}">Issues</a>
 
         </div>
+
+    <h3 class="display-4" style="background-color: #151B54">CSV Uploader</h3>
+    
+    <div class="list-group">
+
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'csv:upload-file' %}">New Upload</a>
+
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'csv:imported-payees-list' %}">Uploaded Payees</a>
+
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'csv:staged-transactions-list' %}">Staged Transactions</a>
+
+    </div>
+
+    <h3 class="display-4" style="background-color: #151B54">Fixed Flows</h3>
+    
+    <div class="list-group">
+
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'fixed:list' %}">List</a>
+
+    </div>
+
+    <h3 class="display-4" style="background-color: #151B54">Taxes</h3>
+
+    <div class="list-group">
+
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'tax:tax-return-list' %}">Tax Returns</a>
+
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'tax:datasource-list' %}">Data Sources</a>
+
+    </div>
+
+    <h3 class="display-4" style="background-color: #151B54">Projections</h3>
+
+    <div class="list-group">
+
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'proj:list' %}">List</a>
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'proj:withholding' %}">Withholding</a>
+
+    </div>
+
+    <h3 class="display-4" style="background-color: #151B54">Reports</h3>
+
+    <div class="list-group">
+
+        <a class="list-group-item list-group-item-action list-group-item-primary" href="{% url 'reports_1:tform' %}">Transaction Query</a>
+
+    </div>
 
 {% endblock %}

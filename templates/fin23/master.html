@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html>
 	<head>
-              <script src="https://unpkg.com/htmx.org@1.5.0"></script>
+		<script src="https://unpkg.com/htmx.org@1.5.0"></script>
+			<style>
+				.htmx-indicator {
+					display: none;
+				}
 
-              <style>
-                     .htmx-indicator {
-                            display: none;
-                     }
+				.htmx-request .htmx-indicator {
+					display: inline;
+				}
 
-                     .htmx-request .htmx-indicator {
-                            display: inline;
-                     }
+				.htmx-inverted-indicator {
+					display: inline;
+				}
 
-                     .htmx-inverted-indicator {
-                            display: inline;
-                     }
-
-                     .htmx-request .htmx-inverted-indicator {
-                            display: none;
-                     }
-              </style>
+				.htmx-request .htmx-inverted-indicator {
+					display: none;
+				}
+			</style>
 
 		<meta charset="UTF-8">
 
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 		<title>
-		    {% block title %}
-		    {% endblock %}
+			{% block title %}
+			{% endblock %}
 		</title>
 		{% load humanize %}
 		{% load bootstrap5 %}
@@ -35,7 +34,6 @@
 		{% bootstrap_javascript %}
 
 	</head>
-
 
 	<body style="padding-top: 60px"class="bg-dark text-white">
 
@@ -50,7 +48,7 @@
 					<div class="collapse navbar-collapse" id="navbarNavDropdown">
 						<ul class="navbar-nav">
 							<li class="nav-item">
-								<a class="nav-link" href="{% url 'main' %}">1 Home</a>
+								<a class="nav-link" href="{% url 'main' %}">Home</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="/admin/">Admin</a>
@@ -63,8 +61,8 @@
 									Accounts
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li><a class="dropdown-item" href="{% url 'list-accounts' 'act' %}">2 View</a></li>
-									<li><a class="dropdown-item" href="{% url 'add-account' %}">3 Add New</a></li>
+									<li><a class="dropdown-item" href="{% url 'list-accounts' 'act' %}">View</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-account' %}">Add New</a></li>
 								</ul>
 							</li>
 							<li class="nav-item dropdown">
@@ -72,13 +70,12 @@
 									Categories
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li><a class="dropdown-item" href="{% url 'list-categories' %}">5 View</a></li>
-									<li><a class="dropdown-item" href="{% url 'add-category' %}">6 Add New</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'list-l1groups' %}">9 View L1 Groups</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'add-l1group' %}">22 Add L1 Group</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'list-gc' %}">19 View Grouped Cats</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'add-gc' %}">12 Add Grouped Cat</a></li>
-
+									<li><a class="dropdown-item" href="{% url 'list-categories' %}">View</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-category' %}">Add New</a></li>
+									<li><a class="dropdown-item" href="{% url 'list-l1groups' %}">View L1 Groups</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-l1group' %}">Add L1 Group</a></li>
+									<li><a class="dropdown-item" href="{% url 'list-gc' %}">View Grouped Cats</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-gc' %}">Add Grouped Cat</a></li>
 								</ul>
 							</li>
 							<li class="nav-item dropdown">
@@ -86,8 +83,8 @@
 									Payees
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li><a class="dropdown-item" href="{% url 'list-payees' 'act' '-trans_count' %}" >13 View</a></li>
-									<li><a class="dropdown-item" href="{% url 'add-payee' %}">23 Add New</a></li>
+									<li><a class="dropdown-item" href="{% url 'list-payees' 'act' '-trans_count' %}">View</a></li>
+									<li><a class="dropdown-item" href="{% url 'add-payee' %}">Add New</a></li>
 
 								</ul>
 
@@ -96,9 +93,9 @@
 									Transactions
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-									<li><a class="dropdown-item" href="{% url 'transactions:list' %}">T1 View</a></li>
-									<li><a class="dropdown-item" href="{% url 'transactions:create' %}">T2 Add New</a></li>
-									<li><a class="dropdown-item" href="{% url 'transactions:transfer' %}">T8 Add Transfer</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:list' %}">View</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:create' %}">Add New</a></li>
+									<li><a class="dropdown-item" href="{% url 'transactions:transfer' %}">Add Transfer</a></li>
 								</ul>
 							</li>
 							<li class="nav-item dropdown">
@@ -116,7 +113,7 @@
 							        Fixed Flows
 							    </a>
 							    <ul class="dropdown-menu">
-							        <li><a class="dropdown-item" href="{% url 'fixed:list' %}">F1 List</a></li>
+							        <li><a class="dropdown-item" href="{% url 'fixed:list' %}">List</a></li>
 							    </ul>
 							</li>
 							<li class="nav-item dropdown">
