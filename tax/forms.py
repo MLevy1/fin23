@@ -5,24 +5,36 @@ from .models import(
     Tax_Return_Form,
     Tax_Return_Form_Line,
     Tax_Return_Form_Line_Input,
+    InputValue,
+    DataSource,
 )
 
-class TaxReturnFrm(forms.ModelForm):
+class FormTaxReturn(forms.ModelForm):
 	class Meta:
 		model = Tax_Return
 		fields = "__all__"
 
-class TaxReturnFormForm(forms.ModelForm):
+class FormTaxReturnForm(forms.ModelForm):
 	class Meta:
 		model = Tax_Return_Form
 		fields = "__all__"
 
-class TaxReturnFormLineForm(forms.ModelForm):
+class FormTaxReturnFormLine(forms.ModelForm):
 	class Meta:
 		model = Tax_Return_Form_Line
 		fields = "__all__"
 
-class TaxReturnFormLineInputForm(forms.ModelForm):
+class FormTaxReturnFormLineInput(forms.ModelForm):
 	class Meta:
 		model = Tax_Return_Form_Line_Input
+		fields = "__all__"
+
+class FormInputValue(forms.ModelForm):
+	class Meta:
+		model = InputValue
+		fields = "__all__"
+
+class FormDataSource(forms.ModelForm):
+	class Meta:
+		model = DataSource
 		fields = "__all__"

@@ -4,10 +4,10 @@
 
 <h1>{{ title }}</h1>
 
-<a href="{{ new_url }}">New Tax Return</a>
+<a href="{% url 'tax:tax-return-create' %}">New Tax Return</a>
 
 <table width=100%>
-{% for x in object_list %}
+{% for x in qs %}
 <tr>
     <td>
         <a href="{{ x.get_edit_url }}">edit</a>

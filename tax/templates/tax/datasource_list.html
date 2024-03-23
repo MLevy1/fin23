@@ -1,0 +1,29 @@
+{% extends "fin23/master.html" %}
+
+{% block content %}
+
+<h1>{{ title }}</h1>
+
+<a href="{% url 'tax:datasource-create' %}">New Data Source</a>
+
+<table width=100%>
+{% for x in qs %}
+<tr>
+    <td>
+        <a href="{{ x.get_edit_url }}">edit</a>
+    </td>
+    <td>
+        <a href="{{ x.get_delete_url }}">del</a>
+    </td>
+    <td>
+        {{ x.name }}
+    </td>
+    <td>
+        <a href="{{ x.get_detail_url }}">view</a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+
+{% endblock content %}

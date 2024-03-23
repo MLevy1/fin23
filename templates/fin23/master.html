@@ -125,6 +125,24 @@
 							    </a>
 							    <ul class="dropdown-menu">
 							        <li><a class="dropdown-item" href="{% url 'tax:tax-return-list' %}">Tax Returns</a></li>
+							        <li><a class="dropdown-item" href="{% url 'tax:datasource-list' %}">Data Source</a></li>
+							    </ul>
+							</li>
+							<li class="nav-item dropdown">
+							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
+							        Projections
+							    </a>
+							    <ul class="dropdown-menu">
+							        <li><a class="dropdown-item" href="{% url 'proj:list' %}">List</a></li>
+							        <li><a class="dropdown-item" href="{% url 'proj:withholding' %}">Withholding</a></li>
+							    </ul>
+							</li>
+							<li class="nav-item dropdown">
+							    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown">
+							        Reports
+							    </a>
+							    <ul class="dropdown-menu">
+							        <li><a class="dropdown-item" href="{% url 'reports_1:tform' %}">Transaction Query</a></li>
 							    </ul>
 							</li>
 						</ul>

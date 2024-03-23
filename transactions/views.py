@@ -20,6 +20,9 @@ from django.db.models import (
 	F,
 	Sum,
 	Window,
+	Avg,
+	Min,
+	Max,
 )
 
 from transactions.models import (
@@ -139,6 +142,19 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-
 
 	tqcnt = trans_query.count()
 
+	a = trans_query.aggregate(Avg('subtransaction__amount'))
+	s = trans_query.aggregate(Sum('subtransaction__amount'))
+	mnd = trans_query.aggregate(Min('tdate'))
+	mxd = trans_query.aggregate(Max('tdate'))
+	mxd = mxd['tdate__max']
+	mnd = mnd['tdate__min']
+	dr = mxd-mnd
+	pd = s['subtransaction__amount__sum'] / dr.days
+	pw = pd*7
+	py = pd*365
+	pm =py/12
+
+
 	trans_list = list(trans_query)
 
 	listCnt = len(trans_list)
@@ -151,6 +167,7 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-
 
 	page_obj = paginator.get_page(page_number)
 
+
 	context = {
 		"page_obj": page_obj,
 		"acc": acc,
@@ -160,7 +177,15 @@ def tlist(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-
 		"l1": l1,
 		"ord": ord,
 		"listCnt": listCnt,
-		"tqcnt": tqcnt
+		"tqcnt": tqcnt,
+		"a": a['subtransaction__amount__avg'],
+		"s": s['subtransaction__amount__sum'],
+		"dr": dr.days,
+		"pd": pd,
+		"pw": pw,
+		"pm": pm,
+		"py": py,
+
 	}
 
 	return HttpResponse(template.render(context, request))

@@ -1,0 +1,19 @@
+<td>
+{{ object.desc }}
+</td>
+<td>
+{{ object.amount }}
+</td>
+<td>
+{% if object.text %}
+
+{{ object.text }}
+
+{% endif %}
+</td>
+<td>
+    <a href="{% url 'tax:inputvalue-update' object.id %}">edit</a>
+</td>
+<td>
+    <a href="{{ object.get_delete_url }}">del</a>
+</td>

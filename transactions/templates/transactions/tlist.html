@@ -3,7 +3,9 @@
 {% load humanize %}
 
 {% block title %}
-       Transactions
+
+Transactions
+
 {% endblock %}
 
 {% block page_content %}
@@ -11,93 +13,127 @@
 {% if page_obj %}
 
        <div class="btn-group">
-              <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                     T3 date
-              </button>
-              <ul class="dropdown-menu">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                T3 date
+            </button>
+            <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'tdate' %}">a-z</a></li>
                 <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 '-tdate' %}">z-a</a></li>
-              </ul>
-              <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                     T3 payee
-              </button>
-              <ul class="dropdown-menu">
-                     <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'payee' %}">a-z</a></li>
-                     <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 '-payee' %}">z-a</a></li>
-              </ul>
-              <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                     T3 amount
-              </button>
-              <ul class="dropdown-menu">
-                     <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'amount' %}">a-z</a></li>
-                     <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 '-amount' %}">z-a</a></li>
-              </ul>
-              <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                     T3 category
-              </button>
-              <ul class="dropdown-menu">
-                     <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'category' %}">a-z</a></li>
-                     <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 '-category' %}">z-a</a></li>
-              </ul>
-       </div>
+            </ul>
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                T3 payee
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'payee' %}">a-z</a></li>
+                <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 '-payee' %}">z-a</a></li>
+            </ul>
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                T3 amount
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'amount' %}">a-z</a></li>
+                <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 '-amount' %}">z-a</a></li>
+            </ul>
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                T3 category
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 'category' %}">a-z</a></li>
+                <li><a class="dropdown-item" href="{% url 'transactions:tlist' acc cat gcat pay l1 '-category' %}">z-a</a></li>
+            </ul>
+        </div>
 
-       <h1>Transactions</h1>
+        <h1>Transactions</h1>
 
-       <p><a class="btn-success btn-large" href="{% url 'transactions:create' %}?next={{ request.path|urlencode }}">T2 New Trans</a></p>
+        <hr>
 
-       <table class="table table-dark">
+        <div class="btn-group">
+        <a class="btn-outline-success btn" href="{% url 'transactions:create' %}?next={{ request.path|urlencode }}">New Trans</a>
+        <a class="btn-outline-success btn" href="{% url 'reports_1:tform' %}?next={{ request.path|urlencode }}">Trans Report</a>
+        </div>
 
-              <thead>
-                     <th scope="col">Date</th>
-                     <th scope="col">Account</th>
-                     <th scope="col">Payee</th>
-                     <th scope="col">Category</th>
-                     <th scope="col">Total</th>
-              </thead>
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th>Count</th>
+                    <th>Sum</th>
+                    <th>Average</th>
+                    <th>Days</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{listCnt}}</td>
+                    <td>{{s|floatformat:"2g"}}</td>
+                    <td>{{a|floatformat:"2g"}}</td>
+                    <td>{{dr}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-dark">
+            <thead>
+                <th>Annual</th>
+                <th>Monthly</th>
+                <th>Weekly</th>
+                <th>Daily</th>
+            </thead>
+            <tbody>
+                <td>{{py|floatformat:"2g"}}</td>
+                <td>{{pm|floatformat:"2g"}}</td>
+                <td>{{pw|floatformat:"2g"}}</td>
+                <td>{{pd|floatformat:"2g"}}</td>
+            </tbody>
+        </table>
+        <table class="table table-dark">
 
-              {% for t in page_obj %}
+            <thead>
+                <th scope="col">Date</th>
+                <th scope="col">Account</th>
+                <th scope="col">Payee</th>
+                <th scope="col">Category</th>
+                <th scope="col">Total</th>
+            </thead>
+
+            {% for t in page_obj %}
 			{% ifchanged %}
-              <tr>
-                     <td>
-                            <a href="{{ t.get_edit_url }}?{% if request.GET.next %}next={{ request.GET.next }}{% else %}next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}{% endif %}">T4 {{ t.tdate }}</a>
-                     <td>
-                            <a href="{% url 'transactions:tlist' t.account.id 'all' 'all' 'all' 'all' '-tdate' %}">T3 {{ t.account }}</a>
-                     </td>
-                     <td>
-				<a href="{% url 'transactions:tlist' 'all' 'all' 'all' t.payee.id 'all' 'payee' %}">T3 {{ t.payee }}</a>
-				<br>
-				<a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">24 edit</a>
-				<br>
-				<a href='https://www.google.com/search?q={{ t.payee }}' target='_blank'>info</a>
-			</td>
+            <tr>
+                <td>
+                    <a href="{{ t.get_edit_url }}?{% if request.GET.next %}next={{ request.GET.next }}{% else %}next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}{% endif %}">T4 {{ t.tdate }}</a>
+                <td>
+                    <a href="{% url 'transactions:tlist' t.account.id 'all' 'all' 'all' 'all' '-tdate' %}">T3 {{ t.account }}</a>
+                </td>
+                <td>
+				    <a href="{% url 'transactions:tlist' 'all' 'all' 'all' t.payee.id 'all' 'payee' %}">T3 {{ t.payee }}</a>
+				    <br>
+				    <a href="{% url 'payee-detail' t.payee.id %}?next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}">24 edit</a>
+				    <br>
+				    <a href='https://www.google.com/search?q={{ t.payee }}' target='_blank'>info</a>
+			    </td>
+                <td>
+                    <table>
+                        {% for st in t.get_subtrans_children %}
+                        <tr>
+                            <td align="left">{{ st.groupedcat }}</td>
+                            <td style="vertical-align: top; color:{% if st.amount < 0 %} pink {% else %} lightGreen {% endif %}">{{ st.amount|floatformat:"2g" }} </td>
+                        </tr>
+                        {% endfor %}
 
-                     <td>
-				<table>
-                            {% for st in t.get_subtrans_children %}
-					<tr>
-						<td align="left">{{ st.groupedcat }}</td>
-						<td style="vertical-align: top; color:{% if st.amount < 0 %} pink {% else %} lightGreen {% endif %}">{{ st.amount|floatformat:"2g" }} </td>
+                        {% if t.get_subtrans_children.count > 1 %}
+                        <tr>
+                            <td align="left"><b>Total</td>
+                            <td style="vertical-align: top; color:{% if t.get_transaction_total < 0 %} pink {% else %} lightGreen {% endif %}"><b>{{ t.get_transaction_total|floatformat:"2g" }}</td>
+                        </tr>
+                        {% endif %}
+				    </table>
+                </td>
 
-					</tr>
-                            {% endfor %}
+                <td> {{ t.cumsum|floatformat:"2g" }} </td>
 
-				{% if t.get_subtrans_children.count > 1 %}
-					<tr>
-						<td align="left"><b>Total</td>
-						<td style="vertical-align: top; color:{% if t.get_transaction_total < 0 %} pink {% else %} lightGreen {% endif %}"><b>{{ t.get_transaction_total|floatformat:"2g" }}</td>
-					</tr>
-				{% endif %}
-				</table>
-                     </td>
-
-                     <td> {{ t.cumsum|floatformat:"2g" }} </td>
-
-                     <td><a hx-post="{{ t.get_delete_url }}?{% if request.GET.next %}next={{ request.GET.next }}{% else %}next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}{% endif %}" hx-confirm="delete item?" hx-trigger='click' href="{{ t.get_delete_url }}?{% if request.GET.next %}next={{ request.GET.next }}{% else %}next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}{% endif %}">T5 del</a></td>
-              </tr>
+                <td><a hx-post="{{ t.get_delete_url }}?{% if request.GET.next %}next={{ request.GET.next }}{% else %}next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}{% endif %}" hx-confirm="delete item?" hx-trigger='click' href="{{ t.get_delete_url }}?{% if request.GET.next %}next={{ request.GET.next }}{% else %}next={{ request.path|urlencode }}?page={{ page_obj.number|urlencode }}{% endif %}">T5 del</a></td>
+            </tr>
 			{% endifchanged %}
-              {% endfor %}
-
-       </table>
+            {% endfor %}
+        </table>
 
 {% else %}
 

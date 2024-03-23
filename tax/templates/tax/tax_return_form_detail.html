@@ -1,0 +1,40 @@
+{% extends 'fin23/master.html' %}
+
+{% block title %}
+Detail
+{% endblock %}
+
+{% block content %}
+
+{% if message %}
+
+       <p>{{ message }}</p>
+
+{% endif %}
+
+<h1>{{ title }}</h1>
+
+<div>
+<h4>{{ object.name }}</h4>
+<hr>
+<table width=100%>
+    {% for c in object.get_children %}
+<tr>
+{% include 'tax/partials/tax_return_form_line_inline.html' with object=c %}
+</tr>
+   	{% endfor %}
+</table>
+<hr>
+
+<table width=100%>
+
+<tr>
+<td><a href="{% url 'tax:tax-return-detail' object.tax_return.id %}">back</a></td>
+<td><a href="{% url 'tax:tax-return-form-line-create' object.id %}">add</a></td>
+</tr>
+
+</table>
+
+</div>
+
+{% endblock content %}

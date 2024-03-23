@@ -1,0 +1,32 @@
+{% extends 'fin23/master.html' %}
+{% block title %}
+Create - Update
+{% endblock %}
+
+{% block content %}
+
+{% if message %}
+
+       <p>{{ message }}</p>
+
+{% endif %}
+
+<div>
+
+        {% include 'tax/partials/forms.html' %}
+
+        {% for c in object.get_children %}
+
+			{% include 'tax/partials/inline.html' with object=c %}
+
+       	{% endfor %}
+
+<hr>
+
+   	<a href="{% url 'tax:tax-return-list' %}">back</a>
+
+    <br>
+
+</div>
+
+{% endblock content %}

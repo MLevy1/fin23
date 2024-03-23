@@ -1,0 +1,7 @@
+{% load humanize %}
+<td>{{ object.number }} </td>
+<td>{{ object.line }} </td>
+<td>{{ object.get_line_amt|intcomma }}</td>
+<td><a href="{% url 'tax:tax-return-form-line-update' object.id %}">edit</a></td>
+<td><a href="{% url 'tax:tax-return-form-line-detail' object.id %}">detail</a></td>
+<td><a href="{{ object.get_delete_url }}">del</a></td>

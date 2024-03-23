@@ -1,0 +1,30 @@
+{% load humanize %}
+<td>
+{{ object.inputvalue.datasource.name }}
+</td>
+<td>
+{{ object.inputvalue.desc }}
+</td>
+<td>
+{% if object.multiplier != 1 %}
+{{ object.multiplier }}
+<br>
+{{ object.inputvalue.amount|intcomma }}
+{% endif %}
+</td>
+<td>
+{{ object.get_amt|intcomma }}
+</td>
+<td>
+{% if object.text %}
+
+{{ object.text }}
+
+{% endif %}
+</td>
+<td>
+    <a href="{% url 'tax:tax-return-form-line-input-update' object.id %}">edit</a>
+</td>
+<td>
+    <a href="{{ object.get_delete_url }}">del</a>
+</td>

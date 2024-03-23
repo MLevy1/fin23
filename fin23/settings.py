@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'csv_importer',
     'fixed',
     'tax',
+    'proj_1',
+    'reports_1',
 ]
 
 MIDDLEWARE = [
