@@ -13,7 +13,8 @@ from django.urls import (
 from datetime import datetime
 
 from transactions.models import (
-	Transaction
+	Transaction,
+	SubTransaction,
 )
 
 from django.db.models import (
@@ -75,17 +76,87 @@ def tform(request, act=True):
             if form.cleaned_data['i_max_tdate']:
                 kwargs["maxdate"] = form.cleaned_data['i_max_tdate']
 
-            if form.cleaned_data['i_template']:
-                kwargs["tem"] = form.cleaned_data['i_template']
-
             template = 'reports_1/treport.html'
 
             return HttpResponseRedirect(reverse_lazy('reports_1:treport', kwargs=kwargs))
 
     return render(request, template, context)
 
+def streport(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-date', mindate=None, maxdate=None):
+    if maxdate == None:
+        maxdate = datetime.today().strftime('%Y-%m-%d')
 
-def treport(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-tdate', mindate=None, maxdate=None, tem='list', **kwargs):
+    filters = {}
+
+    if acc != 'all':
+        filters['trans__account'] = acc
+
+    if cat != 'all':
+        filters['groupedcat__category'] = cat
+
+    if gcat != 'all':
+        filters['groupedcat'] = gcat
+
+    if pay != 'all':
+        filters['trans__payee'] = pay
+
+    if l1 != 'all':
+        filters['groupedcat__l1group'] = l1
+
+    if mindate is not None:
+        filters['trans__tdate__range'] = [mindate, maxdate]
+
+    sq = SubTransaction.objects.all().order_by('-trans__tdate')
+
+    if filters:
+        sq = sq.filter(**filters)
+
+    mnd = sq.aggregate(Min('trans__tdate'))
+    mnd = mnd['trans__tdate__min']
+    mxd = sq.aggregate(Max('trans__tdate'))
+    mxd = mxd['trans__tdate__max']
+
+    dys = (mxd-mnd).days
+    anpct = 365/dys
+
+    sqc = sq.count()
+
+    obj = {}
+    aobj = {}
+
+    for s in sq:
+        if s. groupedcat not in obj:
+            obj[s.groupedcat]=s.amount
+            aobj[s. groupedcat]=(float(s.amount)*anpct)/12
+        else:
+            obj[s. groupedcat]+=s.amount
+            aobj[s. groupedcat]+=(float(s.amount)*anpct)/12
+
+    slist = sorted(obj.items(), key=lambda x:x[1], reverse=True)
+
+    sobj = dict(slist)
+
+    template='reports_1/tsummary.html'
+
+    context = {
+
+        "obj": sobj,
+        "aobj": aobj,
+        "cnt": sqc,
+        "acc": acc,
+        "cat": cat,
+        "gcat": gcat,
+        "pay": pay,
+        "l1": l1,
+        "mnd": mnd,
+        "mxd": mxd,
+        "dys": dys,
+
+    }
+
+    return render(request, template, context)
+
+def treport(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-tdate', mindate=None, maxdate=None, **kwargs):
 
 	if maxdate == None:
 		maxdate = datetime.today().strftime('%Y-%m-%d')
@@ -136,10 +207,7 @@ def treport(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord=
 	py = pd*365
 	pm =py/12
 
-	if tem == "list":
-		template="reports_1/treport.html"
-	else:
-		template="reports_1/tsummary.html"
+	template="reports_1/treport.html"
 
 	trans_list = list(trans_query)
 
@@ -165,7 +233,6 @@ def treport(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord=
 		"pw": pw,
 		"pm": pm,
 		"py": py,
-
 	}
 
 	return render(request, template, context)

@@ -9,12 +9,6 @@ from fin.models import (
     L1Group,
 )
 
-# iterable 
-TEMPLATE_CHOICES =( 
-    ("list", "List"), 
-    ("summary", "Summary"),
-) 
-
 class TransListForm(forms.Form):
     i_payee = forms.ModelChoiceField(queryset=Payee.objects.all(), required=False, label="Payee")
     i_acct = forms.ModelChoiceField(queryset=Account.objects.all(), required=False, label="Account")
@@ -22,7 +16,6 @@ class TransListForm(forms.Form):
     i_l1 = forms.ModelChoiceField(queryset=L1Group.objects.all(), required=False, label="L1 Group")
     i_min_tdate = forms.DateField(required=False, label="Min Date", widget=DateInput(attrs={'format': 'yyyy-mm-dd', 'type': 'date'}))
     i_max_tdate = forms.DateField(required=False, label="Max Date", widget=DateInput(attrs={'format': 'yyyy-mm-dd', 'type': 'date'}))
-    i_template = forms.ChoiceField(choices = TEMPLATE_CHOICES, required=False)
 
     def __init__(self, *args, **kwargs):
         aAct = kwargs.pop("aAct", None)

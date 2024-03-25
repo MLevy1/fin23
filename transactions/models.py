@@ -70,5 +70,13 @@ class SubTransaction(models.Model):
 		}
 		return reverse("transactions:hx-subtran-update", kwargs=kwargs)
 
+	def __str__(self):
+	    t = self.trans.tdate
+	    c = self.groupedcat
+	    a = self.amount
+	    n = str(t)+' '+str(c)+' '+str(a)
+	    return n
+
+
 	class Meta:
 		ordering = ["-amount"]
