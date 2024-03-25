@@ -31,3 +31,15 @@ class TransListForm(forms.Form):
 
         if pAct != "False":
             self.fields['i_payee'].queryset = Payee.objects.filter(active="True")
+
+GROUP_CHOICES = (
+    ("p", "Payee"),
+    ("gc", "Grouped Category"),
+    ("c", "Category"),
+)
+
+class TransSummaryForm(forms.Form):
+    i_min_tdate = forms.DateField(required=False, label="Min Date", widget=DateInput(attrs={'format': 'yyyy-mm-dd', 'type': 'date'}))
+    i_max_tdate = forms.DateField(required=False, label="Max Date", widget=DateInput(attrs={'format': 'yyyy-mm-dd', 'type': 'date'}))
+    i_group = forms.ChoiceField(required=False, label="Group", choices=GROUP_CHOICES)
+    i_active = forms.BooleanField(required=False, label="Active")

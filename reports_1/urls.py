@@ -5,6 +5,7 @@ from .views import (
     tform,
     treport,
     streport,
+    stform,
 )
 
 app_name = "reports_1"
@@ -17,5 +18,9 @@ urlpatterns = [
     path("treport/<str:gcat>/<str:ord>/<str:acc>/<str:pay>/<str:cat>/<str:l1>/<mindate>/", treport, name="treport"),
     path("treport/<str:gcat>/<str:ord>/<str:acc>/<str:pay>/<str:cat>/<str:l1>/", treport, name="treport"),
     path("treport/<str:acc>/<str:cat>/<str:gcat>/<str:pay>/<str:l1>/<str:ord>/", treport, name="treport"),
-    path("debug/st/<acc>/<cat>/<gcat>/<pay>/<l1>/<mindate>/<maxdate>/", streport, name="debugst"),
+    path("st/<group>/<active>/<mindate>/<maxdate>/", streport, name="streport"),
+    path("st/<group>/<active>/<mindate>/", streport, name="streport"),
+    path("st/<group>/<active>/", streport, name="streport"),
+    path("st/<group>/", streport, name="streport"),
+    path("st/", stform, name="stform"),
 ]

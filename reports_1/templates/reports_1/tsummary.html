@@ -12,41 +12,87 @@ Summary Report
 
 <h1>Transaction Summary</h1>
 <hr>
-<h2>{{ dys }}</h2>
-<hr>
 <div class="btn-group">
-    <a class="btn-outline-success btn" href="{% url 'transactions:create' %}?next={{ request.path|urlencode }}">New Trans</a>
-    <a class="btn-outline-success btn" href="{% url 'reports_1:tform' %}?next={{ request.path|urlencode }}">Trans Report</a>
+    <a class="btn-outline-success btn" href="{% url 'reports_1:stform' %}">New Summary</a>
 </div>
+<div style="display: flex; align-items: flex-start">
+	<table class="table table-dark">
+		<thead>
+			<th>Payee</th>
+			<th>Total</th>
+		</thead>
+		<tbody>
+			{% for k, v in spobj.items %}
+			<tr>
+				<td>{{ k }}</td>
+				<td>{{ v|floatformat:"2g" }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<th>Total</th>
+			<th>{{ ptot|floatformat:"2g"  }}<th>
+		</tfoot>
+	</table>
 
-<table class="table table-dark">
-    <thead>
-        <th>Payee</th>
-        <th>Total</th>
-    </thead>
-    <tbody>
-    {% for k, v in obj.items %}
-        <tr>
-            <td>{{ k }}</td>
-            <td>{{ v|floatformat:"2g" }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+	<table class="table table-dark">
+		<thead>
+			<th>Payee</th>
+			<th>Total</th>
+		</thead>
+		<tbody>
+			{% for k, v in npobj.items %}
+			<tr>
+				<td>{{ k }}</td>
+				<td>{{ v|floatformat:"2g" }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<th>Total</th>
+			<th>{{ ntot|floatformat:"2g"  }}<th>
+		</tfoot>
+	</table>
+</div>
 <hr>
-<table class="table table-dark">
-    <thead>
-        <th>Payee</th>
-        <th>Monthly</th>
-    </thead>
-    <tbody>
-    {% for k, v in aobj.items %}
-        <tr>
-            <td>{{ k }}</td>
-            <td>{{ v|floatformat:"2g" }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div style="display: flex; align-items: flex-start">
+	<table class="table table-dark">
+		<thead>
+			<th>Payee</th>
+			<th>Total</th>
+		</thead>
+		<tbody>
+			{% for k, v in spaobj.items %}
+			<tr>
+				<td>{{ k }}</td>
+				<td>{{ v|floatformat:"2g" }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<th>Total</th>
+			<th>{{ patot|floatformat:"2g"  }}<th>
+		</tfoot>
+	</table>
+
+	<table class="table table-dark">
+		<thead>
+			<th>Payee</th>
+			<th>Total</th>
+		</thead>
+		<tbody>
+			{% for k, v in npaobj.items %}
+			<tr>
+				<td>{{ k }}</td>
+				<td>{{ v|floatformat:"2g" }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<th>Total</th>
+			<th>{{ natot|floatformat:"2g"  }}<th>
+		</tfoot>
+	</table>
+</div>
 
 {% endblock content %}

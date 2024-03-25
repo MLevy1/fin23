@@ -1,6 +1,9 @@
 from django.shortcuts import render
 
-from .forms import TransListForm
+from .forms import (
+    TransListForm,
+    TransSummaryForm,
+)
 
 from django.http import (
 	HttpResponseRedirect,
@@ -82,29 +85,47 @@ def tform(request, act=True):
 
     return render(request, template, context)
 
-def streport(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord='-date', mindate=None, maxdate=None):
+def stform(request):
+    
+    form = TransSummaryForm(request.POST or None)
+    
+    template = "reports_1/form.html"
+
+    context = {
+
+        "form": form
+    }
+
+    if request.method == "POST":
+        if form.is_valid():
+
+            kwargs = {}
+            
+            kwargs["group"] = form.cleaned_data['i_group']
+            kwargs["active"] = form.cleaned_data['i_active']
+            kwargs["mindate"] = form.cleaned_data['i_min_tdate']
+            kwargs["maxdate"] = form.cleaned_data['i_max_tdate']
+
+            template = 'reports_1/tsummary.html'
+
+            return HttpResponseRedirect(reverse_lazy('reports_1:streport', kwargs=kwargs))
+
+    return render(request, template, context)
+
+def streport(request, group="p", active=True, mindate=None, maxdate=None):
+    
     if maxdate == None:
         maxdate = datetime.today().strftime('%Y-%m-%d')
 
     filters = {}
 
-    if acc != 'all':
-        filters['trans__account'] = acc
-
-    if cat != 'all':
-        filters['groupedcat__category'] = cat
-
-    if gcat != 'all':
-        filters['groupedcat'] = gcat
-
-    if pay != 'all':
-        filters['trans__payee'] = pay
-
-    if l1 != 'all':
-        filters['groupedcat__l1group'] = l1
-
     if mindate is not None:
         filters['trans__tdate__range'] = [mindate, maxdate]
+
+    if active == "True":
+        filters['groupedcat__category__active'] = True
+        filters['groupedcat__active'] = True
+        filters['groupedcat__l1group__active'] = True
 
     sq = SubTransaction.objects.all().order_by('-trans__tdate')
 
@@ -124,33 +145,107 @@ def streport(request, acc='all', cat='all', gcat='all', pay='all', l1='all', ord
     obj = {}
     aobj = {}
 
-    for s in sq:
-        if s. groupedcat not in obj:
-            obj[s.groupedcat]=s.amount
-            aobj[s. groupedcat]=(float(s.amount)*anpct)/12
+    if group == "gc":
+        for s in sq:
+            if s.groupedcat not in obj:
+                obj[s.groupedcat]=s.amount
+                aobj[s.groupedcat]=(float(s.amount)*anpct)/12
+            else:
+                obj[s.groupedcat]+=s.amount
+                aobj[s.groupedcat]+=(float(s.amount)*anpct)/12
+    elif group == "c":
+        for s in sq:
+            if s.groupedcat.category not in obj:
+                obj[s.groupedcat.category]=s.amount
+                aobj[s.groupedcat.category]=(float(s.amount)*anpct)/12
+            else:
+                obj[s.groupedcat.category]+=s.amount
+                aobj[s.groupedcat.category]+=(float(s.amount)*anpct)/12
+    elif group =="p":
+        for s in sq:
+            if s.trans.payee not in obj:
+                obj[s.trans.payee]=s.amount
+                aobj[s.trans.payee]=(float(s.amount)*anpct)/12
+            else:
+                obj[s.trans.payee]+=s.amount
+                aobj[s.trans.payee]+=(float(s.amount)*anpct)/12
+
+    pobj = {}
+    ptot = 0
+
+    nobj = {}
+    ntot = 0
+
+    paobj = {}
+    patot = 0
+
+    naobj = {}
+    natot = 0
+
+    for k, v in obj.items():
+        if v < 0:
+            ntot +=v
+            if k not in nobj:
+                nobj[k] = v
+            else:
+                nobj[k] += v
         else:
-            obj[s. groupedcat]+=s.amount
-            aobj[s. groupedcat]+=(float(s.amount)*anpct)/12
+            ptot +=v
+            if k not in pobj:
+                pobj[k] = v
+            else:
+                pobj[k] += v            
+
+    for k, v in aobj.items():
+        if v < 0:
+            natot +=v
+            if k not in naobj:
+                naobj[k] = v
+            else:
+                naobj[k] += v
+        else:
+            patot +=v
+            if k not in paobj:
+                paobj[k] = v
+            else:
+                paobj[k] += v        
 
     slist = sorted(obj.items(), key=lambda x:x[1], reverse=True)
+    alist = sorted(aobj.items(), key=lambda x:x[1], reverse=True)
+
+    plist = sorted(pobj.items(), key=lambda x:x[1], reverse=True)
+    nlist = sorted(nobj.items(), key=lambda x:x[1])
+
+    palist = sorted(paobj.items(), key=lambda x:x[1], reverse=True)
+    nalist = sorted(naobj.items(), key=lambda x:x[1])
 
     sobj = dict(slist)
+    saobj = dict(alist)
+
+    spobj = dict(plist)
+    npobj = dict(nlist)
+
+    spaobj = dict(palist)
+    npaobj = dict(nalist)
 
     template='reports_1/tsummary.html'
 
     context = {
 
         "obj": sobj,
-        "aobj": aobj,
+        "aobj": saobj,
+        "spobj": spobj,
+        "npobj": npobj,
+        "spaobj": spaobj,
+        "npaobj": npaobj,
         "cnt": sqc,
-        "acc": acc,
-        "cat": cat,
-        "gcat": gcat,
-        "pay": pay,
-        "l1": l1,
         "mnd": mnd,
         "mxd": mxd,
         "dys": dys,
+        "ptot": ptot,
+        "ntot": ntot,
+        "patot": patot,
+        "natot": natot,
 
     }
 
